@@ -20,5 +20,8 @@ public class Publications {
     private String contenu;
     @Column(name = "CATEGORIE")
     private String categorie;
+    @ManyToOne
+    @JoinColumn(name = "ADMINISTRATEUR", referencedColumnName = "IDENTIFIANT")
+    private Administrateur administrateur;
 
 }

@@ -38,5 +38,7 @@ public class CentrePartenaire {
      private String bp;
      @Column(name = "TYPE_CENTRE")
      private String type;
+     @Column(name = "NOM_COMMUNE")
+     private String nomCommune;
 
 }

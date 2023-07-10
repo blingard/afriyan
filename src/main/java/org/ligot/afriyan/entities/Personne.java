@@ -1,16 +1,15 @@
 package org.ligot.afriyan.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.io.Serializable;
-@Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class Personne {
+import java.util.Date;
+
+@MappedSuperclass
+@Getter
+@Setter
+public abstract class Personne {
 
     @Id
     @Column(name = "IDENTIFIANT")
@@ -23,7 +22,7 @@ public class Personne {
     @Column(name = "PRENOM")
     private String prenom;
     @Column(name = "DATE_NAISSANCE")
-    private String ddn;
+    private Date ddn;
     @Column(name = "LIEU_NAISSANCE")
     private String lieu;
     @Column(name = "NUMERO_TELEPHONE")
@@ -34,5 +33,9 @@ public class Personne {
     private String location;
     @Column(name="ANONYMAT")
     private String anonymat;
+    @Column(name = "SEXE")
+    private String sexe;
+    @Column(name = "EMAIL")
+    private String email;
 
 }
