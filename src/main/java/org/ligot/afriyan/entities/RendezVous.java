@@ -29,4 +29,7 @@ public class RendezVous {
     @ManyToOne
     @JoinColumn(name = "UTILISATEUR", referencedColumnName = "IDENTIFIAT")
     private Utilisateur utilisateur;
+    @ManyToOne
+    @JoinColumn(name = "CENTRE_PARTENAIRE", referencedColumnName = "IDENTIFIANT")
+    private CentrePartenaire centrePartenaire;
 }
