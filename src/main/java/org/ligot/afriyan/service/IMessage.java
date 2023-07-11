@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface IMessage {
 
-    Message saveMesage(MessageDto messageDto);
+    Message saveMessage(MessageDto messageDto);
     List<Message> listMessage();
-    Message updateMesage(MessageDto messageDto, long id);
-    void deleteMesage(long id);
+    Message updateMessage(MessageDto messageDto, long id);
+    void deleteMessage(long id);
 
 }

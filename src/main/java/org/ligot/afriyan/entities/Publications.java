@@ -26,6 +26,6 @@ public class Publications {
     private Administrateur administrateur;
     @ManyToOne
     @JoinColumn(name = "SERVICE", referencedColumnName = "IDENTIFIANT")
-    private Service service;
+    private ServiceEntity service;
 
 }

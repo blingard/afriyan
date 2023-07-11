@@ -3,15 +3,12 @@ package org.ligot.afriyan.entities;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-
+@Builder
 @Entity
 @Getter
 @Setter
