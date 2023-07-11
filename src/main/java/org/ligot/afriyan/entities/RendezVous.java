@@ -16,8 +16,8 @@ public class RendezVous {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "IDENTIIFNAT")
-    private long id;
+    @Column(name = "IDENTIFIANT")
+    private Long id;
     @Column(name = "LIBELLE")
     private String libelle;
     @Column(name = "DATE_RDV")
@@ -27,7 +27,7 @@ public class RendezVous {
     @Column(name = "HEURE_FIN")
     private String heureFin;
     @ManyToOne
-    @JoinColumn(name = "UTILISATEUR", referencedColumnName = "IDENTIFIAT")
+    @JoinColumn(name = "UTILISATEUR", referencedColumnName = "IDENTIFIANT")
     private Utilisateur utilisateur;
     @ManyToOne
     @JoinColumn(name = "CENTRE_PARTENAIRE", referencedColumnName = "IDENTIFIANT")

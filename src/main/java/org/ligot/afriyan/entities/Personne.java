@@ -14,7 +14,7 @@ public abstract class Personne {
     @Id
     @Column(name = "IDENTIFIANT")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
     @Column(name="CODE", nullable = false, unique = true)
     private String code;
     @Column(name = "NOM")
@@ -34,7 +34,7 @@ public abstract class Personne {
     @Column(name="ANONYMAT")
     private String anonymat;
     @Column(name = "SEXE")
-    private String sexe;
+    private Sexe sexe;
     @Column(name = "EMAIL")
     private String email;
 

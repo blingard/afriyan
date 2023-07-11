@@ -9,9 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConversationDto {
+public class ServiceDto {
 
-    private String message;
-    private String sender;
-    private String content;
+    private String libelle;
+    private String description;
 }

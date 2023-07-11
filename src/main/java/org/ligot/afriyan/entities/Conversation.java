@@ -16,7 +16,7 @@ public class Conversation {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "IDENTIFIANT")
-    private long id;
+    private Long id;
     @Column(name = "MESSAGE")
     private String message;
     @Column(name = "SENDER")

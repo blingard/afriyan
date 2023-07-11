@@ -13,8 +13,8 @@ import lombok.Setter;
 public class Service {
     @Id
     @GeneratedValue
-    @Column(name = "IDENTIFANT")
-    private long id;
+    @Column(name = "IDENTIFIANT")
+    private Long id;
     @Column(name = "LIBELLE")
     private String libelle;
     @Column(name = "DESCRIPTION")

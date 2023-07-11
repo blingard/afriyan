@@ -17,7 +17,7 @@ public class Rapport {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "IDENTIFIANT")
-    private long id;
+    private Long id;
     @Column(name = "ENTETE")
     private String entête;
     @Column(name = "CONTENU")

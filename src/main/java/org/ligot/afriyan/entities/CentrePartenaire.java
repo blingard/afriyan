@@ -13,9 +13,9 @@ import lombok.NoArgsConstructor;
 public class CentrePartenaire {
 
      @Id
-     @Column(name = "IDENTIFICATION")
      @GeneratedValue(strategy = GenerationType.AUTO)
-     private long id;
+     @Column(name = "IDENTIFIANT")
+     private Long id;
      @Column(name = "NOM")
      private String nom;
      @Column(name = "LIBELLE")

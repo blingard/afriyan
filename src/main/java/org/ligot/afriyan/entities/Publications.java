@@ -13,8 +13,9 @@ public class Publications {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
-    @Column(name = "TYPE")
+    @Column(name = "IDENTIFIANT")
+    private Long id;
+    @Column(name = "TYPE", nullable = false)
     private String type;
     @Column(name = "CONTENU")
     private String contenu;
