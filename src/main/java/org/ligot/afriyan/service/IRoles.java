@@ -7,10 +7,10 @@ import java.util.List;
 
 public interface IRoles {
 
-    RolesDTO findById(Long id);
-    RolesDTO save(RolesDTO rolesDto);
-    Page<RolesDTO> list();
-    RolesDTO update(RolesDTO rolesDto, Long id);
-    void delete(Long id);
+    RolesDTO findById(Long id) throws Exception;
+    RolesDTO save(RolesDTO rolesDto) throws Exception;
+    Page<RolesDTO> list(int page) throws Exception;
+    RolesDTO update(RolesDTO rolesDto, Long id) throws Exception;
+    void delete(Long id) throws Exception;
 
 }

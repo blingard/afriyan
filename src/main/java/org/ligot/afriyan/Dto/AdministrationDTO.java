@@ -7,10 +7,16 @@ import lombok.Setter;
 
 import java.util.Set;
 
-@Setter
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class AdministrationDTO extends PersonneDTO{
     private Set<RolesDTO> roles;
+
+    public Set<RolesDTO> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<RolesDTO> roles) {
+        this.roles = roles;
+    }
 }

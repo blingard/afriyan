@@ -1,5 +1,9 @@
 package org.ligot.afriyan.entities;
 
 public enum Sexe {
-    HOMME, FEMME;
+    HOMME("H"), FEMME("F");
+
+    Sexe (String code){
+
+    }
 }

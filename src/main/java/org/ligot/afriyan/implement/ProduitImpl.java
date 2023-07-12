@@ -4,7 +4,7 @@ import jakarta.transaction.Transactional;
 import org.ligot.afriyan.Dto.ProduitDTO;
 import org.ligot.afriyan.entities.Produit;
 import org.ligot.afriyan.mapper.ProduitMapper;
-import org.ligot.afriyan.repository.IProduitsRepository;
+import org.ligot.afriyan.repository.IProduitRepository;
 import org.ligot.afriyan.service.IProduit;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -15,21 +15,21 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class ProduitImpl implements IProduit {
     private final ProduitMapper mapper;
-    private final IProduitsRepository repository;
+    private final IProduitRepository repository;
     private final int PAGE_SIZE = 15;
 
-    public ProduitImpl(ProduitMapper mapper, IProduitsRepository repository) {
+    public ProduitImpl(ProduitMapper mapper, IProduitRepository repository) {
         this.mapper = mapper;
         this.repository = repository;
     }
 
     @Override
     public ProduitDTO findById(Long id) throws Exception {
-        Produit serviceEntity = repository.findById(id).orElse(null);
-        if(serviceEntity == null){
+        Produit produit = repository.findById(id).orElse(null);
+        if(produit == null){
             throw new Exception("Le Produit que vous souhaitez modifier n'existes pas");
         }
-        return mapper.toDTO(serviceEntity);
+        return mapper.toDTO(produit);
     }
 
     @Override
@@ -45,8 +45,8 @@ public class ProduitImpl implements IProduit {
 
     @Override
     public ProduitDTO update(ProduitDTO produitDTO, Long id) throws Exception {
-        Produit serviceEntity = repository.findById(id).orElse(null);
-        if(serviceEntity == null){
+        Produit produit = repository.findById(id).orElse(null);
+        if(produit == null){
             throw new Exception("Le Produit que vous souhaitez modifier n'existes pas");
         }
         produitDTO.setId(id);

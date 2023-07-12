@@ -1,17 +1,12 @@
 package org.ligot.afriyan.entities;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+
 import lombok.*;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 @Entity
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Utilisateur extends Personne implements Serializable, Comparable<Utilisateur>{
@@ -21,5 +16,13 @@ public class Utilisateur extends Personne implements Serializable, Comparable<Ut
     @Override
     public int compareTo(Utilisateur o) {
         return 0;
+    }
+
+    public Groupes getGroupe() {
+        return groupe;
+    }
+
+    public void setGroupe(Groupes groupe) {
+        this.groupe = groupe;
     }
 }
