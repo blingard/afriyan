@@ -8,8 +8,6 @@ import lombok.Setter;
 import java.util.Date;
 
 @MappedSuperclass
-@Getter
-@Setter
 public abstract class Personne {
 
     @Id
@@ -58,5 +56,115 @@ public abstract class Personne {
     @Column(name = "DATECREATION")
     private Date dCreation;
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public String getPrenom() {
+        return prenom;
+    }
+
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
+    }
+
+    public Date getDdn() {
+        return ddn;
+    }
+
+    public void setDdn(Date ddn) {
+        this.ddn = ddn;
+    }
+
+    public String getLieu() {
+        return lieu;
+    }
+
+    public void setLieu(String lieu) {
+        this.lieu = lieu;
+    }
+
+    public String getNumero_telephone() {
+        return numero_telephone;
+    }
+
+    public void setNumero_telephone(String numero_telephone) {
+        this.numero_telephone = numero_telephone;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getAnonymat() {
+        return anonymat;
+    }
+
+    public void setAnonymat(String anonymat) {
+        this.anonymat = anonymat;
+    }
+
+    public Sexe getSexe() {
+        return sexe;
+    }
+
+    public void setSexe(Sexe sexe) {
+        this.sexe = sexe;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPwd() {
+        return pwd;
+    }
+
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
+    }
+
+    public Date getdCreation() {
+        return dCreation;
+    }
+
+    public void setdCreation(Date dCreation) {
+        this.dCreation = dCreation;
+    }
 }
