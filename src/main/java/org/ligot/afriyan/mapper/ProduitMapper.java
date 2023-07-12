@@ -10,6 +10,5 @@ import org.mapstruct.factory.Mappers;
 public interface ProduitMapper {
 
     Produit create (ProduitDTO dto);
-    @Mapping(target = "centrePartenaireDTO", source = "centrePartenaire")
     ProduitDTO toDTO (Produit entity);
 }
