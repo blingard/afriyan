@@ -10,7 +10,7 @@ import java.util.Date;
 @MappedSuperclass
 @Getter
 @Setter
-public abstract class Personne {
+public class Personne {
 
     @Id
     @Column(name = "IDENTIFIANT")
