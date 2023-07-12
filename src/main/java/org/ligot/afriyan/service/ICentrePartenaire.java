@@ -7,10 +7,10 @@ import java.util.List;
 
 public interface ICentrePartenaire {
 
-    CentrePartenaireDTO findById(Long id);
+    CentrePartenaireDTO findById(Long id) throws Exception;
     CentrePartenaireDTO save(CentrePartenaireDTO centrePartenaireDto);
-    Page<CentrePartenaireDTO> list(int page);
-    CentrePartenaireDTO update(CentrePartenaireDTO centrePartenaireDto, Long id);
-    void delete(Long id);
+    Page<CentrePartenaireDTO> list(int page) throws Exception;
+    CentrePartenaireDTO update(CentrePartenaireDTO centrePartenaireDto, Long id) throws Exception;
+    void delete(Long id) throws Exception;
 
 }

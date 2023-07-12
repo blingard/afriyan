@@ -10,6 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProduitDTO {
+
     private Long id;
     @NotNull
     private String nom;
@@ -20,5 +21,5 @@ public class ProduitDTO {
     @NotNull
     private Double prix;
     @NotNull
-    private CentrePartenaireDTO centrePartenaire;
+    private CentrePartenaireDTO centrePartenaireDTO;
 }
