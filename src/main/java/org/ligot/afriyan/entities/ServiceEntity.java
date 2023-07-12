@@ -20,7 +20,7 @@ public class ServiceEntity {
     @Column(name = "DESCRIPTION")
     private String description;
     @Column (name = "DATE_CREATION")
-    private Date dateCreation;
+    private Date dateCreation= new Date();
     @ManyToOne(fetch = FetchType.EAGER,optional = false)
     private Administrateur createur;
 }

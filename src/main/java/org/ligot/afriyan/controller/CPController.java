@@ -38,5 +38,4 @@ public class CPController {
         return centrePartenaire.findById(id);
     }
 
-
 }

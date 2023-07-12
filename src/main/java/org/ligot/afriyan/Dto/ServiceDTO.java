@@ -18,8 +18,9 @@ public class ServiceDTO {
     private String libelle;
     @NotNull
     private String description;
-    @NotNull
     private Date dateCreation;
+
+    private UtilisateurDTO utilisateur;
 
     public Long getId() {
         return id;
@@ -51,5 +52,13 @@ public class ServiceDTO {
 
     public void setDateCreation(Date dateCreation) {
         this.dateCreation = dateCreation;
+    }
+
+    public UtilisateurDTO getUtilisateur() {
+        return utilisateur;
+    }
+
+    public void setUtilisateur(UtilisateurDTO utilisateur) {
+        this.utilisateur = utilisateur;
     }
 }
