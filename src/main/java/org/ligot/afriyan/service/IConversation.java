@@ -1,17 +1,15 @@
 package org.ligot.afriyan.service;
 
-import org.ligot.afriyan.Dto.ConversationDto;
-import org.ligot.afriyan.Dto.PersonneDto;
-import org.ligot.afriyan.entities.Administrateur;
-import org.ligot.afriyan.entities.Conversation;
+import org.ligot.afriyan.Dto.ConversationDTO;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
 
 public interface IConversation {
 
-    Conversation saveConversation(ConversationDto conversationDto);
-    List<Administrateur> listConversation();
-    Administrateur updateConversation(ConversationDto conversationDto, long id);
-    void deleteConversation(long id);
+    ConversationDTO findById(Long id);
+    ConversationDTO save(ConversationDTO conversationDto);
+    Page<ConversationDTO> list(int page);
+    ConversationDTO update(ConversationDTO conversationDto, Long id);
+    void delete(Long id);
 
 }

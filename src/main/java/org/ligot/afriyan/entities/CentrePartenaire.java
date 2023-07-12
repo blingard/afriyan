@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -40,5 +42,9 @@ public class CentrePartenaire {
      private String type;
      @Column(name = "NOM_COMMUNE")
      private String nomCommune;
+     @Column(name = "DATECREAATION")
+     private Date dateCreation;
+     @Enumerated(EnumType.STRING)
+     private Status status;
 
 }

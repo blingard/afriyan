@@ -1,9 +1,6 @@
 package org.ligot.afriyan.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
@@ -15,7 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class ServiceEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "IDENTIFIANT")
     private Long id;
     @Column(name = "LIBELLE", unique = true, nullable = false)
@@ -24,4 +21,6 @@ public class ServiceEntity {
     private String description;
     @Column (name = "DATE_CREATION")
     private Date dateCreation;
+    @ManyToOne(fetch = FetchType.EAGER,optional = false)
+    private Administrateur createur;
 }

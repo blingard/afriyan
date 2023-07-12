@@ -1,21 +1,22 @@
 package org.ligot.afriyan.implement;
 
 import jakarta.transaction.Transactional;
-import org.ligot.afriyan.Dto.ServiceDto;
+import org.ligot.afriyan.Dto.ServiceDTO;
 import org.ligot.afriyan.mapper.ServiceMapper;
 import org.ligot.afriyan.repository.IServiceEntityRepository;
 import org.ligot.afriyan.service.IServiceEntity;
 import org.ligot.afriyan.entities.ServiceEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class ServiceEntityImpl implements IServiceEntity {
     private final ServiceMapper mapper;
     private final IServiceEntityRepository repository;
+    private final int PAGE_SIZE = 15;
 
     public ServiceEntityImpl(ServiceMapper mapper, IServiceEntityRepository repository) {
         this.mapper = mapper;
@@ -23,32 +24,37 @@ public class ServiceEntityImpl implements IServiceEntity {
     }
 
     @Override
-    public ServiceEntity saveService(ServiceDto serviceDto) {
-        ServiceEntity serviceEntity = mapper.create(serviceDto);
-        return repository.save(serviceEntity);
+    public ServiceDTO findById(Long id) throws Exception {
+        ServiceEntity serviceEntity = repository.findById(id).orElse(null);
+        if(serviceEntity == null){
+            throw new Exception("Le Service que vous souhaitez modifier n'existes pas");
+        }
+        return mapper.toDTO(serviceEntity);
     }
 
     @Override
-    public List<ServiceDto> listService() {
-        List<ServiceEntity> serviceEntitys = repository.findAll();
-
-        List<ServiceDto> serviceDtos = null;
-        serviceDtos.addAll(serviceEntitys.stream().map(serviceEntity -> {
-                    ServiceDto serviceDto = mapper.toDTO(serviceEntity);
-                    return serviceDto;
-                }).collect(Collectors.toList()));
-        return serviceDtos;
+    public ServiceDTO save(ServiceDTO serviceDto) throws Exception {
+        return mapper.toDTO(repository.save(mapper.create(serviceDto)));
     }
 
     @Override
-    public ServiceEntity updateService(ServiceDto serviceDto, long id) {
-        ServiceEntity serviceEntity = repository.getById(id);
-        serviceEntity = mapper.create(serviceDto);
-        return repository.saveAndFlush(serviceEntity);
+    public Page<ServiceDTO> list(int page) throws Exception {
+        Page<ServiceEntity> pages = repository.findAll(PageRequest.of(page,PAGE_SIZE));
+        return new PageImpl<>(pages.map(mapper::toDTO).toList(),PageRequest.of(page,PAGE_SIZE),pages.getTotalElements());
     }
 
     @Override
-    public void deleteService(long id) {
+    public ServiceDTO update(ServiceDTO serviceDto, Long id) throws Exception {
+        ServiceEntity serviceEntity = repository.findById(id).orElse(null);
+        if(serviceEntity == null){
+            throw new Exception("Le Service que vous souhaitez modifier n'existes pas");
+        }
+        serviceDto.setId(id);
+        return mapper.toDTO(repository.save(mapper.create(serviceDto)));
+    }
+
+    @Override
+    public void delete(Long id) throws Exception {
         repository.deleteById(id);
     }
 }

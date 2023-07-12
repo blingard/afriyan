@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,6 +23,11 @@ public class Conversation {
     private String message;
     @Column(name = "SENDER")
     private String sender;
+    @Column(name = "receiver")
+    private String receiver;
     @Column(name = "CONTENT")
     private String content;
+    @Column(name = "dateenvois")
+    private Date dateEnvoie;
+
 }

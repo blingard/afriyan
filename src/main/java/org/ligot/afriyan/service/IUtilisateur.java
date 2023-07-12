@@ -1,15 +1,16 @@
 package org.ligot.afriyan.service;
 
-import org.ligot.afriyan.Dto.PersonneDto;
-import org.ligot.afriyan.entities.Utilisateur;
+import org.ligot.afriyan.Dto.UtilisateurDTO;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
 
 public interface IUtilisateur {
 
-    Utilisateur saveUtilisateur(PersonneDto personneDto);
-    List<Utilisateur> listUtilisateur();
-    Utilisateur updateUtilisateur(PersonneDto personneDto, long id);
-    void deleteUtilisateur(long id);
+    UtilisateurDTO findById(Long id);
+    UtilisateurDTO save(UtilisateurDTO utilisateurDTO);
+    Page<UtilisateurDTO> list(int page);
+    Page<UtilisateurDTO> list(int page,Long idGroup);
+    UtilisateurDTO update(UtilisateurDTO utilisateurDTO, Long id);
+    void deleteUtilisateur(Long id);
 
 }

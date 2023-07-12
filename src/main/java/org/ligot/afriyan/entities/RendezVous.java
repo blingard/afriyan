@@ -32,4 +32,8 @@ public class RendezVous {
     @ManyToOne
     @JoinColumn(name = "CENTRE_PARTENAIRE", referencedColumnName = "IDENTIFIANT")
     private CentrePartenaire centrePartenaire;
+
+    @Column(name = "STATUS")
+    @Enumerated(EnumType.STRING)
+    private StatusRdv rdv;
 }

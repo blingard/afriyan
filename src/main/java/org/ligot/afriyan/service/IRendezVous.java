@@ -1,15 +1,15 @@
 package org.ligot.afriyan.service;
 
-import org.ligot.afriyan.Dto.RendezVousDto;
-import org.ligot.afriyan.entities.RendezVous;
+import org.ligot.afriyan.Dto.RendezVousDTO;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
 
 public interface IRendezVous {
-
-    RendezVous saveRendezVous(RendezVousDto rendezVousDto);
-    List<RendezVous> listRendezVous();
-    RendezVous updateRendezVous(RendezVousDto rendezVousDto, long id);
-    void deleteRendezVous(long id);
+    RendezVousDTO  findById(Long id);
+    RendezVousDTO save(RendezVousDTO rendezVousDto);
+    Page<RendezVousDTO> list(int page);
+    Page<RendezVousDTO> list(int page, Long idUser);
+    RendezVousDTO update(RendezVousDTO rendezVousDto, Long id);
+    void delete(Long id);
 
 }

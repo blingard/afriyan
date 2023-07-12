@@ -1,17 +1,16 @@
 package org.ligot.afriyan.service;
 
-import org.ligot.afriyan.Dto.MessageDto;
-import org.ligot.afriyan.Dto.RolesDto;
-import org.ligot.afriyan.entities.Message;
-import org.ligot.afriyan.entities.Roles;
+import org.ligot.afriyan.Dto.RolesDTO;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface IRoles {
 
-    Roles saveRoles(RolesDto rolesDto);
-    List<Roles> listRoles();
-    Message updateRoles(RolesDto rolesDto, long id);
-    void deleteRoles(long id);
+    RolesDTO findById(Long id);
+    RolesDTO save(RolesDTO rolesDto);
+    Page<RolesDTO> list();
+    RolesDTO update(RolesDTO rolesDto, Long id);
+    void delete(Long id);
 
 }

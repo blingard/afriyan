@@ -1,15 +1,15 @@
 package org.ligot.afriyan.service;
 
-import org.ligot.afriyan.Dto.ServiceDto;
-import org.ligot.afriyan.entities.ServiceEntity;
+import org.ligot.afriyan.Dto.ServiceDTO;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
 
 public interface IServiceEntity {
 
-    ServiceEntity saveService(ServiceDto serviceDto);
-    List<ServiceDto> listService();
-    ServiceEntity updateService(ServiceDto serviceDto, long id);
-    void deleteService(long id);
+    ServiceDTO findById(Long id) throws Exception ;
+    ServiceDTO save(ServiceDTO serviceDto) throws Exception ;
+    Page<ServiceDTO> list(int page) throws Exception ;
+    ServiceDTO update(ServiceDTO serviceDto, Long id) throws Exception ;
+    void delete(Long id) throws Exception ;
 
 }

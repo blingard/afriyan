@@ -12,12 +12,16 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ServiceDto {
+public class ConversationDTO {
     private Long id;
     @NotNull
-    private String libelle;
+    private String message;
     @NotNull
-    private String description;
+    private String sender;
     @NotNull
-    private Date dateCreation=new Date();
+    private String receiver;
+    @NotNull
+    private String content;
+    @NotNull
+    private Date dateEnvoie;
 }

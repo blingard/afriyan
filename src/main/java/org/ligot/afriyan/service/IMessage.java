@@ -1,15 +1,15 @@
 package org.ligot.afriyan.service;
 
-import org.ligot.afriyan.Dto.MessageDto;
-import org.ligot.afriyan.entities.Message;
+import org.ligot.afriyan.Dto.MessageDTO;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
 
 public interface IMessage {
 
-    Message saveMessage(MessageDto messageDto);
-    List<Message> listMessage();
-    Message updateMessage(MessageDto messageDto, long id);
-    void deleteMessage(long id);
+    MessageDTO  findById(Long id);
+    MessageDTO save(MessageDTO messageDto);
+    Page<MessageDTO> list(int page);
+    MessageDTO update(MessageDTO messageDto, Long id);
+    void delete(Long id);
 
 }

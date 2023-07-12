@@ -1,16 +1,15 @@
 package org.ligot.afriyan.service;
 
-import org.ligot.afriyan.Dto.GroupesDto;
-import org.ligot.afriyan.entities.Administrateur;
-import org.ligot.afriyan.entities.Groupes;
+import org.ligot.afriyan.Dto.GroupesDTO;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
 
 public interface IGroupes {
 
-    Groupes saveGroupes(GroupesDto groupesDto);
-    List<Administrateur> listGroupes();
-    Administrateur updateGroupes(GroupesDto groupesDto, long id);
-    void deleteGroupes(long id);
+    GroupesDTO findById(Long id);
+    GroupesDTO save(GroupesDTO groupesDto);
+    Page<GroupesDTO> list(int page);
+    GroupesDTO update(GroupesDTO groupesDto, Long id);
+    void delete(Long id);
 
 }

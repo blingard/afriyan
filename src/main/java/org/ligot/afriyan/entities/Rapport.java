@@ -18,10 +18,17 @@ public class Rapport {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "IDENTIFIANT")
     private Long id;
+
     @Column(name = "ENTETE")
-    private String entête;
+    private String entete;
+
     @Column(name = "CONTENU")
     private String cotenu;
+
     @Column(name = "DATE")
     private Date date;
+
+    @Column(name = "STATUS")
+    @Enumerated(EnumType.STRING)
+    private Status status;
 }

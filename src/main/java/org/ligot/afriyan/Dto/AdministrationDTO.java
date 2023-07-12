@@ -5,13 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class ConversationDto {
+import java.util.Set;
 
-    private String message;
-    private String sender;
-    private String content;
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+public class AdministrationDTO extends PersonneDTO{
+    private Set<RolesDTO> roles;
 }

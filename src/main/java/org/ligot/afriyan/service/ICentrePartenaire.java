@@ -1,15 +1,16 @@
 package org.ligot.afriyan.service;
 
-import org.ligot.afriyan.Dto.CentrePartenaireDto;
-import org.ligot.afriyan.entities.CentrePartenaire;
+import org.ligot.afriyan.Dto.CentrePartenaireDTO;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface ICentrePartenaire {
 
-    CentrePartenaire saveUtilisateur(CentrePartenaireDto centrePartenaireDto);
-    List<CentrePartenaire> listCentrePartenaire();
-    CentrePartenaire updateCentrePartenaire(CentrePartenaireDto centrePartenaireDto, long id);
-    void deleteCentrePartenaire(long id);
+    CentrePartenaireDTO findById(Long id);
+    CentrePartenaireDTO save(CentrePartenaireDTO centrePartenaireDto);
+    Page<CentrePartenaireDTO> list(int page);
+    CentrePartenaireDTO update(CentrePartenaireDTO centrePartenaireDto, Long id);
+    void delete(Long id);
 
 }

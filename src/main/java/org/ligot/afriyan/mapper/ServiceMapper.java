@@ -1,12 +1,12 @@
 package org.ligot.afriyan.mapper;
 
-import org.ligot.afriyan.Dto.ServiceDto;
+import org.ligot.afriyan.Dto.ServiceDTO;
 import org.ligot.afriyan.entities.ServiceEntity;
 import org.mapstruct.Mapper;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface ServiceMapper {
 
-    ServiceEntity create(ServiceDto dto);
-    ServiceDto toDTO(ServiceEntity entity);
+    ServiceEntity create(ServiceDTO dto);
+    ServiceDTO toDTO(ServiceEntity entity);
 }

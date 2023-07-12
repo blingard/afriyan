@@ -5,13 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
 @Setter
-@NoArgsConstructor
+@Getter
 @AllArgsConstructor
-public class RolesDto {
-
-    private String nom;
-    private String description;
-    private String fonction;
+@NoArgsConstructor
+public class UtilisateurDTO extends PersonneDTO{
 }

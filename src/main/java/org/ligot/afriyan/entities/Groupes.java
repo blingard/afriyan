@@ -19,18 +19,20 @@ public class Groupes {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "IDENTIFIANT")
     private Long id;
+
     @OneToMany
     @JoinColumn(name = "ROLES", referencedColumnName = "IDENTIFIANT")
     private Set<Roles> roles= new HashSet<>();
+
     @Column(name = "NOM")
     private String name;
+
     @Column(name = "LIBELLE")
     private String libelle;
+
     @Column(name = "DESCRIPTION")
     private String description;
-    @OneToMany
-    @JoinColumn(name = "ADMINISTRATEURS", referencedColumnName = "IDENTIFIANT")
-    private Set<Administrateur> administrateurs = new HashSet<>();
+
     @OneToMany
     @JoinColumn(name = "UTILISATEURS", referencedColumnName = "IDENTIFIANT")
     private Set<Utilisateur> utilisateurs = new HashSet<>();

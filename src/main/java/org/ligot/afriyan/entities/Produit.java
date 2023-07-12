@@ -24,7 +24,7 @@ public class Produit {
     @Column(name = "DESCRIPTION")
     private String description;
     @Column(name = "PRIX")
-    private String prix;
+    private Double prix;
     @ManyToOne
     @JoinColumn(name = "CENTRE_PARTENAINE", referencedColumnName = "IDENTIFIANT")
     private CentrePartenaire centrePartenaire;

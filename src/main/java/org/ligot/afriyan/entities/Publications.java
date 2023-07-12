@@ -1,12 +1,14 @@
 package org.ligot.afriyan.entities;
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Publications {
@@ -21,11 +23,14 @@ public class Publications {
     private String contenu;
     @Column(name = "CATEGORIE")
     private String categorie;
+
     @ManyToOne
     @JoinColumn(name = "ADMINISTRATEUR", referencedColumnName = "IDENTIFIANT")
-    private Administrateur administrateur;
+    private Utilisateur administrateur;
+
     @ManyToOne
     @JoinColumn(name = "SERVICE", referencedColumnName = "IDENTIFIANT")
     private ServiceEntity service;
+
 
 }
