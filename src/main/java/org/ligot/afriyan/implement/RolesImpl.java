@@ -11,6 +11,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class RolesImpl implements IRoles {
@@ -41,6 +43,11 @@ public class RolesImpl implements IRoles {
     public Page<RolesDTO> list(int page) throws Exception {
         Page<Roles> pages = repository.findAll(PageRequest.of(page,PAGE_SIZE));
         return new PageImpl<>(pages.map(mapper::toDTO).toList(),PageRequest.of(page,PAGE_SIZE),pages.getTotalElements());
+    }
+
+    @Override
+    public List<RolesDTO> list() throws Exception {
+        return repository.findAll().stream().map(mapper::toDTO).toList();
     }
 
     @Override
