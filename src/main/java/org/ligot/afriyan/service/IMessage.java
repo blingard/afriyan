@@ -6,10 +6,10 @@ import org.springframework.data.domain.Page;
 
 public interface IMessage {
 
-    MessageDTO  findById(Long id);
-    MessageDTO save(MessageDTO messageDto);
-    Page<MessageDTO> list(int page);
-    MessageDTO update(MessageDTO messageDto, Long id);
-    void delete(Long id);
+    MessageDTO  findById(Long id) throws Exception;
+    MessageDTO save(MessageDTO messageDto) throws Exception;
+    Page<MessageDTO> list(int page) throws Exception;
+    MessageDTO update(MessageDTO messageDto, Long id) throws Exception;
+    void delete(Long id) throws Exception;
 
 }
