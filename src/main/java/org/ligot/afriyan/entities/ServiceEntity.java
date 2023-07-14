@@ -6,8 +6,6 @@ import lombok.*;
 import java.util.Date;
 
 @Entity
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ServiceEntity {
@@ -23,4 +21,44 @@ public class ServiceEntity {
     private Date dateCreation= new Date();
     @ManyToOne(fetch = FetchType.EAGER,optional = false)
     private Administrateur createur;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getLibelle() {
+        return libelle;
+    }
+
+    public void setLibelle(String libelle) {
+        this.libelle = libelle;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Date getDateCreation() {
+        return dateCreation;
+    }
+
+    public void setDateCreation(Date dateCreation) {
+        this.dateCreation = dateCreation;
+    }
+
+    public Administrateur getCreateur() {
+        return createur;
+    }
+
+    public void setCreateur(Administrateur createur) {
+        this.createur = createur;
+    }
 }

@@ -8,8 +8,6 @@ import lombok.Setter;
 
 import java.util.Date;
 @Entity
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class RendezVous {
@@ -36,4 +34,68 @@ public class RendezVous {
     @Column(name = "STATUS")
     @Enumerated(EnumType.STRING)
     private StatusRdv rdv;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getLibelle() {
+        return libelle;
+    }
+
+    public void setLibelle(String libelle) {
+        this.libelle = libelle;
+    }
+
+    public Date getDateRdv() {
+        return dateRdv;
+    }
+
+    public void setDateRdv(Date dateRdv) {
+        this.dateRdv = dateRdv;
+    }
+
+    public String getHeureDebut() {
+        return heureDebut;
+    }
+
+    public void setHeureDebut(String heureDebut) {
+        this.heureDebut = heureDebut;
+    }
+
+    public String getHeureFin() {
+        return heureFin;
+    }
+
+    public void setHeureFin(String heureFin) {
+        this.heureFin = heureFin;
+    }
+
+    public Utilisateur getUtilisateur() {
+        return utilisateur;
+    }
+
+    public void setUtilisateur(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
+    }
+
+    public CentrePartenaire getCentrePartenaire() {
+        return centrePartenaire;
+    }
+
+    public void setCentrePartenaire(CentrePartenaire centrePartenaire) {
+        this.centrePartenaire = centrePartenaire;
+    }
+
+    public StatusRdv getRdv() {
+        return rdv;
+    }
+
+    public void setRdv(StatusRdv rdv) {
+        this.rdv = rdv;
+    }
 }

@@ -2,7 +2,6 @@ package org.ligot.afriyan.implement;
 
 import jakarta.transaction.Transactional;
 import org.ligot.afriyan.Dto.GroupesDTO;
-import org.ligot.afriyan.Dto.RolesDTO;
 import org.ligot.afriyan.entities.Groupes;
 import org.ligot.afriyan.mapper.GroupesMapper;
 import org.ligot.afriyan.repository.IGroupesRepository;
@@ -12,14 +11,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
-
 @Service
 @Transactional
 public class GroupesImpl implements IGroupes {
     private final GroupesMapper mapper;
-
-    private IGroupes iGroupes;
     private final IGroupesRepository repository;
     private final int PAGE_SIZE = 15;
 
@@ -71,6 +66,6 @@ public class GroupesImpl implements IGroupes {
             return mapper.toDTO(repository.saveAndFlush(groupes));
 
         }
-        return iGroupes.update(groupesDTO, id);
+        return update(groupesDTO, id);
     }
 }

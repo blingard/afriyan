@@ -8,8 +8,6 @@ import lombok.Setter;
 import java.util.Date;
 
 @MappedSuperclass
-@Getter
-@Setter
 public class Personne {
 
     @Id
@@ -169,4 +167,6 @@ public class Personne {
     public void setdCreation(Date dCreation) {
         this.dCreation = dCreation;
     }
+
+
 }

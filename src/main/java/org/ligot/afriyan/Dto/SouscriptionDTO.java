@@ -9,8 +9,6 @@ import org.ligot.afriyan.entities.Status;
 
 import java.util.Date;
 
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class SouscriptionDTO {
@@ -23,4 +21,44 @@ public class SouscriptionDTO {
     private Date datecreation;
     @NotNull
     private Status status;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public UtilisateurDTO getUtilisateur() {
+        return utilisateur;
+    }
+
+    public void setUtilisateur(UtilisateurDTO utilisateur) {
+        this.utilisateur = utilisateur;
+    }
+
+    public ServiceDTO getService() {
+        return service;
+    }
+
+    public void setService(ServiceDTO service) {
+        this.service = service;
+    }
+
+    public Date getDatecreation() {
+        return datecreation;
+    }
+
+    public void setDatecreation(Date datecreation) {
+        this.datecreation = datecreation;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 }

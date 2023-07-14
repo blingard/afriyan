@@ -3,14 +3,10 @@ package org.ligot.afriyan.Dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.ligot.afriyan.entities.Status;
 
 
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class MessageDTO {
@@ -22,4 +18,44 @@ public class MessageDTO {
     @NotNull
     private Status status;
     private UtilisateurDTO utilisateur;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getObjects() {
+        return objects;
+    }
+
+    public void setObjects(String objects) {
+        this.objects = objects;
+    }
+
+    public String getCorps() {
+        return corps;
+    }
+
+    public void setCorps(String corps) {
+        this.corps = corps;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public UtilisateurDTO getUtilisateur() {
+        return utilisateur;
+    }
+
+    public void setUtilisateur(UtilisateurDTO utilisateur) {
+        this.utilisateur = utilisateur;
+    }
 }

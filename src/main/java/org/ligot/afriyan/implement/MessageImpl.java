@@ -4,9 +4,7 @@ import jakarta.transaction.Transactional;
 import org.ligot.afriyan.Dto.MessageDTO;
 import org.ligot.afriyan.entities.Message;
 import org.ligot.afriyan.mapper.MessageMapper;
-import org.ligot.afriyan.mapper.MessageMapper;
 import org.ligot.afriyan.repository.IMessageRepository;
-import org.ligot.afriyan.service.IMessage;
 import org.ligot.afriyan.service.IMessage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -17,8 +15,6 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class MessageImpl implements IMessage {
     private final MessageMapper mapper;
-
-    private IMessage iMessage;
     private final IMessageRepository repository;
     private final int PAGE_SIZE = 15;
 

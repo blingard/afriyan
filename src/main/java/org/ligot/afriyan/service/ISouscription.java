@@ -7,6 +7,6 @@ public interface ISouscription {
     SouscriptionDTO findById(Long id) throws Exception;
     SouscriptionDTO save(SouscriptionDTO personneDto) throws Exception;
     Page<SouscriptionDTO> list(int page) throws Exception;
-    SouscriptionDTO update(SouscriptionDTO personneDto, Long id);
+    SouscriptionDTO update(SouscriptionDTO personneDto, Long id) throws Exception;
     void delete(Long id) throws Exception;
 }

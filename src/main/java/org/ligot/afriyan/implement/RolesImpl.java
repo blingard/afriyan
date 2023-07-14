@@ -49,7 +49,6 @@ public class RolesImpl implements IRoles {
         if(roles == null){
             throw new Exception("Le Roles que vous souhaitez modifier n'existes pas");
         }
-        rolesDTO.setId(id);
         return mapper.toDTO(repository.save(mapper.create(rolesDTO)));
     }
 

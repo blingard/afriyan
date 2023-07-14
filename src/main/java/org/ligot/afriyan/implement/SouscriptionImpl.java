@@ -15,8 +15,6 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class SouscriptionImpl implements ISouscription {
     private final SouscriptionMapper mapper;
-
-    private ISouscription iSouscription;
     private final ISouscriptionRepository repository;
     private final int PAGE_SIZE = 15;
 
@@ -51,7 +49,6 @@ public class SouscriptionImpl implements ISouscription {
         if(souscription == null){
             throw new Exception("Le Souscription que vous souhaitez modifier n'existes pas");
         }
-        souscriptionDTO.setId(id);
         return mapper.toDTO(repository.save(mapper.create(souscriptionDTO)));
     }
 

@@ -12,8 +12,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Setter
-@Getter
 @NoArgsConstructor
 public class Administrateur extends Personne implements Serializable, Comparable<Administrateur>{
 
@@ -23,5 +21,13 @@ public class Administrateur extends Personne implements Serializable, Comparable
     @Override
     public int compareTo(Administrateur o) {
         return 0;
+    }
+
+    public Set<Roles> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Roles> roles) {
+        this.roles = roles;
     }
 }

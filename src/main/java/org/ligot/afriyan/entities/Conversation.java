@@ -11,8 +11,6 @@ import java.util.Date;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 public class Conversation {
 
     @Id
@@ -30,4 +28,51 @@ public class Conversation {
     @Column(name = "dateenvois")
     private Date dateEnvoie;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public Date getDateEnvoie() {
+        return dateEnvoie;
+    }
+
+    public void setDateEnvoie(Date dateEnvoie) {
+        this.dateEnvoie = dateEnvoie;
+    }
 }
