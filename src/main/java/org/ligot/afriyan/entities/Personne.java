@@ -2,61 +2,61 @@ package org.ligot.afriyan.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 @MappedSuperclass
-@Getter
-@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Personne {
 
     @Id
     @Column(name = "IDENTIFIANT")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    protected Long id;
 
     @Column(name="CODE", nullable = false, unique = true)
-    private String code;
+    protected String code;
 
     @Column(name = "NOM")
-    private String nom;
+    protected String nom;
 
     @Column(name = "PRENOM")
-    private String prenom;
+    protected String prenom;
 
     @Column(name = "DATE_NAISSANCE")
-    private Date ddn;
+    protected Date ddn;
 
     @Column(name = "LIEU_NAISSANCE")
-    private String lieu;
+    protected String lieu;
 
     @Column(name = "NUMERO_TELEPHONE", unique = true)
-    private String numero_telephone;
+    protected String numero_telephone;
 
     @Column(name = "PHOTO")
-    private String photo;
+    protected String photo;
 
     @Column(name = "LOCATION")
-    private String location;
+    protected String location;
 
     @Column(name="ANONYMAT")
-    private String anonymat;
+    protected String anonymat;
 
     @Column(name = "SEXE")
     @Enumerated(EnumType.STRING)
-    private Sexe sexe;
+    protected Sexe sexe;
 
     @Column(name = "EMAIL")
     @Email(message = "Veuillez saisir une adresse mail")
-    private String email;
+    protected String email;
 
     @Column(name="PASSWORD")
-    private String pwd;
+    protected String pwd;
 
     @Column(name = "DATECREATION")
-    private Date dCreation;
+    protected Date dCreation;
 
     public Long getId() {
         return id;

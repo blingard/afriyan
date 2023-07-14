@@ -9,30 +9,30 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public abstract class PersonneDTO {
 
-    private Long id;
+    protected Long id;
     @NotNull
-    private String code;
+    protected String code;
     @NotNull
-    private String nom;
+    protected String nom;
     @NotNull
-    private String prenom;
+    protected String prenom;
     @NotNull
-    private String ddn;
+    protected String ddn;
     @NotNull
-    private String lieu;
+    protected String lieu;
     @NotNull
-    private String numero_telephone;
+    protected String numero_telephone;
     @NotNull
-    private String photo;
+    protected String photo;
     @NotNull
-    private String location;
+    protected String location;
     @NotNull
-    private String anonymat;
+    protected String anonymat;
     @NotNull
-    private String sexe;
+    protected String sexe;
     @NotNull
     @Email
-    private String email;
+    protected String email;
 
     public Long getId() {
         return id;

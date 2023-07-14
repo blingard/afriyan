@@ -7,14 +7,22 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 public class Roles {
+    public Roles() {
+    }
+
+    public Roles(Long id, String nom, String description, String fonction) {
+        this.id = id;
+        this.nom = nom;
+        this.description = description;
+        this.fonction = fonction;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "IDENTIFIANT")
     private Long id;
-    @Column(name = "NOM")
+    @Column(name = "NOM",unique = true,updatable = false)
     private String nom;
     @Column(name = "DESCRIPTION")
     private String description;

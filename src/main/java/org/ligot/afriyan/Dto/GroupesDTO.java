@@ -12,6 +12,7 @@ public class GroupesDTO {
     private Long id;
 
     private Set<RolesDTO> roles;
+    private Set<UtilisateurDTO> utilisateurs;
     @NotNull
     private String name;
     @NotNull
@@ -59,4 +60,11 @@ public class GroupesDTO {
         this.description = description;
     }
 
+    public Set<UtilisateurDTO> getUtilisateurs() {
+        return utilisateurs;
+    }
+
+    public void setUtilisateurs(Set<UtilisateurDTO> utilisateurs) {
+        this.utilisateurs = utilisateurs;
+    }
 }

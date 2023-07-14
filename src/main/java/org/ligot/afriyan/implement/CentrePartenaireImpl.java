@@ -11,6 +11,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class CentrePartenaireImpl implements ICentrePartenaire {
@@ -41,6 +43,11 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
     public Page<CentrePartenaireDTO> list(int page) throws Exception {
         Page<CentrePartenaire> pages = repository.findAll(PageRequest.of(page,PAGE_SIZE));
         return new PageImpl<>(pages.map(mapper::toDTO).toList(),PageRequest.of(page,PAGE_SIZE),pages.getTotalElements());
+    }
+
+    @Override
+    public List<CentrePartenaireDTO> list() throws Exception {
+        return repository.findAll().stream().map(mapper::toDTO).toList();
     }
 
     @Override

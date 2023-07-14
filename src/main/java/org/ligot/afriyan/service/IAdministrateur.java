@@ -7,10 +7,10 @@ import java.util.List;
 
 public interface IAdministrateur {
 
-    AdministrationDTO findById(Long id);
     AdministrationDTO save(AdministrationDTO personneDto);
-    Page<AdministrationDTO> list(int page);
-    AdministrationDTO update(AdministrationDTO personneDto, Long id);
-    void delete(Long id);
+    AdministrationDTO connect(String login, String password);
+    boolean codeExist(String code);
+
+
 
 }

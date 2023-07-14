@@ -10,9 +10,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 public class Groupes {
+    public Groupes() {
+    }
+
+    public Groupes(Long id, Set<Roles> roles, String name, String libelle, String description, Set<Utilisateur> utilisateurs) {
+        this.id = id;
+        this.roles = roles;
+        this.name = name;
+        this.libelle = libelle;
+        this.description = description;
+        this.utilisateurs = utilisateurs;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "IDENTIFIANT")
@@ -22,7 +32,7 @@ public class Groupes {
     @JoinColumn(name = "ROLES", referencedColumnName = "IDENTIFIANT")
     private Set<Roles> roles= new HashSet<>();
 
-    @Column(name = "NOM")
+    @Column(name = "NOM", unique = true)
     private String name;
 
     @Column(name = "LIBELLE")

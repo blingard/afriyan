@@ -1,25 +1,31 @@
 package org.ligot.afriyan.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import org.ligot.afriyan.Dto.CentrePartenaireDTO;
 import org.ligot.afriyan.service.ICentrePartenaire;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping(path = "/centrepartenaire")
+@RequestMapping(value ={"centrepartenaire","api/centrepartenaire"})
 public class CPController {
 
-    @Autowired
-    ICentrePartenaire centrePartenaire;
+    private final ICentrePartenaire centrePartenaire;
 
-    @PostMapping(value = "/save")
-    CentrePartenaireDTO saveCentre(@RequestBody CentrePartenaireDTO centrePartenaireDto) throws Exception {
+    public CPController(ICentrePartenaire centrePartenaire) {
+        this.centrePartenaire = centrePartenaire;
+    }
+
+    @PostMapping
+    CentrePartenaireDTO saveCentre(@RequestBody @Valid CentrePartenaireDTO centrePartenaireDto) throws Exception {
         return centrePartenaire.save(centrePartenaireDto);
     }
 
     @PutMapping(value = "/update/{id}")
-    CentrePartenaireDTO updateCentre(@RequestBody CentrePartenaireDTO centrePartenaireDto, @PathVariable Long id) throws Exception {
+    CentrePartenaireDTO updateCentre(@RequestBody @Valid CentrePartenaireDTO centrePartenaireDto, @PathVariable Long id) throws Exception {
         return centrePartenaire.update(centrePartenaireDto, id);
     }
 
@@ -28,8 +34,15 @@ public class CPController {
         return centrePartenaire.list(page);
     }
 
-    @DeleteMapping(value = "/delete")
-    void deleteCentre (@PathVariable long id) throws Exception{
+
+    @GetMapping
+    @Operation(description = "Localisation des centre partenaire")
+    List<CentrePartenaireDTO> localiserCentre() throws Exception {
+        return centrePartenaire.list();
+    }
+
+    @DeleteMapping(value = "/delete/{id}")
+    void deleteCentre (@PathVariable Long id) throws Exception{
         centrePartenaire.delete(id);
     }
 
