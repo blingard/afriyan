@@ -1,5 +1,6 @@
 package org.ligot.afriyan.Dto;
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 
 import lombok.NoArgsConstructor;
@@ -14,6 +15,12 @@ public class PublicationsDTO {
     private String categorie;
     private UtilisateurDTO administrateur;
     private ServiceDTO service;
+
+    private String reseau1;
+
+    private String reseau2;
+
+    private String reseau3;
 
     public Long getId() {
         return id;
@@ -61,5 +68,29 @@ public class PublicationsDTO {
 
     public void setService(ServiceDTO service) {
         this.service = service;
+    }
+
+    public String getReseau1() {
+        return reseau1;
+    }
+
+    public void setReseau1(String reseau1) {
+        this.reseau1 = reseau1;
+    }
+
+    public String getReseau2() {
+        return reseau2;
+    }
+
+    public void setReseau2(String reseau2) {
+        this.reseau2 = reseau2;
+    }
+
+    public String getReseau3() {
+        return reseau3;
+    }
+
+    public void setReseau3(String reseau3) {
+        this.reseau3 = reseau3;
     }
 }
