@@ -23,9 +23,6 @@ public class Produit {
     private String description;
     @Column(name = "PRIX")
     private Double prix;
-    @ManyToOne
-    @JoinColumn(name = "CENTRE_PARTENAINE", referencedColumnName = "IDENTIFIANT")
-    private CentrePartenaire centrePartenaire;
 
     public Long getId() {
         return id;
@@ -65,13 +62,5 @@ public class Produit {
 
     public void setPrix(Double prix) {
         this.prix = prix;
-    }
-
-    public CentrePartenaire getCentrePartenaire() {
-        return centrePartenaire;
-    }
-
-    public void setCentrePartenaire(CentrePartenaire centrePartenaire) {
-        this.centrePartenaire = centrePartenaire;
     }
 }

@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 @Service
 @Transactional
 public class GroupesImpl implements IGroupes {
@@ -42,7 +41,16 @@ public class GroupesImpl implements IGroupes {
     public GroupesDTO findById(Long id) throws Exception {
         Groupes groupes = repository.findById(id).orElse(null);
         if(groupes == null){
-            throw new Exception("Le Groupes que vous souhaitez modifier n'existes pas");
+            throw new Exception("Group with id "+id+" don't exist");
+        }
+        return mapper.toDTO(groupes);
+    }
+
+    @Override
+    public GroupesDTO findByName(String name) throws Exception {
+        Groupes groupes = repository.findByName(name).orElse(null);
+        if(groupes == null){
+            throw new Exception("Group with name "+name+" don't exist");
         }
         return mapper.toDTO(groupes);
     }

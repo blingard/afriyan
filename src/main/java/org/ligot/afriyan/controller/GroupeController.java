@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Set;
 
 @RestController
-@RequestMapping(value = {"groupes","api/groupes"})
+@RequestMapping(value = {"api/groupes"})
 public class GroupeController {
 
     private final IGroupes groupes;

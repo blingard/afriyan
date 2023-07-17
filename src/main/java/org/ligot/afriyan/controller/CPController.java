@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value ={"centrepartenaire","api/centrepartenaire"})
+@RequestMapping(value ={"api/centrepartenaire"})
 public class CPController {
 
     private final ICentrePartenaire centrePartenaire;
@@ -50,6 +50,5 @@ public class CPController {
     CentrePartenaireDTO listById(@PathVariable Long id) throws Exception {
         return centrePartenaire.findById(id);
     }
-
 
 }

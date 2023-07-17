@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -30,6 +32,8 @@ public class CentrePartenaire {
      private String location;
      @Column(name = "TELEPHONE", nullable = false, unique = true)
      private String telephone;
+     @Column(name = "PHOTO", nullable = false, unique = true)
+     private String photo;
      @Column(name = "ADRESSE")
      private String adresse;
      @Column(name = "FIXE")
@@ -44,6 +48,15 @@ public class CentrePartenaire {
      private Date dateCreation;
      @Enumerated(EnumType.STRING)
      private Status status;
+
+     @OneToOne(fetch = FetchType.EAGER,optional = false)
+     private Utilisateur createur;
+
+     @OneToMany(fetch = FetchType.EAGER)
+     private Set<ServiceEntity> serviceOfferts = new HashSet<>();
+
+     @OneToMany(fetch = FetchType.EAGER)
+     private Set<Produit> produits = new HashSet<>();
 
      public Long getId() {
           return id;
@@ -163,5 +176,37 @@ public class CentrePartenaire {
 
      public void setStatus(Status status) {
           this.status = status;
+     }
+
+     public Utilisateur getCreateur() {
+          return createur;
+     }
+
+     public void setCreateur(Utilisateur createur) {
+          this.createur = createur;
+     }
+
+     public Set<ServiceEntity> getServiceOfferts() {
+          return serviceOfferts;
+     }
+
+     public void setServiceOfferts(Set<ServiceEntity> serviceOfferts) {
+          this.serviceOfferts = serviceOfferts;
+     }
+
+     public Set<Produit> getProduits() {
+          return produits;
+     }
+
+     public void setProduits(Set<Produit> produits) {
+          this.produits = produits;
+     }
+
+     public String getPhoto() {
+          return photo;
+     }
+
+     public void setPhoto(String photo) {
+          this.photo = photo;
      }
 }

@@ -17,8 +17,6 @@ public class ProduitDTO {
     private String description;
     @NotNull
     private Double prix;
-    @NotNull
-    private CentrePartenaireDTO centrePartenaire;
 
     public Long getId() {
         return id;
@@ -58,13 +56,5 @@ public class ProduitDTO {
 
     public void setPrix(Double prix) {
         this.prix = prix;
-    }
-
-    public CentrePartenaireDTO getCentrePartenaire() {
-        return centrePartenaire;
-    }
-
-    public void setCentrePartenaire(CentrePartenaireDTO centrePartenaire) {
-        this.centrePartenaire = centrePartenaire;
     }
 }

@@ -2,9 +2,8 @@ package org.ligot.afriyan.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +11,10 @@ import java.util.Set;
 @Entity
 public class Groupes {
     public Groupes() {
+    }
+
+    public Groupes(Long id) {
+        this.id = id;
     }
 
     public Groupes(Long id, Set<Roles> roles, String name, String libelle, String description, Set<Utilisateur> utilisateurs) {

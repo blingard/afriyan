@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.ligot.afriyan.entities.Status;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,6 +34,9 @@ public abstract class PersonneDTO {
     @NotNull
     @Email
     protected String email;
+
+    @NotNull
+    protected Status status;
 
     public Long getId() {
         return id;
@@ -128,5 +132,13 @@ public abstract class PersonneDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

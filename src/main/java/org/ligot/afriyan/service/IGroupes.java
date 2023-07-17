@@ -13,6 +13,7 @@ import java.util.Set;
 public interface IGroupes {
 
     GroupesDTO findById(Long id) throws Exception;
+    GroupesDTO findByName(String name) throws Exception;
     GroupesDTO save(GroupesDTO groupesDto) throws Exception;
     Page<GroupesDTO> list(int page) throws Exception;
     GroupesDTO update(GroupesDTO groupesDto, Long id) throws Exception;

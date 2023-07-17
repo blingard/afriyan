@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import static org.ligot.afriyan.implement.Utils.genCode;
+
 @Service
 @Transactional
 public class AdministrateurImpl implements IAdministrateur {
@@ -23,12 +25,36 @@ public class AdministrateurImpl implements IAdministrateur {
 
     @Override
     public AdministrationDTO save(AdministrationDTO personneDto) {
+        boolean codeIsCreate = false;
+        String code = "";
+        while(!codeIsCreate){
+            code = genCode("AD",8);
+            if(!repository.findByCode(code).isPresent())
+                codeIsCreate = true;
+        }
+        personneDto.setId(null);
+        personneDto.setCode(code);
         return mapper.toDTO(repository.save(mapper.create(personneDto)));
     }
 
     @Override
+    public Administrateur save(Administrateur personne) {
+        boolean codeIsCreate = false;
+        String code = "";
+        while(!codeIsCreate){
+            code = genCode("AD",8);
+            if(!repository.findByCode(code).isPresent())
+                codeIsCreate = true;
+        }
+        personne.setId(null);
+        personne.setCode(code);
+        personne.setPwd("123456789");
+        return repository.save(personne);
+    }
+
+    @Override
     public AdministrationDTO connect(String login, String password) {
-        Administrateur administrateur = repository.findByEmailAndPAndPwd(login, password).orElse(null);
+        Administrateur administrateur = repository.findByEmailAndPwd(login, password).orElse(null);
         if(administrateur == null){
             return null;
         }
@@ -38,9 +64,8 @@ public class AdministrateurImpl implements IAdministrateur {
     @Override
     public boolean codeExist(String code) {
         Optional<Administrateur> optional = repository.findByCode(code);
-        if(optional.isEmpty()){
-            return false;
-        }
-        return true;
+        if(!optional.isPresent())
+            return true;
+        return false;
     }
 }

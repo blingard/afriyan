@@ -17,11 +17,10 @@ import java.util.Set;
 public class Administrateur extends Personne implements Serializable, Comparable<Administrateur>{
 
     @OneToMany
-    @JoinColumn(name = "ROLES", referencedColumnName = "IDENTIFIANT")
     private Set<Roles> roles= new HashSet<>();
     @Override
     public int compareTo(Administrateur o) {
-        return 0;
+        return code.compareTo(o.code);
     }
 
     public Set<Roles> getRoles() {
@@ -170,5 +169,26 @@ public class Administrateur extends Personne implements Serializable, Comparable
     @Override
     public void setdCreation(Date dCreation) {
         super.setdCreation(dCreation);
+    }
+
+    @Override
+    public String toString() {
+        return "Administrateur{" +
+                "roles=" + roles +
+                ", id=" + id +
+                ", code='" + code + '\'' +
+                ", nom='" + nom + '\'' +
+                ", prenom='" + prenom + '\'' +
+                ", ddn=" + ddn +
+                ", lieu='" + lieu + '\'' +
+                ", numero_telephone='" + numero_telephone + '\'' +
+                ", photo='" + photo + '\'' +
+                ", location='" + location + '\'' +
+                ", anonymat='" + anonymat + '\'' +
+                ", sexe=" + sexe +
+                ", email='" + email + '\'' +
+                ", pwd='" + pwd + '\'' +
+                ", dCreation=" + dCreation +
+                '}';
     }
 }

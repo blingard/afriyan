@@ -12,4 +12,5 @@ public interface CentrePartenaireMapper {
 
     CentrePartenaire create (CentrePartenaireDTO dto);
     CentrePartenaireDTO toDTO (CentrePartenaire entity);
+
 }

@@ -3,12 +3,19 @@ package org.ligot.afriyan.entities;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.*;
 
 import java.io.Serializable;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "code"),
+                @UniqueConstraint(columnNames = "email")
+        })
 public class Utilisateur extends Personne implements Serializable, Comparable<Utilisateur>{
 
     @ManyToOne

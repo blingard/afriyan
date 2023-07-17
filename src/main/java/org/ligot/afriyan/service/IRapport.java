@@ -6,10 +6,10 @@ import org.springframework.data.domain.Page;
 
 public interface IRapport {
 
-    RapportDTO  findById(Long id);
-    RapportDTO save(RapportDTO rapportDto);
+    RapportDTO  findById(Long id) throws Exception;
+    RapportDTO save(RapportDTO rapportDto) throws Exception;
     Page<RapportDTO> list(int page);
-    RapportDTO update(RapportDTO rapportDto, Long id);
-    void delete(Long id);
+    RapportDTO update(RapportDTO rapportDto, Long id) throws Exception;
+    void delete(Long id) throws Exception;
 
 }

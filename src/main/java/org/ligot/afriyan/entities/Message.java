@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Message {
@@ -35,4 +33,43 @@ public class Message {
     @ManyToOne
     private Utilisateur utilisateur;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getObjects() {
+        return objects;
+    }
+
+    public void setObjects(String objects) {
+        this.objects = objects;
+    }
+
+    public String getCorps() {
+        return corps;
+    }
+
+    public void setCorps(String corps) {
+        this.corps = corps;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public Utilisateur getUtilisateur() {
+        return utilisateur;
+    }
+
+    public void setUtilisateur(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
+    }
 }

@@ -2,6 +2,8 @@ package org.ligot.afriyan.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -48,8 +50,14 @@ public class Personne {
     @Enumerated(EnumType.STRING)
     protected Sexe sexe;
 
+    @Column(name = "STATUS")
+    @Enumerated(EnumType.STRING)
+    protected Status status = Status.ACTIVE;
+
     @Column(name = "EMAIL")
     @Email(message = "Veuillez saisir une adresse mail")
+    @NotBlank
+    @Size(max = 50)
     protected String email;
 
     @Column(name="PASSWORD")
@@ -57,6 +65,7 @@ public class Personne {
 
     @Column(name = "DATECREATION")
     protected Date dCreation;
+
 
     public Long getId() {
         return id;
@@ -168,5 +177,13 @@ public class Personne {
 
     public void setdCreation(Date dCreation) {
         this.dCreation = dCreation;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

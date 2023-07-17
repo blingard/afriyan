@@ -2,10 +2,8 @@ package org.ligot.afriyan.Dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.ligot.afriyan.entities.Administrateur;
 
 import java.util.Date;
 
@@ -18,8 +16,8 @@ public class ServiceDTO {
     private String libelle;
     @NotNull
     private String description;
-    @NotNull
     private Date dateCreation;
+
 
     public Long getId() {
         return id;
@@ -52,4 +50,5 @@ public class ServiceDTO {
     public void setDateCreation(Date dateCreation) {
         this.dateCreation = dateCreation;
     }
+
 }

@@ -4,6 +4,10 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.ligot.afriyan.entities.Status;
+import org.ligot.afriyan.entities.Utilisateur;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,7 +38,16 @@ public class CentrePartenaireDTO {
     @NotNull
     private String nomCommune;
     @NotNull
+    private String photo;
+
+    private Set<ServiceDTO> serviceOfferts = new HashSet<>();
+    private Set<ProduitDTO> produits = new HashSet<>();
+
+    private UtilisateurDTO createur;
+    @NotNull
     private Status status;
+
+
 
     public Long getId() {
         return id;
@@ -146,5 +159,37 @@ public class CentrePartenaireDTO {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    public Set<ServiceDTO> getServiceOfferts() {
+        return serviceOfferts;
+    }
+
+    public void setServiceOfferts(Set<ServiceDTO> serviceOfferts) {
+        this.serviceOfferts = serviceOfferts;
+    }
+
+    public Set<ProduitDTO> getProduits() {
+        return produits;
+    }
+
+    public void setProduits(Set<ProduitDTO> produits) {
+        this.produits = produits;
+    }
+
+    public UtilisateurDTO getCreateur() {
+        return createur;
+    }
+
+    public void setCreateur(UtilisateurDTO createur) {
+        this.createur = createur;
     }
 }

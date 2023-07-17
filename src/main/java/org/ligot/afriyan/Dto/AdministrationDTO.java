@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.ligot.afriyan.entities.Status;
 
 import java.util.Set;
 
@@ -138,5 +139,15 @@ public class AdministrationDTO extends PersonneDTO{
     @Override
     public void setEmail(String email) {
         super.setEmail(email);
+    }
+
+    @Override
+    public Status getStatus() {
+        return super.getStatus();
+    }
+
+    @Override
+    public void setStatus(Status status) {
+        super.setStatus(status);
     }
 }
