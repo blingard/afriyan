@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -29,6 +30,8 @@ public class Publications {
     @ManyToOne
     @JoinColumn(name = "SERVICE", referencedColumnName = "IDENTIFIANT")
     private ServiceEntity service;
+
+    private Date date = new Date();
 
     public Long getId() {
         return id;
@@ -76,5 +79,13 @@ public class Publications {
 
     public void setService(ServiceEntity service) {
         this.service = service;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }

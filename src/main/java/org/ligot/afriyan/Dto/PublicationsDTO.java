@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @NoArgsConstructor
 @AllArgsConstructor
 public class PublicationsDTO {
@@ -14,6 +16,7 @@ public class PublicationsDTO {
     private String categorie;
     private UtilisateurDTO administrateur;
     private ServiceDTO service;
+    private Date date;
 
     public Long getId() {
         return id;
@@ -61,5 +64,13 @@ public class PublicationsDTO {
 
     public void setService(ServiceDTO service) {
         this.service = service;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }

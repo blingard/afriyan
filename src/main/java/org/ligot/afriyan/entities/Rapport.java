@@ -20,7 +20,7 @@ public class Rapport {
     @Column(name = "ENTETE")
     private String entete;
 
-    @Column(name = "CONTENU")
+    @Column(name = "CONTENU",length = -1)
     private String cotenu;
 
     @Column(name = "DATE")

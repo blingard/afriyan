@@ -1,42 +1,47 @@
 package org.ligot.afriyan.Dto;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import org.ligot.afriyan.entities.Sexe;
 import org.ligot.afriyan.entities.Status;
 
-@NoArgsConstructor
-@AllArgsConstructor
-public abstract class PersonneDTO {
+import java.util.Date;
+
+
+public class PersonneDTO {
 
     protected Long id;
-    @NotNull
     protected String code;
-    @NotNull
     protected String nom;
-    @NotNull
     protected String prenom;
-    @NotNull
-    protected String ddn;
-    @NotNull
+    protected Date ddn;
     protected String lieu;
-    @NotNull
     protected String numero_telephone;
-    @NotNull
     protected String photo;
-    @NotNull
     protected String location;
-    @NotNull
     protected String anonymat;
-    @NotNull
-    protected String sexe;
-    @NotNull
+    protected Sexe sexe;
     @Email
     protected String email;
-
-    @NotNull
     protected Status status;
+
+    public PersonneDTO(Long id, String code, String nom, String prenom, Date ddn, String lieu, String numero_telephone, String photo, String location, String anonymat, Sexe sexe, String email, Status status) {
+        this.id = id;
+        this.code = code;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.ddn = ddn;
+        this.lieu = lieu;
+        this.numero_telephone = numero_telephone;
+        this.photo = photo;
+        this.location = location;
+        this.anonymat = anonymat;
+        this.sexe = sexe;
+        this.email = email;
+        this.status = status;
+    }
+
+    public PersonneDTO() {
+    }
 
     public Long getId() {
         return id;
@@ -70,11 +75,11 @@ public abstract class PersonneDTO {
         this.prenom = prenom;
     }
 
-    public String getDdn() {
+    public Date getDdn() {
         return ddn;
     }
 
-    public void setDdn(String ddn) {
+    public void setDdn(Date ddn) {
         this.ddn = ddn;
     }
 
@@ -118,11 +123,11 @@ public abstract class PersonneDTO {
         this.anonymat = anonymat;
     }
 
-    public String getSexe() {
+    public Sexe getSexe() {
         return sexe;
     }
 
-    public void setSexe(String sexe) {
+    public void setSexe(Sexe sexe) {
         this.sexe = sexe;
     }
 
