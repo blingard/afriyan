@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.ligot.afriyan.entities.Sexe;
 import org.ligot.afriyan.entities.Status;
 
+import java.util.Date;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -62,12 +64,12 @@ public class AdministrationDTO extends PersonneDTO{
     }
 
     @Override
-    public String getDdn() {
+    public Date getDdn() {
         return super.getDdn();
     }
 
     @Override
-    public void setDdn(String ddn) {
+    public void setDdn(Date ddn) {
         super.setDdn(ddn);
     }
 
@@ -122,12 +124,12 @@ public class AdministrationDTO extends PersonneDTO{
     }
 
     @Override
-    public String getSexe() {
+    public Sexe getSexe() {
         return super.getSexe();
     }
 
     @Override
-    public void setSexe(String sexe) {
+    public void setSexe(Sexe sexe) {
         super.setSexe(sexe);
     }
 

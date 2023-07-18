@@ -1,14 +1,30 @@
 package org.ligot.afriyan.Dto;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import jakarta.validation.constraints.Email;
+import org.ligot.afriyan.entities.Sexe;
 import org.ligot.afriyan.entities.Status;
 
+import java.util.Date;
 
-@AllArgsConstructor
-@NoArgsConstructor
+
 public class UtilisateurDTO extends PersonneDTO{
+
+    //@JsonIncludeProperties({"id"})
     private GroupesDTO groupe;
+
+    public UtilisateurDTO(Long id, String code, String nom, String prenom, Date ddn, String lieu, String numero_telephone, String photo, String location, String anonymat, Sexe sexe, @Email String email, Status status, GroupesDTO groupe) {
+        super(id, code, nom, prenom, ddn, lieu, numero_telephone, photo, location, anonymat, sexe, email, status);
+        this.groupe = groupe;
+    }
+
+    public UtilisateurDTO(GroupesDTO groupe) {
+        this.groupe = groupe;
+    }
+
+    public UtilisateurDTO() {
+    }
+
     @Override
     public Long getId() {
         return super.getId();
@@ -50,12 +66,12 @@ public class UtilisateurDTO extends PersonneDTO{
     }
 
     @Override
-    public String getDdn() {
+    public Date getDdn() {
         return super.getDdn();
     }
 
     @Override
-    public void setDdn(String ddn) {
+    public void setDdn(Date ddn) {
         super.setDdn(ddn);
     }
 
@@ -110,12 +126,12 @@ public class UtilisateurDTO extends PersonneDTO{
     }
 
     @Override
-    public String getSexe() {
+    public Sexe getSexe() {
         return super.getSexe();
     }
 
     @Override
-    public void setSexe(String sexe) {
+    public void setSexe(Sexe sexe) {
         super.setSexe(sexe);
     }
 

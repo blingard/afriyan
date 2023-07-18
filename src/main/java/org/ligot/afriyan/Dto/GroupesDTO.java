@@ -13,11 +13,8 @@ public class GroupesDTO {
 
     private Set<RolesDTO> roles;
     private Set<UtilisateurDTO> utilisateurs;
-    @NotNull
     private String name;
-    @NotNull
     private String libelle;
-    @NotNull
     private String description;
 
     public Long getId() {
