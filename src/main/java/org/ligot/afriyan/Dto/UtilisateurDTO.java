@@ -1,6 +1,6 @@
 package org.ligot.afriyan.Dto;
 
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.Email;
 import org.ligot.afriyan.entities.Sexe;
 import org.ligot.afriyan.entities.Status;
@@ -10,7 +10,8 @@ import java.util.Date;
 
 public class UtilisateurDTO extends PersonneDTO{
 
-    //@JsonIncludeProperties({"id"})
+
+    @JsonIgnoreProperties({"roles","utilisateurs"})
     private GroupesDTO groupe;
 
     public UtilisateurDTO(Long id, String code, String nom, String prenom, Date ddn, String lieu, String numero_telephone, String photo, String location, String anonymat, Sexe sexe, @Email String email, Status status, GroupesDTO groupe) {

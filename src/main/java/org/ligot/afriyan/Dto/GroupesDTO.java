@@ -1,5 +1,7 @@
 package org.ligot.afriyan.Dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -10,8 +12,8 @@ import java.util.Set;
 @AllArgsConstructor
 public class GroupesDTO {
     private Long id;
-
     private Set<RolesDTO> roles;
+    @JsonIgnoreProperties({"groupe"})
     private Set<UtilisateurDTO> utilisateurs;
     private String name;
     private String libelle;

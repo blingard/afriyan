@@ -17,7 +17,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 @SecurityScheme(name = "javainuseapi", scheme = "basic", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER)
 @OpenAPIDefinition(
         servers = {
-                @Server(url = "http://localhost:8080/")//http://www.youthfp.cm:8080/
+                @Server(url = "http://www.youthfp.cm:8080/")
         },
                 info = @Info(
                 title = "AfriYan APIs",

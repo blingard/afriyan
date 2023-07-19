@@ -1,5 +1,7 @@
 package org.ligot.afriyan.Dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,13 +15,11 @@ import java.util.Date;
 @NoArgsConstructor
 public class SouscriptionDTO {
     private Long id;
-    @NotNull
+    @JsonIgnoreProperties({"groupe"})
     private UtilisateurDTO utilisateur;
-    @NotNull
+    @JsonIgnoreProperties({"dateCreation"})
     private ServiceDTO service;
-    @NotNull
     private Date datecreation;
-    @NotNull
     private Status status;
 
     public Long getId() {

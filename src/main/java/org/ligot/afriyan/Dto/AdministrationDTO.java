@@ -1,9 +1,8 @@
 package org.ligot.afriyan.Dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.ligot.afriyan.entities.Sexe;
 import org.ligot.afriyan.entities.Status;
 
@@ -13,6 +12,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AdministrationDTO extends PersonneDTO{
+    @JsonIgnoreProperties({"fonction","description"})
     private Set<RolesDTO> roles;
 
     public Set<RolesDTO> getRoles() {

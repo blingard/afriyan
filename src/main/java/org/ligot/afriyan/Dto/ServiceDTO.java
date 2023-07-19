@@ -12,9 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class ServiceDTO {
     private Long id;
-    @NotNull
     private String libelle;
-    @NotNull
     private String description;
     private Date dateCreation;
 

@@ -10,15 +10,10 @@ import java.util.Date;
 @AllArgsConstructor
 public class ConversationDTO {
     private Long id;
-    @NotNull
     private String message;
-    @NotNull
     private String sender;
-    @NotNull
     private String receiver;
-    @NotNull
     private String content;
-    @NotNull
     private Date dateEnvoie;
 
     public Long getId() {

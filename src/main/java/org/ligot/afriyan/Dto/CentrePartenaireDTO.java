@@ -1,5 +1,7 @@
 package org.ligot.afriyan.Dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -13,38 +15,23 @@ import java.util.Set;
 @AllArgsConstructor
 public class CentrePartenaireDTO {
     private Long id;
-    @NotNull
     private String nom;
-    @NotNull
     private String libelle;
-    @NotNull
     private String description;
-    @NotNull
     private String longitude;
-    @NotNull
     private String latittude;
-    @NotNull
     private String location;
-    @NotNull
     private String telephone;
-    @NotNull
     private String adresse;
-    @NotNull
     private String fixe;
-    @NotNull
     private String bp;
-    @NotNull
     private String type;
-    @NotNull
     private String nomCommune;
-    @NotNull
     private String photo;
-
     private Set<ServiceDTO> serviceOfferts = new HashSet<>();
     private Set<ProduitDTO> produits = new HashSet<>();
-
+    @JsonIgnoreProperties({"groupe"})
     private UtilisateurDTO createur;
-    @NotNull
     private Status status;
 
 

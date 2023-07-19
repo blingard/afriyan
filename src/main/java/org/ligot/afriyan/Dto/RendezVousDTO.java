@@ -1,4 +1,6 @@
 package org.ligot.afriyan.Dto;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -9,19 +11,14 @@ import java.util.Date;
 @AllArgsConstructor
 public class RendezVousDTO {
     private Long id;
-    @NotNull
     private String libelle;
-    @NotNull
     private Date dateRdv;
-    @NotNull
     private String heureDebut;
-    @NotNull
     private String heureFin;
-    @NotNull
+    @JsonIgnoreProperties({"groupe"})
     private UtilisateurDTO utilisateur;
-    @NotNull
+    @JsonIgnoreProperties({"serviceOfferts","produits","createur"})
     private CentrePartenaireDTO centrePartenaire;
-    @NotNull
     private StatusRdv rdv;
 
     public Long getId() {

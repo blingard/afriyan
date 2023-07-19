@@ -18,8 +18,8 @@ public class OurWorksController {
         this.service = service;
     }
     @GetMapping("/{type}")
-    public List<OurWorksDTO> findAllActive(@PathVariable OurWorksType type){
-        return service.getList(type);
+    public List<OurWorksDTO> findAllActive(@PathVariable String type){
+        return service.getList(OurWorksType.valueOf(type));
     }
 
     @PostMapping
