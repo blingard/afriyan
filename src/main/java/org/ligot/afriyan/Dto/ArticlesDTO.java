@@ -1,6 +1,8 @@
 package org.ligot.afriyan.Dto;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import org.ligot.afriyan.entities.TypeDonne;
 
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ public class ArticlesDTO {
     private Date date;
 
     private TypeDonne type;
+    @JsonIgnoreProperties({"administrateur","service"})
     private List<PublicationsDTO> publications = new ArrayList<>();
 
     public ArticlesDTO() {

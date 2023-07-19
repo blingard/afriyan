@@ -13,13 +13,9 @@ import java.util.Date;
 public class RapportDTO {
 
     private Long id;
-    @NotNull
     private String entete;
-    @NotNull
     private String cotenu;
-    @NotNull
     private Date date;
-    @NotNull
     private Status status;
 
     public Long getId() {

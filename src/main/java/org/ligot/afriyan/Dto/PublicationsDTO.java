@@ -1,5 +1,7 @@
 package org.ligot.afriyan.Dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import lombok.AllArgsConstructor;
 
 import lombok.NoArgsConstructor;
@@ -14,6 +16,7 @@ public class PublicationsDTO {
     private String type;
     private String contenu;
     private String categorie;
+    @JsonIgnoreProperties({"groupe"})
     private UtilisateurDTO administrateur;
     private ServiceDTO service;
     private Date date;

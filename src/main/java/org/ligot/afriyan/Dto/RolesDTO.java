@@ -8,13 +8,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RolesDTO {
-    @NotNull
     private Long id;
-    @NotNull
     private String nom;
-    @NotNull
     private String description;
-    @NotNull
     private String fonction;
 
     public Long getId() {

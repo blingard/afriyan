@@ -7,15 +7,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProduitDTO {
-    @NotNull
     private Long id;
-    @NotNull
     private String nom;
-    @NotNull
     private String libelle;
-    @NotNull
     private String description;
-    @NotNull
     private Double prix;
 
     public Long getId() {
