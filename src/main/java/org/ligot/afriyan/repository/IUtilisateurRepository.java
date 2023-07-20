@@ -15,4 +15,5 @@ public interface IUtilisateurRepository extends JpaRepository<Utilisateur, Long>
     Optional<Utilisateur> findByCode(String code);
     Optional<Utilisateur> findByEmail(String eMail);
     Page<Utilisateur> findByGroupe(Groupes groupes, Pageable pageable);
+     Utilisateur findByUAndNom(String nom);
 }

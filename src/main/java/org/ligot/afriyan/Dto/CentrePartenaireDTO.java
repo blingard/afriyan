@@ -1,12 +1,9 @@
 package org.ligot.afriyan.Dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.ligot.afriyan.entities.Status;
-import org.ligot.afriyan.entities.Utilisateur;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,9 +25,6 @@ public class CentrePartenaireDTO {
     private String type;
     private String nomCommune;
     private String photo;
-    private Set<ServiceDTO> serviceOfferts = new HashSet<>();
-    private Set<ProduitDTO> produits = new HashSet<>();
-    @JsonIgnoreProperties({"groupe"})
     private UtilisateurDTO createur;
     private Status status;
 
@@ -154,22 +148,6 @@ public class CentrePartenaireDTO {
 
     public void setPhoto(String photo) {
         this.photo = photo;
-    }
-
-    public Set<ServiceDTO> getServiceOfferts() {
-        return serviceOfferts;
-    }
-
-    public void setServiceOfferts(Set<ServiceDTO> serviceOfferts) {
-        this.serviceOfferts = serviceOfferts;
-    }
-
-    public Set<ProduitDTO> getProduits() {
-        return produits;
-    }
-
-    public void setProduits(Set<ProduitDTO> produits) {
-        this.produits = produits;
     }
 
     public UtilisateurDTO getCreateur() {

@@ -19,12 +19,12 @@ public class ArticlesDTO {
 
     private TypeDonne type;
     @JsonIgnoreProperties({"administrateur","service"})
-    private List<PublicationsDTO> publications = new ArrayList<>();
+    private PublicationsDTO publication;
 
     public ArticlesDTO() {
     }
 
-    public ArticlesDTO(Long id, String title, String author, String contenu, boolean status, Date date, TypeDonne type, List<PublicationsDTO> publications) {
+    public ArticlesDTO(Long id, String title, String author, String contenu, boolean status, Date date, TypeDonne type, PublicationsDTO publication) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -32,7 +32,7 @@ public class ArticlesDTO {
         this.status = status;
         this.date = date;
         this.type = type;
-        this.publications = publications;
+        this.publication = publication;
     }
 
     public ArticlesDTO(Long id) {
@@ -87,12 +87,12 @@ public class ArticlesDTO {
         this.date = date;
     }
 
-    public List<PublicationsDTO> getPublications() {
-        return publications;
+    public PublicationsDTO getPublications() {
+        return publication;
     }
 
-    public void setPublications(List<PublicationsDTO> publications) {
-        this.publications = publications;
+    public void setPublications(PublicationsDTO publications) {
+        this.publication = publications;
     }
 
     public TypeDonne getType() {

@@ -14,4 +14,6 @@ public interface IUtilisateur {
     UtilisateurDTO update(UtilisateurDTO utilisateurDTO, Long id) throws Exception ;
     void disableUtilisateur(Long id) throws Exception ;
 
+    UtilisateurDTO findByName(String nom) throws Exception;
+
 }

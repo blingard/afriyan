@@ -8,7 +8,7 @@ import java.util.List;
 public interface ICentrePartenaire {
 
     CentrePartenaireDTO findById(Long id) throws Exception;
-    CentrePartenaireDTO save(CentrePartenaireDTO centrePartenaireDto);
+    CentrePartenaireDTO save(CentrePartenaireDTO centrePartenaireDto) throws Exception;
     Page<CentrePartenaireDTO> list(int page) throws Exception;
     List<CentrePartenaireDTO> list() throws Exception;
     CentrePartenaireDTO update(CentrePartenaireDTO centrePartenaireDto, Long id) throws Exception;

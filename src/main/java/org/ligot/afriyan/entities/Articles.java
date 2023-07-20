@@ -20,10 +20,27 @@ public class Articles {
     private String contenu;
     private boolean status;
     private Date date;
-    @Enumerated(EnumType.STRING)
+
     private TypeDonne type;
-    @OneToMany
-    private List<Publications> publications = new ArrayList<>();
+
+    public TypeDonne getType() {
+        return type;
+    }
+
+    public void setType(TypeDonne type) {
+        this.type = type;
+    }
+
+    public Publications getPublication() {
+        return publication;
+    }
+
+    public void setPublication(Publications publication) {
+        this.publication = publication;
+    }
+
+    @ManyToOne
+    private Publications publication;
 
     public Articles() {
     }
@@ -32,15 +49,14 @@ public class Articles {
         this.id = id;
     }
 
-    public Articles(Long id, String title, String author, String contenu, boolean status, Date date, TypeDonne type, List<Publications> publications) {
+    public Articles(Long id, String title, String author, String contenu, boolean status, Date date, Publications publication) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.contenu = contenu;
         this.status = status;
         this.date = date;
-        this.type = type;
-        this.publications = publications;
+        this.publication = publication;
     }
 
     public Long getId() {
@@ -91,19 +107,11 @@ public class Articles {
         this.date = date;
     }
 
-    public List<Publications> getPublications() {
-        return publications;
+    public Publications getPublications() {
+        return publication;
     }
 
-    public void setPublications(List<Publications> publications) {
-        this.publications = publications;
-    }
-
-    public TypeDonne getType() {
-        return type;
-    }
-
-    public void setType(TypeDonne type) {
-        this.type = type;
+    public void setPublications(Publications publication) {
+        this.publication = publication;
     }
 }

@@ -1,5 +1,6 @@
 package org.ligot.afriyan.Dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,8 @@ public class ProduitDTO {
     private String libelle;
     private String description;
     private Double prix;
+    @JsonIgnoreProperties({"groupe"})
+    private CentrePartenaireDTO centrePartenaireD;
 
     public Long getId() {
         return id;

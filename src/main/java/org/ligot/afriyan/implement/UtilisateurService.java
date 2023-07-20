@@ -112,4 +112,12 @@ public class UtilisateurService implements IUtilisateur {
         repository.save(utilisateur);
 
     }
+
+    @Override
+    public UtilisateurDTO findByName(String nom) throws Exception {
+        Utilisateur utilisateur = repository.findByUAndNom(nom);
+        if(utilisateur == null)
+            throw new Exception("User with id = "+nom+" don't exist");
+        return mapper.toDTO(utilisateur);
+    }
 }
