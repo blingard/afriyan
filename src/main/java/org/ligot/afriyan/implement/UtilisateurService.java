@@ -115,7 +115,7 @@ public class UtilisateurService implements IUtilisateur {
 
     @Override
     public UtilisateurDTO findByName(String nom) throws Exception {
-        Utilisateur utilisateur = repository.findByUAndNom(nom);
+        Utilisateur utilisateur = repository.findByNom(nom);
         if(utilisateur == null)
             throw new Exception("User with id = "+nom+" don't exist");
         return mapper.toDTO(utilisateur);
