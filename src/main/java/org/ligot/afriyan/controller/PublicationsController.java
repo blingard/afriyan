@@ -28,7 +28,7 @@ public class PublicationsController {
         return publications.list(page);
     }
 
-    @DeleteMapping(value = "/delete")
+    @DeleteMapping(value = "/delete/{id}")
     void deletePublications (@PathVariable long id) throws Exception{
         publications.delete(id);
     }

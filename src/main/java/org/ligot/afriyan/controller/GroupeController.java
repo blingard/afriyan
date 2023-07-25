@@ -35,7 +35,7 @@ public class GroupeController {
         return groupes.list(page);
     }
 
-    @DeleteMapping(value = "/delete")
+    @DeleteMapping(value = "/delete/{id}")
     void deleteGroupe (@PathVariable Long id) throws Exception{
         groupes.delete(id);
     }

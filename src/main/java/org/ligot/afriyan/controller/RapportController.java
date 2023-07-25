@@ -28,7 +28,7 @@ public class RapportController {
         return rapport.list(page);
     }
 
-    @DeleteMapping(value = "/delete")
+    @DeleteMapping(value = "/delete/{id}")
     void deleteRapport (@PathVariable long id) throws Exception{
         rapport.delete(id);
     }

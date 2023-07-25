@@ -28,7 +28,7 @@ public class ServiceController {
         return serviceEntity.list(page);
     }
 
-    @DeleteMapping(value = "/delete")
+    @DeleteMapping(value = "/delete/{id}")
     void deleteService (@PathVariable long id) throws Exception{
         serviceEntity.delete(id);
     }

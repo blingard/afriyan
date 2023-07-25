@@ -28,7 +28,7 @@ public class ProduitController {
         return produit.list(page);
     }
 
-    @DeleteMapping(value = "/delete")
+    @DeleteMapping(value = "/delete/{id}")
     void deleteProduit (@PathVariable long id) throws Exception{
         produit.delete(id);
     }

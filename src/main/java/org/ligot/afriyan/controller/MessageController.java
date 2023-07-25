@@ -28,7 +28,7 @@ public class MessageController {
         return message.list(page);
     }
 
-    @DeleteMapping(value = "/delete")
+    @DeleteMapping(value = "/delete/{id}")
     void deleteMessage (@PathVariable long id) throws Exception{
         message.delete(id);
     }
