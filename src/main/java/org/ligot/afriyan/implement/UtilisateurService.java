@@ -1,7 +1,6 @@
 package org.ligot.afriyan.implement;
 
 import jakarta.transaction.Transactional;
-import jdk.jshell.execution.Util;
 import org.ligot.afriyan.Dto.GroupesDTO;
 import org.ligot.afriyan.Dto.UtilisateurDTO;
 import org.ligot.afriyan.entities.Groupes;
@@ -12,27 +11,32 @@ import org.ligot.afriyan.mapper.UtilisateurMapper;
 import org.ligot.afriyan.repository.IUtilisateurRepository;
 import org.ligot.afriyan.service.IGroupes;
 import org.ligot.afriyan.service.IUtilisateur;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import static org.ligot.afriyan.implement.Utils.genCode;
 
 @Service
 @Transactional
 public class UtilisateurService implements IUtilisateur {
+
+    @Value("{default.pwd.user}")
+    private String userPWD;
+    @Value("{default.pwd.client}")
+    private String clientPWD;
     private final IUtilisateurRepository repository;
     private final IGroupes groupesService;
-
+    private final PasswordEncoder passwordEncoder;
     private final UtilisateurMapper mapper;
 
-    public UtilisateurService(IUtilisateurRepository repository, IGroupes groupesService, UtilisateurMapper mapper) {
+    public UtilisateurService(IUtilisateurRepository repository, IGroupes groupesService, PasswordEncoder passwordEncoder, UtilisateurMapper mapper) {
         this.repository = repository;
         this.groupesService = groupesService;
+        this.passwordEncoder = passwordEncoder;
         this.mapper = mapper;
     }
 
@@ -46,7 +50,8 @@ public class UtilisateurService implements IUtilisateur {
 
     @Override
     public UtilisateurDTO save(UtilisateurDTO utilisateurDTO, Long idGroupe) throws Exception {
-        GroupesDTO groupe = groupesService.findById(idGroupe);        boolean codeIsCreate = false;
+        GroupesDTO groupe = groupesService.findById(idGroupe);
+        boolean codeIsCreate = false;
         String code = "";
         while(!codeIsCreate){
             code = genCode("US",8);
@@ -56,8 +61,10 @@ public class UtilisateurService implements IUtilisateur {
         utilisateurDTO.setId(null);
         utilisateurDTO.setCode(code);
         utilisateurDTO.setGroupe(groupe);
-        Utilisateur utilisateur = repository.save(mapper.create(utilisateurDTO));
-        return mapper.toDTO(utilisateur);
+        utilisateurDTO.setPwd(passwordEncoder.encode(userPWD+code));
+        Utilisateur utilisateur = mapper.create(utilisateurDTO);
+        System.err.println(utilisateur.getPwd());
+        return mapper.toDTO(repository.save(mapper.create(utilisateurDTO)));
     }
 
     @Override

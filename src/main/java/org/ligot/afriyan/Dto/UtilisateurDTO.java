@@ -14,8 +14,8 @@ public class UtilisateurDTO extends PersonneDTO{
     @JsonIgnoreProperties({"roles","utilisateurs"})
     private GroupesDTO groupe;
 
-    public UtilisateurDTO(Long id, String code, String nom, String prenom, Date ddn, String lieu, String numero_telephone, String photo, String location, String anonymat, Sexe sexe, @Email String email, Status status, GroupesDTO groupe) {
-        super(id, code, nom, prenom, ddn, lieu, numero_telephone, photo, location, anonymat, sexe, email, status);
+    public UtilisateurDTO(Long id, String code, String nom, String prenom, Date ddn, String lieu, String numero_telephone, String photo, String location, String anonymat, Sexe sexe, @Email String email, Status status, String pwd, GroupesDTO groupe) {
+        super(id, code, nom, prenom, ddn, lieu, numero_telephone, photo, location, anonymat, sexe, email, status, pwd);
         this.groupe = groupe;
     }
 
@@ -162,5 +162,15 @@ public class UtilisateurDTO extends PersonneDTO{
     @Override
     public void setStatus(Status status) {
         super.setStatus(status);
+    }
+
+    @Override
+    public String getPwd() {
+        return super.getPwd();
+    }
+
+    @Override
+    public void setPwd(String pwd) {
+        super.setPwd(pwd);
     }
 }

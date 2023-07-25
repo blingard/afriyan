@@ -36,7 +36,7 @@ public class UtilisateurController {
     }
 
     @GetMapping("list/{page}/{idGroup}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    //@RolesAllowed(value = {"SUPERADMIN"})
     public Page<UtilisateurDTO> listAll(@PathVariable int page, @PathVariable Long idGroup) throws Exception {
         return service.list(page, idGroup);
     }

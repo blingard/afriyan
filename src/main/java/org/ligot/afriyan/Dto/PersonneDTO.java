@@ -23,8 +23,9 @@ public class PersonneDTO {
     @Email
     protected String email;
     protected Status status;
+    protected  String pwd;
 
-    public PersonneDTO(Long id, String code, String nom, String prenom, Date ddn, String lieu, String numero_telephone, String photo, String location, String anonymat, Sexe sexe, String email, Status status) {
+    public PersonneDTO(Long id, String code, String nom, String prenom, Date ddn, String lieu, String numero_telephone, String photo, String location, String anonymat, Sexe sexe, String email, Status status, String pwd) {
         this.id = id;
         this.code = code;
         this.nom = nom;
@@ -38,6 +39,7 @@ public class PersonneDTO {
         this.sexe = sexe;
         this.email = email;
         this.status = status;
+        this.pwd = pwd;
     }
 
     public PersonneDTO() {
@@ -145,5 +147,13 @@ public class PersonneDTO {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public String getPwd() {
+        return pwd;
+    }
+
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
     }
 }

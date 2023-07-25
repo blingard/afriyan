@@ -25,7 +25,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Utilisateur user = repository.findByEmail(username).orElseThrow(()->new UsernameNotFoundException("User with username "+username+" don't exist"));
-        Set<Roles> roles = groupesRepository.findByUtilisateursContains(user).getRoles();
-        return UserDetailsImpl.build(user,roles);
+        return UserDetailsImpl.build(user,user.getGroupe().getRoles());
     }
 }

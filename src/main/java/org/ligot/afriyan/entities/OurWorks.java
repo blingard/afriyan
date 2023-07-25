@@ -8,6 +8,7 @@ public class OurWorks {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
+    @Column(length = 10000)
     private String text;
     private String photo;
     @Enumerated(EnumType.STRING)

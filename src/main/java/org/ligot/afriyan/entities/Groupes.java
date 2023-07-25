@@ -95,4 +95,16 @@ public class Groupes {
     public void setUtilisateurs(Set<Utilisateur> utilisateurs) {
         this.utilisateurs = utilisateurs;
     }
+
+    @Override
+    public String toString() {
+        return "Groupes{" +
+                "id=" + id +
+                ", roles=" + roles +
+                ", name='" + name + '\'' +
+                ", libelle='" + libelle + '\'' +
+                ", description='" + description + '\'' +
+                ", utilisateurs=" + utilisateurs +
+                '}';
+    }
 }

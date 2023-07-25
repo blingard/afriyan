@@ -12,7 +12,7 @@ import java.util.Date;
 @MappedSuperclass
 @AllArgsConstructor
 @NoArgsConstructor
-public class Personne {
+public abstract class Personne {
 
     @Id
     @Column(name = "IDENTIFIANT")
@@ -60,7 +60,7 @@ public class Personne {
     @Size(max = 50)
     protected String email;
 
-    @Column(name="PASSWORD")
+    @Column(name="PASSWORD", nullable = false)
     protected String pwd;
 
     @Column(name = "DATECREATION")
