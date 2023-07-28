@@ -14,12 +14,16 @@ public class Articles {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "IDENTIFIANT")
     private Long id;
+    @Column (name = "TITLE", unique = true, nullable = false)
     private String title;
     private String author;
     @Column(length = -1)
     private String contenu;
     private boolean status;
+
+    private Categorie categorie;
     private Date date;
+
 
     private TypeDonne type;
 

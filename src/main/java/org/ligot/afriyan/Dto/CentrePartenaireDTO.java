@@ -1,12 +1,9 @@
 package org.ligot.afriyan.Dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.ligot.afriyan.entities.Status;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor

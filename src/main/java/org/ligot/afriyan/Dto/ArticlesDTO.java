@@ -2,12 +2,10 @@ package org.ligot.afriyan.Dto;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import org.ligot.afriyan.entities.Categorie;
 import org.ligot.afriyan.entities.TypeDonne;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class ArticlesDTO {
     private Long id;
@@ -16,6 +14,8 @@ public class ArticlesDTO {
     private String contenu;
     private boolean status;
     private Date date;
+
+    private Categorie categorie;
 
     private TypeDonne type;
     @JsonIgnoreProperties({"administrateur","service"})
