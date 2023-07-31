@@ -16,7 +16,7 @@ public class Publications {
     @Column(name = "IDENTIFIANT")
     private Long id;
     private TypeDonne type;
-    @Column(name = "CONTENU")
+    @Column(name = "CONTENU", length = -1)
     private String contenu;
     @Column(name = "CATEGORIE")
     private String categorie;

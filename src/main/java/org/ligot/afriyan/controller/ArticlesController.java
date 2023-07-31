@@ -18,12 +18,18 @@ public class ArticlesController {
         this.service = service;
     }
     @GetMapping
-    public List<ArticlesDTO> findAllActive(){
+    public List<ArticlesDTO> findAll(){
+        System.err.println("sdfsdfsad");
         return service.getList(TypeDonne.ARTICLE);
     }
 
+    @GetMapping("active")
+    public List<ArticlesDTO> findAllActive(){
+        return service.getListActive(TypeDonne.ARTICLE);
+    }
+
     @PostMapping
-    @RolesAllowed(value = {"SUPERADMIN"})
+    /*@RolesAllowed(value = {"SUPERADMIN"})*/
     public ArticlesDTO create(@RequestBody ArticlesDTO valeursDTO){
         return service.save(valeursDTO);
     }
@@ -50,5 +56,11 @@ public class ArticlesController {
     @RolesAllowed(value = {"SUPERADMIN"})
     public void update(@PathVariable Long id, @RequestBody ArticlesDTO valeursDTO) throws Exception {
         service.update(valeursDTO, id);
+    }
+
+    @PutMapping("active/{id}")
+    @RolesAllowed(value = {"SUPERADMIN"})
+    public void active(@PathVariable Long id) throws Exception {
+        service.active( id, TypeDonne.ARTICLE);
     }
 }

@@ -18,12 +18,16 @@ public class ValeursController {
     }
 
     @GetMapping
-    public List<ValeursDTO> findAllActive(){
+    public List<ValeursDTO> findAll(){
         return service.getList();
+    }
+    @GetMapping("find-active")
+    public List<ValeursDTO> findAllActive(){
+        return service.getListActive();
     }
 
     @PostMapping
-    @RolesAllowed(value = {"SUPERADMIN"})
+    /*@RolesAllowed(value = {"SUPERADMIN"})*/
     public ValeursDTO create(@RequestBody ValeursDTO valeursDTO){
         return service.save(valeursDTO);
     }
@@ -50,5 +54,11 @@ public class ValeursController {
     @RolesAllowed(value = {"SUPERADMIN"})
     public void update(@PathVariable Long id, @RequestBody ValeursDTO valeursDTO) throws Exception {
         service.update(valeursDTO, id);
+    }
+
+    @PutMapping("active/{id}")
+    /*@RolesAllowed(value = {"SUPERADMIN"})*/
+    public void active(@PathVariable Long id) throws Exception {
+        service.active(id);
     }
 }

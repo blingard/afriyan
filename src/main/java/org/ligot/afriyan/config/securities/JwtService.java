@@ -13,10 +13,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class JwtService {
-    private static final String SECRET_KEY = "123456789ASWDERFCVTBGTD";
+    private static final String SECRET_KEY = "dR8VhF5zy0R2p8Pjft1U8Zjkexkny35IOUcdMC0rfy0LsVvC0qj94BklHs7py0YBnt8L4bN2IqYlVWksDGMJvg==";
     public String extractUserName(String jwt) {
         return extractClaim(jwt,Claims::getSubject);
     }
@@ -28,12 +29,24 @@ public class JwtService {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis()+ (1000*60*24)))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                //.signWith(getSigningKey(), SignatureAlgorithm.RS512)
                 .compact();
     }
 
     public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(),userDetails);
+        Map<String, Object> roleList = new HashMap<>();
+        roleList.put(
+                "roles",
+                userDetails
+                        .getAuthorities()
+                        .stream()
+                        .map(
+                                (role)->{
+                                    return role.toString();
+                                }
+                        ).collect(Collectors.toList())
+        );
+        return generateToken(roleList,userDetails);
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails){
@@ -65,7 +78,7 @@ public class JwtService {
 
     private Key getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
-        return Keys.hmacShaKeyFor(keyBytes);
+        return Keys.hmacShaKeyFor(/*keyBytes*/SECRET_KEY.getBytes());
 
     }
 }

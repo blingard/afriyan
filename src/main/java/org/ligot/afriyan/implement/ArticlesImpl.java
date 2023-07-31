@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,12 +30,22 @@ public class ArticlesImpl implements IArticles {
 
     @Override
     public ArticlesDTO save(ArticlesDTO articlesDTO) {
-        return mapper.toDTO(repository.save(mapper.create(articlesDTO)));
+        Articles articles = mapper.create(articlesDTO);
+        articles.setDate(new Date());
+        articles.setStatus(false);
+        return mapper.toDTO(repository.save(articles));
     }
 
     @Override
     public List<ArticlesDTO> getList(TypeDonne typeDonne) {
-        return repository.findAllByStatusTrueAndType(typeDonne).stream().map(mapper::toDTO).collect(Collectors.toList());
+
+        System.err.println("sdfsdfsad "+repository.findAllByTypeDonne(typeDonne).size());
+        return repository.findAllByTypeDonne(typeDonne).stream().map(mapper::toDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ArticlesDTO> getListActive(TypeDonne typeDonne) {
+        return repository.findAllByStatusTrueAndTypeDonne(typeDonne).stream().map(mapper::toDTO).collect(Collectors.toList());
     }
 
     @Override
@@ -49,7 +60,7 @@ public class ArticlesImpl implements IArticles {
     public Page<ArticlesDTO> getPage(int lenght,TypeDonne typeDonne) {
         if(lenght<0)
             lenght = 0;
-        Page<Articles> page = repository.findAllByType(typeDonne, PageRequest.of(lenght,15));
+        Page<Articles> page = repository.findAllByTypeDonne(typeDonne, PageRequest.of(lenght,15));
         return new PageImpl<>(
                 page.getContent().stream().map(mapper::toDTO).collect(Collectors.toList()),
                 PageRequest.of(lenght, 15),
@@ -67,5 +78,14 @@ public class ArticlesImpl implements IArticles {
         Articles articles = repository.findById(id).orElse(null);
         if(articles != null)
             repository.delete(articles);
+    }
+
+    @Override
+    public void active(Long id, TypeDonne typeDonne) {
+        Articles articles = repository.findById(id).orElse(null);
+        if(articles != null && articles.getType().equals(typeDonne)){
+            articles.setStatus(!articles.isStatus());
+            repository.save(articles);
+        }
     }
 }

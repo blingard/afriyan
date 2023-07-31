@@ -21,6 +21,10 @@ public class OurWorksController {
     public List<OurWorksDTO> findAllActive(@PathVariable String type){
         return service.getList(OurWorksType.valueOf(type));
     }
+    @GetMapping
+    public List<OurWorksDTO> findAll(){
+        return service.getList();
+    }
 
     @PostMapping
     @RolesAllowed(value = {"SUPERADMIN"})
@@ -50,5 +54,11 @@ public class OurWorksController {
     @RolesAllowed(value = {"SUPERADMIN"})
     public void update(@PathVariable Long id, @RequestBody OurWorksDTO valeursDTO) throws Exception {
         service.update(valeursDTO, id);
+    }
+
+    @PutMapping("active/{id}")
+    @RolesAllowed(value = {"SUPERADMIN"})
+    public void active(@PathVariable Long id) throws Exception {
+        service.active(id);
     }
 }

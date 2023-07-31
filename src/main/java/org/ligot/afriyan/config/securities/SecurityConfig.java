@@ -1,6 +1,7 @@
 package org.ligot.afriyan.config.securities;
 
         import org.ligot.afriyan.service.UserDetailsServiceImpl;
+        import org.springframework.beans.factory.annotation.Qualifier;
         import org.springframework.context.annotation.Bean;
         import org.springframework.context.annotation.Configuration;
         import org.springframework.http.HttpMethod;
@@ -26,7 +27,7 @@ public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final PasswordEncoder passwordEncoder;
-    public SecurityConfig(UserDetailsServiceImpl userDetailsService, JwtAuthenticationFilter jwtAuthFilter, PasswordEncoder passwordEncoder) {
+    public SecurityConfig(UserDetailsServiceImpl userDetailsService, JwtAuthenticationFilter jwtAuthFilter, @Qualifier("passwordEncoder") PasswordEncoder passwordEncoder) {
         this.userDetailsService = userDetailsService;
         this.jwtAuthFilter = jwtAuthFilter;
         this.passwordEncoder = passwordEncoder;
@@ -34,16 +35,12 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-
-      /*AuthenticationManagerBuilder authenticationManagerBuilder = http
-                .getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());*/
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(
                         auth -> {
                             auth
-                                    .requestMatchers("/swagger-ui/**","/v3/api-docs/**")
+                                    .requestMatchers("**")//swagger-ui/**","/v3/api-docs/**
                                     .permitAll()
                                     .requestMatchers("/api/auth/**")
                                     .permitAll()
@@ -57,7 +54,6 @@ public class SecurityConfig {
                 .sessionManagement(
                         session -> session
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                //http.userDetailsService(userDetailsService);
 
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

@@ -26,8 +26,12 @@ public class MissionsImpl implements IMissions {
     }
 
     @Override
-    public MissionsDTO save(MissionsDTO valeursDTO) {
-        return mapper.toDTO(repository.save(mapper.create(valeursDTO)));
+    public MissionsDTO saveM(MissionsDTO valeursDTO) {
+        System.err.println(valeursDTO.getPhote());
+        Missions missions = mapper.create(valeursDTO);
+        missions.setStatus(true);
+        System.err.println(missions.getPhote());
+        return mapper.toDTO(repository.save(missions));
     }
 
     @Override
@@ -70,5 +74,14 @@ public class MissionsImpl implements IMissions {
         if(missions != null)
             repository.delete(missions);
 
+    }
+
+    @Override
+    public void active(Long id) {
+        Missions missions = repository.findById(id).orElse(null);
+        if(missions != null) {
+            missions.setStatus(!missions.isStatus());
+            repository.save(missions);
+        }
     }
 }

@@ -67,6 +67,11 @@ public class GroupesImpl implements IGroupes {
     }
 
     @Override
+    public List<GroupesDTO> list() throws Exception {
+        return repository.findAll().stream().map(mapper::toDTO).toList();
+    }
+
+    @Override
     public GroupesDTO update(GroupesDTO groupesDTO, Long id) throws Exception {
         Groupes groupes = repository.findById(id).orElse(null);
         if(groupes == null){

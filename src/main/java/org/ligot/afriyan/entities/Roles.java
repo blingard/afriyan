@@ -58,4 +58,14 @@ public class Roles {
     public void setFonction(String fonction) {
         this.fonction = fonction;
     }
+
+    @Override
+    public String toString() {
+        return "Roles{" +
+                "id=" + id +
+                ", nom='" + nom + '\'' +
+                ", description='" + description + '\'' +
+                ", fonction='" + fonction + '\'' +
+                '}';
+    }
 }

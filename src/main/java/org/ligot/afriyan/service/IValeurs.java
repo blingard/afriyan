@@ -8,8 +8,11 @@ import java.util.List;
 public interface IValeurs {
     ValeursDTO save(ValeursDTO valeursDTO);
     List<ValeursDTO> getList();
+    List<ValeursDTO> getListActive();
     ValeursDTO findById(Long id) throws Exception;
     Page<ValeursDTO> getPage(int lenght);
     void update(ValeursDTO valeursDTO, Long id);
     void delete(Long id);
+
+    void active(Long id);
 }

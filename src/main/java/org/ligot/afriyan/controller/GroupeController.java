@@ -8,6 +8,7 @@ import org.ligot.afriyan.service.IGroupes;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -33,6 +34,11 @@ public class GroupeController {
     @GetMapping(value = "/list/{page}")
     Page<GroupesDTO> listGroupe(@PathVariable  int page) throws Exception {
         return groupes.list(page);
+    }
+
+    @GetMapping
+    List<GroupesDTO> list() throws Exception {
+        return groupes.list();
     }
 
     @DeleteMapping(value = "/delete")

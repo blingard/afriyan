@@ -11,6 +11,7 @@ import java.util.List;
 
 @Repository
 public interface IArticlesRepository extends JpaRepository<Articles, Long> {
-    List<Articles> findAllByStatusTrueAndType(TypeDonne typeDonne);
-    Page<Articles> findAllByType(TypeDonne typeDonne, Pageable pageable);
+    List<Articles> findAllByStatusTrueAndTypeDonne(TypeDonne typeDonne);
+    List<Articles> findAllByTypeDonne(TypeDonne typeDonne);
+    Page<Articles> findAllByTypeDonne(TypeDonne typeDonne, Pageable pageable);
 }

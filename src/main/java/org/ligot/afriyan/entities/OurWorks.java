@@ -2,18 +2,26 @@ package org.ligot.afriyan.entities;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 public class OurWorks {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(unique = true)
     private String title;
-    @Column(length = 10000)
+    @Column(length = -1)
     private String text;
+    @Column(length = -1)
     private String photo;
     @Enumerated(EnumType.STRING)
     private OurWorksType ourWorksType;
     private boolean status;
+
+    @OneToMany
+    private Set<Articles> articles = new HashSet<>();
 
     public OurWorks() {
     }
@@ -77,5 +85,13 @@ public class OurWorks {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public Set<Articles> getArticles() {
+        return articles;
+    }
+
+    public void setArticles(Set<Articles> articles) {
+        this.articles = articles;
     }
 }

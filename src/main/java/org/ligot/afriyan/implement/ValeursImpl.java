@@ -27,17 +27,22 @@ public class ValeursImpl implements IValeurs {
 
     @Override
     public ValeursDTO save(ValeursDTO valeursDTO) {
+        valeursDTO.setStatus(false);
         return mapper.toDTO(repository.save(mapper.create(valeursDTO)));
     }
 
     @Override
     public List<ValeursDTO> getList() {
+        return repository.findAll().stream().map(mapper::toDTO).collect(Collectors.toList());
+    }
+    @Override
+    public List<ValeursDTO> getListActive() {
         return repository.findAllByStatusTrue().stream().map(mapper::toDTO).collect(Collectors.toList());
     }
 
     @Override
     public ValeursDTO findById(Long id) throws Exception {
-        Valeurs valeurs = repository.findById(id).orElse(null);
+        Valeurs valeurs = repository.findValeursById(id);
         if(valeurs == null)
             throw new Exception("Valeurs not found");
         return mapper.toDTO(valeurs);
@@ -65,5 +70,19 @@ public class ValeursImpl implements IValeurs {
         Valeurs valeurs = repository.findById(id).orElse(null);
         if(valeurs != null)
             repository.delete(valeurs);
+    }
+
+    @Override
+    public void active(Long id) {
+        System.err.println("sdfsdfsdfsadfsaddfsadf"+id);
+        Valeurs valeurs = repository.findById(id).orElse(null);
+        System.err.println("Before "+valeurs);
+        if(valeurs != null){
+            System.err.println("Before "+valeurs.isStatus());
+            valeurs.setStatus(!valeurs.isStatus());
+
+            System.err.println("After "+valeurs.isStatus());
+            repository.save(valeurs);
+        }
     }
 }

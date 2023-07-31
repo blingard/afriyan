@@ -1,9 +1,6 @@
 package org.ligot.afriyan.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Valeurs {
@@ -11,8 +8,11 @@ public class Valeurs {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(unique = true)
     private String title;
+    @Column(length = -1)
     private String description;
+    @Column(length = -1)
     private String phote;
     private boolean status = false;
 
@@ -65,5 +65,16 @@ public class Valeurs {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Valeurs{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", phote='" + phote + '\'' +
+                ", status=" + status +
+                '}';
     }
 }

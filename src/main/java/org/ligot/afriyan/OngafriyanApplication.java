@@ -17,10 +17,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
-@SecurityScheme(name = "javainuseapi", scheme = "basic", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER)
 @OpenAPIDefinition(
         servers = {
-                @Server(url = "http://localhost:8080/")//www.youthfp.cm
+                @Server(url = "http://www.youthfp.cm:8080/")
         },
                 info = @Info(
                 title = "AfriYan APIs",
@@ -35,7 +34,7 @@ public class OngafriyanApplication {
         SpringApplication.run(OngafriyanApplication.class, args);
     }
 
-    @Bean
+    @Bean("passwordEncoder")
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }

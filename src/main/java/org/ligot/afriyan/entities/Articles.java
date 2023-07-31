@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 public class Articles {
@@ -14,21 +12,25 @@ public class Articles {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "IDENTIFIANT")
     private Long id;
+    @Column(unique = true)
     private String title;
     private String author;
     @Column(length = -1)
     private String contenu;
+    @Column(length = -1)
+    private String phote;
     private boolean status;
     private Date date;
 
-    private TypeDonne type;
+    private TypeDonne typeDonne;
+
 
     public TypeDonne getType() {
-        return type;
+        return typeDonne;
     }
 
     public void setType(TypeDonne type) {
-        this.type = type;
+        this.typeDonne = type;
     }
 
     public Publications getPublication() {
@@ -49,14 +51,13 @@ public class Articles {
         this.id = id;
     }
 
-    public Articles(Long id, String title, String author, String contenu, boolean status, Date date, Publications publication) {
+    public Articles(Long id, String title, String author, String contenu, boolean status, Date date) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.contenu = contenu;
         this.status = status;
         this.date = date;
-        this.publication = publication;
     }
 
     public Long getId() {
@@ -79,12 +80,28 @@ public class Articles {
         return author;
     }
 
+    public String getPhote() {
+        return phote;
+    }
+
+    public void setPhote(String phote) {
+        this.phote = phote;
+    }
+
     public void setAuthor(String author) {
         this.author = author;
     }
 
     public String getContenu() {
         return contenu;
+    }
+
+    public TypeDonne getTypeDonne() {
+        return typeDonne;
+    }
+
+    public void setTypeDonne(TypeDonne typeDonne) {
+        this.typeDonne = typeDonne;
     }
 
     public void setContenu(String contenu) {
@@ -105,13 +122,5 @@ public class Articles {
 
     public void setDate(Date date) {
         this.date = date;
-    }
-
-    public Publications getPublications() {
-        return publication;
-    }
-
-    public void setPublications(Publications publication) {
-        this.publication = publication;
     }
 }

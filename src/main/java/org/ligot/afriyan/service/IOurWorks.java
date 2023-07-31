@@ -9,8 +9,10 @@ import java.util.List;
 public interface IOurWorks {
     OurWorksDTO save(OurWorksDTO valeursDTO);
     List<OurWorksDTO> getList(OurWorksType ourWorksType);
+    List<OurWorksDTO> getList();
     OurWorksDTO findById(Long id) throws Exception;
     Page<OurWorksDTO> getPage(int lenght);
     void update(OurWorksDTO ourWorksDTO, Long id);
     void delete(Long id);
+    void active(Long id);
 }

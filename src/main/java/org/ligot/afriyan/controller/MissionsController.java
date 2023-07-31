@@ -23,9 +23,11 @@ public class MissionsController {
     }
 
     @PostMapping
-    @RolesAllowed(value = {"SUPERADMIN"})
+    /*@RolesAllowed(value = {"SUPERADMIN"})*/
     public MissionsDTO create(@RequestBody MissionsDTO missionsDTO){
-        return service.save(missionsDTO);
+
+        System.err.println(missionsDTO.getPhote());
+        return service.saveM(missionsDTO);
     }
 
     @GetMapping("/{id}")
@@ -50,5 +52,11 @@ public class MissionsController {
     @RolesAllowed(value = {"SUPERADMIN"})
     public void update(@PathVariable Long id, @RequestBody MissionsDTO missionsDTO) throws Exception {
         service.update(missionsDTO, id);
+    }
+
+    @PutMapping("active/{id}")
+    /*@RolesAllowed(value = {"SUPERADMIN"})*/
+    public void active(@PathVariable Long id) throws Exception {
+        service.active(id);
     }
 }

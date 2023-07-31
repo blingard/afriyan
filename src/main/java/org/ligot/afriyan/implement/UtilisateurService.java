@@ -11,6 +11,7 @@ import org.ligot.afriyan.mapper.UtilisateurMapper;
 import org.ligot.afriyan.repository.IUtilisateurRepository;
 import org.ligot.afriyan.service.IGroupes;
 import org.ligot.afriyan.service.IUtilisateur;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -18,22 +19,20 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static org.ligot.afriyan.implement.Utils.genCode;
 
 @Service
 @Transactional
 public class UtilisateurService implements IUtilisateur {
 
-    @Value("{default.pwd.user}")
-    private String userPWD;
-    @Value("{default.pwd.client}")
-    private String clientPWD;
     private final IUtilisateurRepository repository;
     private final IGroupes groupesService;
     private final PasswordEncoder passwordEncoder;
     private final UtilisateurMapper mapper;
 
-    public UtilisateurService(IUtilisateurRepository repository, IGroupes groupesService, PasswordEncoder passwordEncoder, UtilisateurMapper mapper) {
+    public UtilisateurService(IUtilisateurRepository repository, IGroupes groupesService, @Qualifier("passwordEncoder") PasswordEncoder passwordEncoder, UtilisateurMapper mapper) {
         this.repository = repository;
         this.groupesService = groupesService;
         this.passwordEncoder = passwordEncoder;
@@ -61,10 +60,12 @@ public class UtilisateurService implements IUtilisateur {
         utilisateurDTO.setId(null);
         utilisateurDTO.setCode(code);
         utilisateurDTO.setGroupe(groupe);
-        utilisateurDTO.setPwd(passwordEncoder.encode(userPWD+code));
+        System.err.println("userPWD"+code);
+        utilisateurDTO.setPwd(passwordEncoder.encode("userPWD"+code));
         Utilisateur utilisateur = mapper.create(utilisateurDTO);
         System.err.println(utilisateur.getPwd());
-        return mapper.toDTO(repository.save(mapper.create(utilisateurDTO)));
+        utilisateur.setStatus(Status.INACTIVE);
+        return mapper.toDTO(repository.save(utilisateur));
     }
 
     @Override
@@ -73,13 +74,15 @@ public class UtilisateurService implements IUtilisateur {
         boolean codeIsCreate = false;
         String code = "";
         while(!codeIsCreate){
-            code = genCode("US",8);
+            code = genCode("CL",8);
             if(!repository.findByCode(code).isPresent())
                 codeIsCreate = true;
         }
         utilisateurDTO.setId(null);
         utilisateurDTO.setCode(code);
         utilisateurDTO.setGroupe(groupe);
+        utilisateurDTO.setPwd(passwordEncoder.encode("clientPWD"+code));
+        utilisateurDTO.setStatus(Status.INACTIVE);
         Utilisateur utilisateur = repository.save(mapper.create(utilisateurDTO));
         return mapper.toDTO(utilisateur);
     }
@@ -91,6 +94,11 @@ public class UtilisateurService implements IUtilisateur {
                 utilisateurs.stream().map(mapper::toDTO).toList(),
                 PageRequest.of(page, 15),
                 utilisateurs.getContent().size());
+    }
+
+    @Override
+    public List<UtilisateurDTO> list() throws Exception {
+        return repository.findAll().stream().map(mapper::toDTO).toList();
     }
 
     @Override

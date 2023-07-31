@@ -16,10 +16,8 @@ public class ArticlesDTO {
     private String contenu;
     private boolean status;
     private Date date;
-
-    private TypeDonne type;
-    @JsonIgnoreProperties({"administrateur","service"})
-    private PublicationsDTO publication;
+    private String phote;
+    private TypeDonne typeDonne;
 
     public ArticlesDTO() {
     }
@@ -31,8 +29,7 @@ public class ArticlesDTO {
         this.contenu = contenu;
         this.status = status;
         this.date = date;
-        this.type = type;
-        this.publication = publication;
+        this.typeDonne = type;
     }
 
     public ArticlesDTO(Long id) {
@@ -87,19 +84,19 @@ public class ArticlesDTO {
         this.date = date;
     }
 
-    public PublicationsDTO getPublications() {
-        return publication;
+    public TypeDonne getTypeDonne() {
+        return typeDonne;
     }
 
-    public void setPublications(PublicationsDTO publications) {
-        this.publication = publications;
+    public void setTypeDonne(TypeDonne typeDonne) {
+        this.typeDonne = typeDonne;
     }
 
-    public TypeDonne getType() {
-        return type;
+    public String getPhote() {
+        return phote;
     }
 
-    public void setType(TypeDonne type) {
-        this.type = type;
+    public void setPhote(String phote) {
+        this.phote = phote;
     }
 }

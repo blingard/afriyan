@@ -19,8 +19,12 @@ public class TemoignageController {
     }
 
     @GetMapping
-    public List<ArticlesDTO> findAllActive(){
+    public List<ArticlesDTO> findAll(){
         return service.getList(TypeDonne.TEMOIGNAGE);
+    }
+    @GetMapping("active")
+    public List<ArticlesDTO> findAllActive(){
+        return service.getListActive(TypeDonne.TEMOIGNAGE);
     }
 
     @PostMapping
@@ -51,5 +55,11 @@ public class TemoignageController {
     @RolesAllowed(value = {"SUPERADMIN"})
     public void update(@PathVariable Long id, @RequestBody ArticlesDTO valeursDTO) throws Exception {
         service.update(valeursDTO, id);
+    }
+
+    @PutMapping("active/{id}")
+    @RolesAllowed(value = {"SUPERADMIN"})
+    public void active(@PathVariable Long id) throws Exception {
+        service.active( id, TypeDonne.TEMOIGNAGE);
     }
 }

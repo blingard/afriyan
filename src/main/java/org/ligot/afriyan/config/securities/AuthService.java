@@ -24,16 +24,13 @@ public class AuthService {
     }
 
     public Object login(LoginRequest loginRequest) {
-        System.err.println(loginRequest.getPassword());
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getLogin(),
                         loginRequest.getPassword()
                 )
         );
-        System.err.println("sdfdsfsd");
         UserDetails use = service.loadUserByUsername(loginRequest.getLogin());
-        var jwtToken = jwtService.generateToken(use);
-        return jwtToken;
+        return jwtService.generateToken(use);
     }
 }

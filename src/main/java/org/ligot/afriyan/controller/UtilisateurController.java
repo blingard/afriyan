@@ -29,6 +29,12 @@ public class UtilisateurController {
         return service.save(utilisateurDTO, utilisateurDTO.getGroupe().getId());
     }
 
+    @GetMapping
+    /*@RolesAllowed(value = {"SUPERADMIN"})*/
+    public List<UtilisateurDTO> list() throws Exception {
+        return service.list();
+    }
+
     @GetMapping("list/{id}")
     @RolesAllowed(value = {"SUPERADMIN"})
     public Page<UtilisateurDTO> listAll(@PathVariable int id) throws Exception {

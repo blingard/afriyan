@@ -18,11 +18,11 @@ public class CentrePartenaire {
      @GeneratedValue(strategy = GenerationType.AUTO)
      @Column(name = "IDENTIFIANT")
      private Long id;
-     @Column(name = "NOM")
+     @Column(name = "NOM", unique = true)
      private String nom;
-     @Column(name = "LIBELLE")
+     @Column(name = "LIBELLE",unique = true)
      private String libelle;
-     @Column(name = "DESCRIPTION")
+     @Column(name = "DESCRIPTION",length = 10000)
      private String description;
      @Column(name = "longitude", nullable = false)
      private String longitude;

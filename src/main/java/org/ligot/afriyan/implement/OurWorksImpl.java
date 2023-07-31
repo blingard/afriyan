@@ -28,12 +28,18 @@ public class OurWorksImpl implements IOurWorks {
 
     @Override
     public OurWorksDTO save(OurWorksDTO valeursDTO) {
+        valeursDTO.setStatus(false);
         return mapper.toDTO(repository.save(mapper.create(valeursDTO)));
     }
 
     @Override
     public List<OurWorksDTO> getList(OurWorksType ourWorksType) {
         return repository.findAllByStatusTrueAndAndOurWorksType(ourWorksType).stream().map(mapper::toDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OurWorksDTO> getList() {
+        return repository.findAll().stream().map(mapper::toDTO).collect(Collectors.toList());
     }
 
     @Override
@@ -66,5 +72,14 @@ public class OurWorksImpl implements IOurWorks {
         OurWorks ourWorks = repository.findById(id).orElse(null);
         if(ourWorks != null)
             repository.delete(ourWorks);
+    }
+
+    @Override
+    public void active(Long id) {
+        OurWorks ourWorks = repository.findById(id).orElse(null);
+        if(ourWorks != null) {
+            ourWorks.setStatus(!ourWorks.isStatus());
+            repository.save(ourWorks);
+        }
     }
 }

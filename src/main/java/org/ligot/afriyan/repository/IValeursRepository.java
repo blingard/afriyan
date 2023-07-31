@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface IValeursRepository extends JpaRepository<Valeurs, Long> {
     List<Valeurs> findAllByStatusTrue();
+    Valeurs findValeursById(Long id);
 }

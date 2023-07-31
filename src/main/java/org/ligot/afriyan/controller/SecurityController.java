@@ -23,8 +23,8 @@ public class SecurityController {
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
         HttpHeaders  httpHeaders = new HttpHeaders();
         String token = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxkZXIiLCJpYXQiOjE2OTAyNTExODEsImV4cCI6MTcyMTc4NzE4MSwiYXVkIjoid3d3LmV4YW1wbGUuY29tIiwic3ViIjoiYWRtaW4iLCJyb2xlcyI6IlsnVVNFUicsJ1ZJU0lUT1InLCdST09UJywnU1VQRVJBRE1JTicsJ0FETUlOJ10ifQ.ruVSnE66cHjCFo1tB2CzCdixglSXwqsThWPptobH4EU";
-        httpHeaders.add("Authorization", token);
-        //return ResponseEntity.ok("service.login(loginRequest)");
+        httpHeaders.add("Authorization", "Bearer "+service.login(loginRequest)/*token*/);
+        //return ResponseEntity.ok(service.login(loginRequest));
         return new ResponseEntity<>(token, httpHeaders, HttpStatus.OK);
     }
 

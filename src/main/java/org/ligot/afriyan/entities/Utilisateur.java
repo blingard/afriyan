@@ -208,4 +208,26 @@ public class Utilisateur implements Serializable, Comparable<Utilisateur> {
     public void setdCreation(Date dCreation) {
         this.dCreation = dCreation;
     }
+
+    @Override
+    public String toString() {
+        return "Utilisateur{" +
+                "id=" + id +
+                ", code='" + code + '\'' +
+                ", nom='" + nom + '\'' +
+                ", prenom='" + prenom + '\'' +
+                ", ddn=" + ddn +
+                ", lieu='" + lieu + '\'' +
+                ", numero_telephone='" + numero_telephone + '\'' +
+                ", photo='" + photo + '\'' +
+                ", location='" + location + '\'' +
+                ", anonymat='" + anonymat + '\'' +
+                ", sexe=" + sexe +
+                ", status=" + status +
+                ", email='" + email + '\'' +
+                ", pwd='" + pwd + '\'' +
+                ", dCreation=" + dCreation +
+                ", groupe=" + groupe +
+                '}';
+    }
 }

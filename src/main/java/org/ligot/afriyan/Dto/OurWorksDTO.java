@@ -1,6 +1,10 @@
 package org.ligot.afriyan.Dto;
 
+import org.ligot.afriyan.entities.Articles;
 import org.ligot.afriyan.entities.OurWorksType;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class OurWorksDTO {
     private Long id;
@@ -9,6 +13,7 @@ public class OurWorksDTO {
     private String photo;
     private OurWorksType ourWorksType;
     private boolean status;
+    private Set<ArticlesDTO> articles = new HashSet<>();
 
     public OurWorksDTO() {
     }
@@ -72,5 +77,13 @@ public class OurWorksDTO {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public Set<ArticlesDTO> getArticles() {
+        return articles;
+    }
+
+    public void setArticles(Set<ArticlesDTO> articles) {
+        this.articles = articles;
     }
 }
