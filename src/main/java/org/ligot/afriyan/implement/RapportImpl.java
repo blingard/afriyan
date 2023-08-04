@@ -50,7 +50,6 @@ public class RapportImpl implements IRapport {
         if (rapport == null){
             throw new Exception("Le Rapportq que vous souhaitez modifier n'existes pas");
         }
-
         return mapper.toDTO(repository.saveAndFlush(mapper.create(rapportDto)));
     }
 

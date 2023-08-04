@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProduitDTO {
@@ -13,6 +15,8 @@ public class ProduitDTO {
     private String libelle;
     private String description;
     private Double prix;
+
+    private Date dateCreation = new Date();
     @JsonIgnoreProperties({"groupe"})
     private CentrePartenaireDTO centrePartenaireD;
 
@@ -54,5 +58,21 @@ public class ProduitDTO {
 
     public void setPrix(Double prix) {
         this.prix = prix;
+    }
+
+    public Date getDateCreation() {
+        return dateCreation;
+    }
+
+    public void setDateCreation(Date dateCreation) {
+        this.dateCreation = dateCreation;
+    }
+
+    public CentrePartenaireDTO getCentrePartenaireD() {
+        return centrePartenaireD;
+    }
+
+    public void setCentrePartenaireD(CentrePartenaireDTO centrePartenaireD) {
+        this.centrePartenaireD = centrePartenaireD;
     }
 }

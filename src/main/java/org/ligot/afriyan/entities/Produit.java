@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,6 +25,10 @@ public class Produit {
     private String description;
     @Column(name = "PRIX")
     private Double prix;
+    @Column(name = "DATE_CREATION")
+    private Date datCreation;
+	@ManyToOne
+	private CentrePartenaire centrePartenaire;
 
     public Long getId() {
         return id;
@@ -62,5 +68,21 @@ public class Produit {
 
     public void setPrix(Double prix) {
         this.prix = prix;
+    }
+
+    public CentrePartenaire getCentrePartenaire() {
+        return centrePartenaire;
+    }
+
+    public void setCentrePartenaire(CentrePartenaire centrePartenaire) {
+        this.centrePartenaire = centrePartenaire;
+    }
+
+    public Date getDatCreation() {
+        return datCreation;
+    }
+
+    public void setDatCreation(Date datCreation) {
+        this.datCreation = datCreation;
     }
 }

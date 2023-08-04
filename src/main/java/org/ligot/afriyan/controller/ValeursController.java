@@ -18,25 +18,25 @@ public class ValeursController {
     }
 
     @GetMapping
-    public List<ValeursDTO> findAllActive(){
+    public List<ValeursDTO> findAllActive() throws Exception {
         return service.getList();
     }
 
     @PostMapping
     @RolesAllowed(value = {"SUPERADMIN"})
-    public ValeursDTO create(@RequestBody ValeursDTO valeursDTO){
+    public ValeursDTO create(@RequestBody ValeursDTO valeursDTO) throws Exception {
         return service.save(valeursDTO);
     }
 
     @GetMapping("/{id}")
     @RolesAllowed(value = {"SUPERADMIN"})
-    public Page<ValeursDTO> listAll(@PathVariable int id){
+    public Page<ValeursDTO> listAll(@PathVariable int id) throws Exception {
         return service.getPage(id);
     }
 
     @DeleteMapping("/{id}")
     @RolesAllowed(value = {"SUPERADMIN"})
-    public void delete(@PathVariable Long id){
+    public void delete(@PathVariable Long id) throws Exception {
         service.delete(id);
     }
 

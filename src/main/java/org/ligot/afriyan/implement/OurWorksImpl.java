@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.ligot.afriyan.Dto.OurWorksDTO;
 import org.ligot.afriyan.entities.OurWorks;
 import org.ligot.afriyan.entities.OurWorksType;
+import org.ligot.afriyan.entities.Rapport;
 import org.ligot.afriyan.mapper.OurWorksMapper;
 import org.ligot.afriyan.repository.IOurWorksRepository;
 import org.ligot.afriyan.service.IOurWorks;
@@ -57,7 +58,13 @@ public class OurWorksImpl implements IOurWorks {
     }
 
     @Override
-    public void update(OurWorksDTO ourWorksDTO, Long id) {
+    public OurWorksDTO update(OurWorksDTO ourWorksDTO, Long id) throws Exception {
+
+        OurWorks ourWorks = repository.findById(id).orElse(null);
+        if (ourWorks == null){
+            throw new Exception("Le Rapportq que vous souhaitez modifier n'existes pas");
+        }
+        return mapper.toDTO(repository.saveAndFlush(mapper.create(ourWorksDTO)));
 
     }
 

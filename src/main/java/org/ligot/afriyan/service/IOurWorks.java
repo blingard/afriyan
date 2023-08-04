@@ -11,6 +11,6 @@ public interface IOurWorks {
     List<OurWorksDTO> getList(OurWorksType ourWorksType);
     OurWorksDTO findById(Long id) throws Exception;
     Page<OurWorksDTO> getPage(int lenght);
-    void update(OurWorksDTO ourWorksDTO, Long id);
+    OurWorksDTO update(OurWorksDTO ourWorksDTO, Long id) throws Exception;
     void delete(Long id);
 }

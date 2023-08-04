@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import org.ligot.afriyan.Dto.ArticlesDTO;
 import org.ligot.afriyan.entities.Articles;
 import org.ligot.afriyan.entities.TypeDonne;
-import org.ligot.afriyan.entities.Valeurs;
 import org.ligot.afriyan.mapper.ArticlesMapper;
 import org.ligot.afriyan.repository.IArticlesRepository;
 import org.ligot.afriyan.service.IArticles;
@@ -58,7 +57,14 @@ public class ArticlesImpl implements IArticles {
     }
 
     @Override
-    public void update(ArticlesDTO articlesDTO, Long id) {
+    public ArticlesDTO update(ArticlesDTO articlesDTO, Long id) throws Exception{
+        Articles article = repository.findById(id).orElse(null);
+        if(article == null){
+            throw new Exception("Le Article que vous souhaitez modifier n'existes pas");
+        }
+        articlesDTO.setId(id);
+
+        return mapper.toDTO(repository.saveAndFlush(mapper.create(articlesDTO)));
 
     }
 

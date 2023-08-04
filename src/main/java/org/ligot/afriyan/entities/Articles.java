@@ -21,7 +21,7 @@ public class Articles {
     private String contenu;
     private boolean status;
 
-    private Categorie categorie;
+    private Categorie categorie = Categorie.SANTE_SEXUELLE;
     private Date date;
 
 
@@ -117,5 +117,13 @@ public class Articles {
 
     public void setPublications(Publications publication) {
         this.publication = publication;
+    }
+
+    public Categorie getCategorie() {
+        return categorie;
+    }
+
+    public void setCategorie(Categorie categorie) {
+        this.categorie = categorie;
     }
 }

@@ -11,6 +11,6 @@ public interface IArticles {
     List<ArticlesDTO> getList(TypeDonne typeDonne);
     ArticlesDTO findById(Long id) throws Exception;
     Page<ArticlesDTO> getPage(int lenght, TypeDonne typeDonne);
-    void update(ArticlesDTO articlesDTO, Long id);
+    ArticlesDTO update(ArticlesDTO articlesDTO, Long id) throws Exception;
     void delete(Long id);
 }

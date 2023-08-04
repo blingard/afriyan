@@ -2,6 +2,7 @@ package org.ligot.afriyan.implement;
 
 import jakarta.transaction.Transactional;
 import org.ligot.afriyan.Dto.MissionsDTO;
+import org.ligot.afriyan.entities.Denonciation;
 import org.ligot.afriyan.entities.Missions;
 import org.ligot.afriyan.mapper.MissionsMapper;
 import org.ligot.afriyan.repository.IMissionsRepository;
@@ -60,7 +61,14 @@ public class MissionsImpl implements IMissions {
     }
 
     @Override
-    public void update(MissionsDTO valeursDTO, Long id) {
+    public MissionsDTO update(MissionsDTO missionsDTO, Long id) throws Exception {
+        Missions missions = repository.findById(id).orElse(null);
+        if(missions == null){
+            throw new Exception("Le Denonciation que vous souhaitez modifier n'existes pas");
+        }
+        missionsDTO.setId(id);
+
+        return mapper.toDTO(repository.saveAndFlush(mapper.create(missionsDTO)));
 
     }
 

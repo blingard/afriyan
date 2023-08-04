@@ -102,4 +102,12 @@ public class ArticlesDTO {
     public void setType(TypeDonne type) {
         this.type = type;
     }
+
+    public Categorie getCategorie() {
+        return categorie;
+    }
+
+    public void setCategorie(Categorie categorie) {
+        this.categorie = categorie;
+    }
 }

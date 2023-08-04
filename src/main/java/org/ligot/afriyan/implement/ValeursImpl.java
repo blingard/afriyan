@@ -2,6 +2,7 @@ package org.ligot.afriyan.implement;
 
 import jakarta.transaction.Transactional;
 import org.ligot.afriyan.Dto.ValeursDTO;
+import org.ligot.afriyan.entities.Denonciation;
 import org.ligot.afriyan.entities.Valeurs;
 import org.ligot.afriyan.mapper.ValeursMapper;
 import org.ligot.afriyan.repository.IValeursRepository;
@@ -26,12 +27,12 @@ public class ValeursImpl implements IValeurs {
     }
 
     @Override
-    public ValeursDTO save(ValeursDTO valeursDTO) {
+    public ValeursDTO save(ValeursDTO valeursDTO) throws Exception{
         return mapper.toDTO(repository.save(mapper.create(valeursDTO)));
     }
 
     @Override
-    public List<ValeursDTO> getList() {
+    public List<ValeursDTO> getList() throws Exception{
         return repository.findAllByStatusTrue().stream().map(mapper::toDTO).collect(Collectors.toList());
     }
 
@@ -44,7 +45,7 @@ public class ValeursImpl implements IValeurs {
     }
 
     @Override
-    public Page<ValeursDTO> getPage(int lenght) {
+    public Page<ValeursDTO> getPage(int lenght) throws Exception{
         if(lenght<0)
             lenght = 0;
         Page<Valeurs> page = repository.findAll(PageRequest.of(lenght,15));
@@ -56,12 +57,19 @@ public class ValeursImpl implements IValeurs {
     }
 
     @Override
-    public void update(ValeursDTO valeursDTO, Long id) {
+    public ValeursDTO update(ValeursDTO valeursDTO, Long id) throws Exception{
 
+        Valeurs valeurs = repository.findById(id).orElse(null);
+        if(valeurs == null){
+            throw new Exception("Le Valeurs que vous souhaitez modifier n'existes pas");
+        }
+        valeursDTO.setId(id);
+
+        return mapper.toDTO(repository.saveAndFlush(mapper.create(valeursDTO)));
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(Long id) throws Exception{
         Valeurs valeurs = repository.findById(id).orElse(null);
         if(valeurs != null)
             repository.delete(valeurs);
