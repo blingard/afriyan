@@ -173,4 +173,14 @@ public class UtilisateurDTO extends PersonneDTO{
     public void setPwd(String pwd) {
         super.setPwd(pwd);
     }
+
+    @Override
+    public boolean getIsFirstConnexion() {
+        return super.getIsFirstConnexion();
+    }
+
+    @Override
+    public void setIsFirstConnexion(boolean firstConnexion) {
+        super.setIsFirstConnexion(firstConnexion);
+    }
 }

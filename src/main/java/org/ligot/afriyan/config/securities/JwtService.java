@@ -29,8 +29,20 @@ public class JwtService {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis()+ (1000*60*24)))
-                //.signWith(getSigningKey(), SignatureAlgorithm.RS512)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                 .compact();
+    }
+    public String generateTokenRefresh(Long id) {
+        return Jwts
+                .builder()
+                .setSubject(id.toString())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis()+ (10000*60*24)))
+                .compact();
+    }
+
+    public String generateRefreshToken(Long id){
+        return generateTokenRefresh(id);
     }
 
     public String generateToken(UserDetails userDetails) {
@@ -78,7 +90,7 @@ public class JwtService {
 
     private Key getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
-        return Keys.hmacShaKeyFor(/*keyBytes*/SECRET_KEY.getBytes());
+        return Keys.hmacShaKeyFor(keyBytes);
 
     }
 }

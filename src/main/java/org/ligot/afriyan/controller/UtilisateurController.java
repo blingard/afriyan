@@ -1,13 +1,16 @@
 package org.ligot.afriyan.controller;
 
 import jakarta.annotation.security.RolesAllowed;
+import org.ligot.afriyan.Dto.ChangePwd;
 import org.ligot.afriyan.Dto.UtilisateurDTO;
 import org.ligot.afriyan.entities.TypeDonne;
 import org.ligot.afriyan.service.IUtilisateur;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/user")
@@ -62,6 +65,18 @@ public class UtilisateurController {
     @PutMapping("/{id}")
     public void update(@PathVariable Long id, @RequestBody UtilisateurDTO utilisateurDTO) throws Exception {
         service.update(utilisateurDTO, id);
+    }
+
+    @PutMapping("change-password")
+    public void changePassword(@RequestBody ChangePwd changePwd) throws Exception {
+        service.changePassword(changePwd);
+    }
+
+
+    @GetMapping("dashboard")
+    /*@PreAuthorize("hasRole('ADMIN')")*/
+    public Map<String, Object> dashboard() throws Exception {
+        return service.dashboard();
     }
 
 

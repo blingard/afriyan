@@ -5,11 +5,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
-import org.ligot.afriyan.service.UserDetailsServiceImpl;
+import org.ligot.afriyan.Dto.UserDetailsImpl;
+import org.ligot.afriyan.entities.Utilisateur;
+import org.ligot.afriyan.repository.IUtilisateurRepository;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -19,11 +20,11 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
-    private final UserDetailsServiceImpl userDetailsService;
+    private final IUtilisateurRepository repository;
 
-    public JwtAuthenticationFilter(JwtService jwtService, UserDetailsServiceImpl userDetailsService) {
+    public JwtAuthenticationFilter(JwtService jwtService, IUtilisateurRepository repository) {
         this.jwtService = jwtService;
-        this.userDetailsService = userDetailsService;
+        this.repository = repository;
     }
 
     @Override
@@ -43,7 +44,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         jwt = authHeader.substring(07);
         userName = jwtService.extractUserName(jwt);
         if(userName != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userName);
+            Utilisateur utilisateur = repository.findByEmail(userName).orElse(null);
+            if(utilisateur == null)
+                throw new ServletException("user not found");
+            UserDetails userDetails = UserDetailsImpl.build(utilisateur, utilisateur.getGroupe().getRoles());
             if(jwtService.isTokenValid(jwt, userDetails)){
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,

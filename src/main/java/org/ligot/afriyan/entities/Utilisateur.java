@@ -74,6 +74,9 @@ public class Utilisateur implements Serializable, Comparable<Utilisateur> {
     @Column(name = "DATECREATION")
     protected Date dCreation;
 
+    @Column(name = "firstconnexion")
+    private boolean isFirstConnexion = true;
+
     @ManyToOne
     private Groupes groupe;
     @Override
@@ -207,6 +210,14 @@ public class Utilisateur implements Serializable, Comparable<Utilisateur> {
 
     public void setdCreation(Date dCreation) {
         this.dCreation = dCreation;
+    }
+
+    public boolean getIsFirstConnexion() {
+        return isFirstConnexion;
+    }
+
+    public void setIsFirstConnexion(boolean firstConnexion) {
+        isFirstConnexion = firstConnexion;
     }
 
     @Override

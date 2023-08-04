@@ -4,6 +4,7 @@ import org.ligot.afriyan.Dto.UtilisateurDTO;
 import org.ligot.afriyan.entities.Administrateur;
 import org.ligot.afriyan.entities.Groupes;
 import org.ligot.afriyan.entities.Roles;
+import org.ligot.afriyan.entities.Status;
 import org.ligot.afriyan.repository.IGroupesRepository;
 import org.ligot.afriyan.repository.IRolesRepository;
 import org.ligot.afriyan.service.IAdministrateur;
@@ -43,6 +44,7 @@ public class Database implements CommandLineRunner {
             dto.setNumero_telephone("1236547789");
             dto.setNom("sdfsdfdsfsd");
             dto.setPrenom("sdfsdfsdf");
+            dto.setStatus(Status.ACTIVE);
 
             if(serviceAdmin.codeExist("000000000000000")){
                 Administrateur administrateur = new Administrateur();
@@ -63,7 +65,8 @@ public class Database implements CommandLineRunner {
                     "Groupe des utilisateurs",
                     "Description",
                     new HashSet<>());
-            groupes.getRoles().add(roles4);
+            groupes.getRoles().add(roles1);
+            groupes.getRoles().add(roles3);
             serviceGroupe.save(groupes);
             iUtilisateur.save(dto,1L);
             Groupes groupes1 = new Groupes(

@@ -1,25 +1,31 @@
 package org.ligot.afriyan.implement;
 
 import jakarta.transaction.Transactional;
+import org.ligot.afriyan.Dto.ChangePwd;
 import org.ligot.afriyan.Dto.GroupesDTO;
+import org.ligot.afriyan.Dto.UserDetailsImpl;
 import org.ligot.afriyan.Dto.UtilisateurDTO;
 import org.ligot.afriyan.entities.Groupes;
 import org.ligot.afriyan.entities.Status;
 import org.ligot.afriyan.entities.Utilisateur;
 import org.ligot.afriyan.init.RolesName;
 import org.ligot.afriyan.mapper.UtilisateurMapper;
+import org.ligot.afriyan.repository.IArticlesRepository;
+import org.ligot.afriyan.repository.ICentrePartenaireRepository;
 import org.ligot.afriyan.repository.IUtilisateurRepository;
 import org.ligot.afriyan.service.IGroupes;
 import org.ligot.afriyan.service.IUtilisateur;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.ligot.afriyan.implement.Utils.genCode;
 
@@ -28,12 +34,16 @@ import static org.ligot.afriyan.implement.Utils.genCode;
 public class UtilisateurService implements IUtilisateur {
 
     private final IUtilisateurRepository repository;
+    private final ICentrePartenaireRepository iCentrePartenaireRepository;
+    private final IArticlesRepository iArticlesRepository;
     private final IGroupes groupesService;
     private final PasswordEncoder passwordEncoder;
     private final UtilisateurMapper mapper;
 
-    public UtilisateurService(IUtilisateurRepository repository, IGroupes groupesService, @Qualifier("passwordEncoder") PasswordEncoder passwordEncoder, UtilisateurMapper mapper) {
+    public UtilisateurService(IUtilisateurRepository repository, ICentrePartenaireRepository iCentrePartenaireRepository, IArticlesRepository iArticlesRepository, IGroupes groupesService, @Qualifier("passwordEncoder") PasswordEncoder passwordEncoder, UtilisateurMapper mapper) {
         this.repository = repository;
+        this.iCentrePartenaireRepository = iCentrePartenaireRepository;
+        this.iArticlesRepository = iArticlesRepository;
         this.groupesService = groupesService;
         this.passwordEncoder = passwordEncoder;
         this.mapper = mapper;
@@ -60,11 +70,10 @@ public class UtilisateurService implements IUtilisateur {
         utilisateurDTO.setId(null);
         utilisateurDTO.setCode(code);
         utilisateurDTO.setGroupe(groupe);
-        System.err.println("userPWD"+code);
-        utilisateurDTO.setPwd(passwordEncoder.encode("userPWD"+code));
+        utilisateurDTO.setPwd(passwordEncoder.encode("123456789"));
         Utilisateur utilisateur = mapper.create(utilisateurDTO);
-        System.err.println(utilisateur.getPwd());
-        utilisateur.setStatus(Status.INACTIVE);
+        utilisateur.setStatus(Status.ACTIVE);
+        utilisateur.setIsFirstConnexion(true);
         return mapper.toDTO(repository.save(utilisateur));
     }
 
@@ -82,8 +91,9 @@ public class UtilisateurService implements IUtilisateur {
         utilisateurDTO.setCode(code);
         utilisateurDTO.setGroupe(groupe);
         utilisateurDTO.setPwd(passwordEncoder.encode("clientPWD"+code));
-        utilisateurDTO.setStatus(Status.INACTIVE);
         Utilisateur utilisateur = repository.save(mapper.create(utilisateurDTO));
+        utilisateur.setStatus(Status.ACTIVE);
+        utilisateur.setIsFirstConnexion(true);
         return mapper.toDTO(utilisateur);
     }
 
@@ -134,5 +144,40 @@ public class UtilisateurService implements IUtilisateur {
         if(utilisateur == null)
             throw new Exception("User with id = "+nom+" don't exist");
         return mapper.toDTO(utilisateur);
+    }
+
+    @Override
+    public UtilisateurDTO findByLogin(String login) throws Exception {
+        Utilisateur utilisateur = repository.findByEmail(login).orElse(null);
+        if(utilisateur == null)
+            throw new Exception("User with login = "+login+" not found");
+        return mapper.toDTO(utilisateur);
+    }
+
+    @Override
+    public void changePassword(ChangePwd changePwd) throws Exception {
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Utilisateur utilisateur = repository.findByEmail(userDetails.getEmail()).orElse(null);
+        if(utilisateur == null)
+            throw new Exception("User not found");
+        if(changePwd.getConfirmPwd() == changePwd.getNewPwd())
+            throw new Exception("Password not valid");
+        if(changePwd.getConfirmPwd().length() < 8)
+            throw new Exception("Password not valid");
+        utilisateur.setPwd(passwordEncoder.encode(changePwd.getConfirmPwd()));
+        utilisateur.setIsFirstConnexion(false);
+        repository.save(utilisateur);
+    }
+
+    @Override
+    public Map<String, Object> dashboard() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        Long userLenght = repository.count();
+        map.put("user", userLenght);
+        Long cpLenght = iCentrePartenaireRepository.count();
+        map.put("cp", cpLenght);
+        Long articleLenght = iArticlesRepository.count();
+        map.put("article", articleLenght);
+        return map;
     }
 }

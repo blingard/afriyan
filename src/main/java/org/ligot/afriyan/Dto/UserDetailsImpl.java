@@ -43,7 +43,7 @@ public class UserDetailsImpl  implements UserDetails {
 
         return new UserDetailsImpl(
                 user.getId(),
-                user.getNom(),
+                user.getEmail(),
                 user.getEmail(),
                 user.getPwd(),
                 authorities);
@@ -100,5 +100,16 @@ public class UserDetailsImpl  implements UserDetails {
             return false;
         UserDetailsImpl user = (UserDetailsImpl) o;
         return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public String toString() {
+        return "UserDetailsImpl{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", authorities=" + authorities +
+                '}';
     }
 }

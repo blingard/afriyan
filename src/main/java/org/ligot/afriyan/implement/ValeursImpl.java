@@ -33,6 +33,8 @@ public class ValeursImpl implements IValeurs {
 
     @Override
     public List<ValeursDTO> getList() {
+        List<ValeursDTO> valeursDTOS = repository.findAll().stream().map(mapper::toDTO).collect(Collectors.toList());
+        System.err.println(valeursDTOS.size());
         return repository.findAll().stream().map(mapper::toDTO).collect(Collectors.toList());
     }
     @Override

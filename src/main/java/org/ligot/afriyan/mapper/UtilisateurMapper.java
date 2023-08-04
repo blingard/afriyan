@@ -9,6 +9,8 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface UtilisateurMapper {
     Utilisateur create (UtilisateurDTO dto);
+
+    @Mapping(source = "pwd", target = "pwd", ignore = true)
     UtilisateurDTO toDTO (Utilisateur entity);
     @Mapping(source = "id", target = "id", ignore = true)
     @Mapping(source = "code", target = "code", ignore = true)

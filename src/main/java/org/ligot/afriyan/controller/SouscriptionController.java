@@ -28,7 +28,7 @@ public class SouscriptionController {
         return souscription.list(page);
     }
 
-    @DeleteMapping(value = "/delete")
+    @DeleteMapping(value = "/delete/{id}")
     void deleteSouscription (@PathVariable long id) throws Exception{
         souscription.delete(id);
     }

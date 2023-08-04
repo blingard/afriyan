@@ -1,9 +1,11 @@
 package org.ligot.afriyan.service;
 
+import org.ligot.afriyan.Dto.ChangePwd;
 import org.ligot.afriyan.Dto.UtilisateurDTO;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Map;
 
 
 public interface IUtilisateur {
@@ -18,5 +20,9 @@ public interface IUtilisateur {
     void disableUtilisateur(Long id) throws Exception ;
 
     UtilisateurDTO findByName(String nom) throws Exception;
+    UtilisateurDTO findByLogin(String login) throws Exception;
 
+    void changePassword(ChangePwd changePwd) throws Exception;
+
+    Map<String, Object> dashboard() throws Exception;
 }

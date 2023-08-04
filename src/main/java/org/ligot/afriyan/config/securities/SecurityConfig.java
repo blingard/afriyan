@@ -40,15 +40,21 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         auth -> {
                             auth
-                                    .requestMatchers("**")//swagger-ui/**","/v3/api-docs/**
+                                    .requestMatchers(
+                                            "/api/article/active",
+                                    "/swagger-ui/**",
+                                            "/v3/api-docs/**",
+                                            "/api/article/find-by-id/**",
+                                            "/api/valeur",
+                                            "/api/temoignage/active",
+                                            "/api/missions")//swagger-ui/**","/v3/api-docs/**
                                     .permitAll()
                                     .requestMatchers("/api/auth/**")
                                     .permitAll()
                                     .requestMatchers(HttpMethod.OPTIONS, "/**")
                                     .permitAll()
                                     .anyRequest()
-                                    .permitAll();
-                            //.authenticated();
+                                    .permitAll();//.authenticated();
                         }
                 )
                 .sessionManagement(

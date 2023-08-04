@@ -12,7 +12,7 @@ public class Articles {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "IDENTIFIANT")
     private Long id;
-    @Column(unique = true)
+    @Column (name = "TITLE", unique = true, nullable = false)
     private String title;
     private String author;
     @Column(length = -1)
@@ -20,10 +20,10 @@ public class Articles {
     @Column(length = -1)
     private String phote;
     private boolean status;
+
+    private Categorie categorie;
     private Date date;
-
     private TypeDonne typeDonne;
-
 
     public TypeDonne getType() {
         return typeDonne;

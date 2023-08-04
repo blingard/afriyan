@@ -2,6 +2,7 @@ package org.ligot.afriyan.service;
 
 import org.ligot.afriyan.Dto.UserDetailsImpl;
 import org.ligot.afriyan.entities.Roles;
+import org.ligot.afriyan.entities.Status;
 import org.ligot.afriyan.entities.Utilisateur;
 import org.ligot.afriyan.repository.IGroupesRepository;
 import org.ligot.afriyan.repository.IUtilisateurRepository;
@@ -25,6 +26,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Utilisateur user = repository.findByEmail(username).orElseThrow(()->new UsernameNotFoundException("User with username "+username+" don't exist"));
+        if(user.getStatus().equals(Status.INACTIVE))
+           throw new UsernameNotFoundException("User with username "+username+" is disable please contact administrator");
         return UserDetailsImpl.build(user,user.getGroupe().getRoles());
     }
 }

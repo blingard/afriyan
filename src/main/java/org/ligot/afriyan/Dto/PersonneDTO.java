@@ -23,6 +23,7 @@ public class PersonneDTO {
     @Email
     protected String email;
     protected Status status;
+    protected boolean isFirstConnexion;
     protected  String pwd;
 
     public PersonneDTO(Long id, String code, String nom, String prenom, Date ddn, String lieu, String numero_telephone, String photo, String location, String anonymat, Sexe sexe, String email, Status status, String pwd) {
@@ -155,5 +156,13 @@ public class PersonneDTO {
 
     public void setPwd(String pwd) {
         this.pwd = pwd;
+    }
+
+    public boolean getIsFirstConnexion() {
+        return isFirstConnexion;
+    }
+
+    public void setIsFirstConnexion(boolean firstConnexion) {
+        isFirstConnexion = firstConnexion;
     }
 }

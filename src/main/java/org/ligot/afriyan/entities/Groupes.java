@@ -31,7 +31,7 @@ public class Groupes {
     @Column(name = "IDENTIFIANT")
     private Long id;
 
-    @OneToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "ROLES", referencedColumnName = "IDENTIFIANT")
     private Set<Roles> roles= new HashSet<>();
 

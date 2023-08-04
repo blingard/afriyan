@@ -28,7 +28,7 @@ public class RendezVousController {
         return rendezVous.list(page);
     }
 
-    @DeleteMapping(value = "/delete")
+    @DeleteMapping(value = "/delete/{id}")
     void deleteRendezVous (@PathVariable long id) throws Exception{
         rendezVous.delete(id);
     }

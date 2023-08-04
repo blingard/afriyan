@@ -19,7 +19,6 @@ public class ArticlesController {
     }
     @GetMapping
     public List<ArticlesDTO> findAll(){
-        System.err.println("sdfsdfsad");
         return service.getList(TypeDonne.ARTICLE);
     }
 
