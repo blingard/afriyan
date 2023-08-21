@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CurrentTimestamp;
 
 import java.util.Date;
 
@@ -26,6 +27,7 @@ public class Conversation {
     @Column(name = "CONTENT")
     private String content;
     @Column(name = "dateenvois")
+    @CurrentTimestamp
     private Date dateEnvoie;
 
     public Long getId() {

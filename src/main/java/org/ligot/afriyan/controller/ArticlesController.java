@@ -2,6 +2,7 @@ package org.ligot.afriyan.controller;
 
 import jakarta.annotation.security.RolesAllowed;
 import org.ligot.afriyan.Dto.ArticlesDTO;
+import org.ligot.afriyan.entities.Categorie;
 import org.ligot.afriyan.entities.TypeDonne;
 import org.ligot.afriyan.service.IArticles;
 import org.springframework.data.domain.Page;
@@ -22,13 +23,19 @@ public class ArticlesController {
         return service.getList(TypeDonne.ARTICLE);
     }
 
+    @GetMapping("get-by-categorie/{categorie}")
+    public List<ArticlesDTO> findAllArticleByCategorie(@PathVariable String categorie){
+        Categorie category = Categorie.valueOf(categorie);
+        return service.getList(TypeDonne.ARTICLE, category);
+    }
+
     @GetMapping("active")
     public List<ArticlesDTO> findAllActive(){
         return service.getListActive(TypeDonne.ARTICLE);
     }
 
     @PostMapping
-    /*@RolesAllowed(value = {"SUPERADMIN"})*/
+    @RolesAllowed(value = {"SUPERADMIN"})
     public ArticlesDTO create(@RequestBody ArticlesDTO valeursDTO){
         return service.save(valeursDTO);
     }
@@ -49,6 +56,10 @@ public class ArticlesController {
     @RolesAllowed(value = {"SUPERADMIN"})
     public ArticlesDTO findById(@PathVariable Long id) throws Exception {
         return service.findById(id);
+    }
+    @GetMapping("get/{id}")
+    public ArticlesDTO findId(@PathVariable Long id) throws Exception {
+        return service.findByIdActive(id);
     }
 
     @PutMapping("/{id}")

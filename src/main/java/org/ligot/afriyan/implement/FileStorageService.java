@@ -3,6 +3,7 @@ package org.ligot.afriyan.implement;
 import org.ligot.afriyan.config.file.FileStorageProperties;
 import org.ligot.afriyan.exception.FileStorageException;
 import org.ligot.afriyan.exception.MyFileNotFoundException;
+import org.ligot.afriyan.repository.ICarrouselRepository;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Files;
@@ -19,42 +20,74 @@ import java.nio.file.StandardCopyOption;
 @Service
 public class FileStorageService {
     private final FileStorageProperties fileStorageProperties;
-    private final Path fileStorageLocation;
 
     public FileStorageService(FileStorageProperties fileStorageProperties) {
         this.fileStorageProperties = fileStorageProperties;
-        this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
-                .toAbsolutePath().normalize();
-
-        try {
-            Files.createDirectories(this.fileStorageLocation);
-        } catch (Exception ex) {
-            //throw new FileStorageException("Could not create the directory where the uploaded files will be stored.", ex);
-        }
     }
 
-    public String storeFile(MultipartFile file) {
+    String createDirectory(String path) throws Exception{
+        if(Files.exists(Paths.get(this.fileStorageProperties.getUploadDir().trim()+path.trim())))
+            return this.fileStorageProperties.getUploadDir().trim()+path.trim();
+        Files.createDirectories(
+                Paths
+                        .get(
+                                this.fileStorageProperties
+                                        .getUploadDir()
+                                        .trim()+path.trim())
+                        .toAbsolutePath()
+                        .normalize()
+        );
+        return this.fileStorageProperties.getUploadDir().trim()+path.trim();
+
+    }
+
+    public String storeFile(MultipartFile file) throws Exception {
         // Normalize file name
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-
         try {
             // Check if the file's name contains invalid characters
             if(fileName.contains("..")) {
                 throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
             }
 
-            // Copy file to the target location (Replacing existing file with the same name)
-            Path targetLocation = this.fileStorageLocation.resolve(fileName);
+            String[] a = fileName.trim().split("\\.");
+            String name = String.valueOf(System.currentTimeMillis())+'.'+a[1];
+            Path targetLocation = Paths.get(createDirectory(""))
+                    .toAbsolutePath().normalize().resolve(name);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            return fileName;
+            return name;
         } catch (IOException ex) {
             throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
         }
     }
 
-    public Resource loadFileAsResource(String fileName) {
+    public String storeFileCarrousel(MultipartFile file) throws Exception {
+        // Normalize file name
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         try {
+            // Check if the file's name contains invalid characters
+            if(fileName.contains("..")) {
+                throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
+            }
+
+            String[] a = fileName.trim().split("\\.");
+            String name = String.valueOf(System.currentTimeMillis())+'.'+a[1];
+            Path targetLocation = Paths.get(createDirectory("/carrousel"))
+                    .toAbsolutePath().normalize().resolve(name);
+            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+
+            return name;
+        } catch (IOException ex) {
+            throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
+        }
+    }
+
+    public Resource loadFileAsResource(String fileName) throws MalformedURLException {
+        System.err.println("hgsdvnmasvndmbvmansvbdmnvnbsdvmndvbmnfvbnsdmb");
+        Path path = null;
+        return new UrlResource(path.toUri());
+        /*try {
             Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
             Resource resource = new UrlResource(filePath.toUri());
             if(resource.exists()) {
@@ -64,6 +97,6 @@ public class FileStorageService {
             }
         } catch (MalformedURLException ex) {
             throw new MyFileNotFoundException("File not found " + fileName, ex);
-        }
+        }*/
     }
 }

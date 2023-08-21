@@ -41,6 +41,16 @@ public class GroupeController {
         return groupes.list();
     }
 
+    @GetMapping("roles")
+    List<RolesDTO> listRoles() throws Exception {
+        return groupes.listRoles();
+    }
+
+    @GetMapping("roles/{id}")
+    List<RolesDTO> listGroupRoles(@PathVariable Long id) throws Exception {
+        return groupes.listGroupRoles(id);
+    }
+
     @DeleteMapping(value = "/delete/{id}")
     void deleteGroupe (@PathVariable Long id) throws Exception{
         groupes.delete(id);

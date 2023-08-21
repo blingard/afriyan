@@ -61,4 +61,5 @@ public class ValeursDTO {
     public void setStatus(boolean status) {
         this.status = status;
     }
+
 }

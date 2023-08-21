@@ -1,9 +1,13 @@
 package org.ligot.afriyan.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CurrentTimestamp;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -17,8 +21,17 @@ public class ServiceEntity {
     private String libelle;
     @Column(name = "DESCRIPTION")
     private String description;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Produit> produits = new HashSet<>();
+
     @Column (name = "DATE_CREATION")
+    @CurrentTimestamp
     private Date dateCreation= new Date();
+
+    @ManyToOne
+    @JsonIgnoreProperties("serviceOfferts")
+    private CentrePartenaire centrePartenaire;
 
     public Long getId() {
         return id;
@@ -52,4 +65,19 @@ public class ServiceEntity {
         this.dateCreation = dateCreation;
     }
 
+    public Set<Produit> getProduits() {
+        return produits;
+    }
+
+    public CentrePartenaire getCentrePartenaire() {
+        return centrePartenaire;
+    }
+
+    public void setCentrePartenaire(CentrePartenaire centrePartenaire) {
+        this.centrePartenaire = centrePartenaire;
+    }
+
+    public void setProduits(Set<Produit> produits) {
+        this.produits = produits;
+    }
 }

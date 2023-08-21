@@ -1,16 +1,17 @@
 package org.ligot.afriyan.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CurrentTimestamp;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@NoArgsConstructor
 @AllArgsConstructor
 public class CentrePartenaire {
 
@@ -45,18 +46,24 @@ public class CentrePartenaire {
      @Column(name = "NOM_COMMUNE")
      private String nomCommune;
      @Column(name = "DATECREAATION")
+     @CurrentTimestamp
      private Date dateCreation;
      @Enumerated(EnumType.STRING)
      private Status status;
 
-     @OneToOne(fetch = FetchType.EAGER,optional = false)
+     @OneToOne(fetch = FetchType.EAGER/*,optional = false*/)
+     @JsonIgnoreProperties("groupe")
      private Utilisateur createur;
 
      @OneToMany(fetch = FetchType.EAGER)
      private Set<ServiceEntity> serviceOfferts = new HashSet<>();
 
-     @OneToMany(fetch = FetchType.EAGER)
-     private Set<Produit> produits = new HashSet<>();
+     public CentrePartenaire(Long id) {
+          this.id = id;
+     }
+
+     public CentrePartenaire() {
+     }
 
      public Long getId() {
           return id;
@@ -194,13 +201,6 @@ public class CentrePartenaire {
           this.serviceOfferts = serviceOfferts;
      }
 
-     public Set<Produit> getProduits() {
-          return produits;
-     }
-
-     public void setProduits(Set<Produit> produits) {
-          this.produits = produits;
-     }
 
      public String getPhoto() {
           return photo;

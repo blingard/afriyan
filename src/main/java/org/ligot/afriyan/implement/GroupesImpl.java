@@ -8,6 +8,7 @@ import org.ligot.afriyan.entities.Groupes;
 import org.ligot.afriyan.entities.Roles;
 import org.ligot.afriyan.entities.Utilisateur;
 import org.ligot.afriyan.mapper.GroupesMapper;
+import org.ligot.afriyan.mapper.RolesMapper;
 import org.ligot.afriyan.repository.IGroupesRepository;
 import org.ligot.afriyan.repository.IRolesRepository;
 import org.ligot.afriyan.repository.IUtilisateurRepository;
@@ -25,13 +26,15 @@ import java.util.Set;
 @Transactional
 public class GroupesImpl implements IGroupes {
     private final GroupesMapper mapper;
+    private final RolesMapper rolesMapper;
     private final IGroupesRepository repository;
     private final IRolesRepository iRolesRepository;
     private final IUtilisateurRepository iUtilisateurRepository;
     private final int PAGE_SIZE = 15;
 
-    public GroupesImpl(GroupesMapper mapper, IGroupesRepository repository, IRolesRepository iRolesRepository, IUtilisateurRepository iUtilisateurRepository) {
+    public GroupesImpl(GroupesMapper mapper, RolesMapper rolesMapper, IGroupesRepository repository, IRolesRepository iRolesRepository, IUtilisateurRepository iUtilisateurRepository) {
         this.mapper = mapper;
+        this.rolesMapper = rolesMapper;
         this.repository = repository;
         this.iRolesRepository = iRolesRepository;
         this.iUtilisateurRepository = iUtilisateurRepository;
@@ -176,5 +179,17 @@ public class GroupesImpl implements IGroupes {
             }
         });
         repository.save(groupes);
+    }
+
+    @Override
+    public List<RolesDTO> listRoles() {
+        return iRolesRepository.findAll().stream().map(rolesMapper::toDTO).toList();
+    }
+
+    @Override
+    public List<RolesDTO> listGroupRoles(Long id) throws Exception {
+        Groupes groupes = repository.findById(id).orElseThrow(()->new
+        Exception("Group not found"));
+        return groupes.getRoles().stream().map(rolesMapper::toDTO).toList();
     }
 }

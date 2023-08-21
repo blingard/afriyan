@@ -19,7 +19,7 @@ public class CPController {
         this.centrePartenaire = centrePartenaire;
     }
 
-    @PostMapping
+    @PostMapping("save")
     CentrePartenaireDTO saveCentre(@RequestBody @Valid CentrePartenaireDTO centrePartenaireDto) throws Exception {
         return centrePartenaire.save(centrePartenaireDto);
     }
@@ -34,8 +34,13 @@ public class CPController {
         return centrePartenaire.list(page);
     }
 
-
     @GetMapping
+    List<CentrePartenaireDTO> listAll() throws Exception {
+        return centrePartenaire.listAll();
+    }
+
+
+    @GetMapping("/localisation")
     @Operation(description = "Localisation des centre partenaire")
     List<CentrePartenaireDTO> localiserCentre() throws Exception {
         return centrePartenaire.list();
@@ -49,6 +54,10 @@ public class CPController {
     @GetMapping(value = "/getById/{id}")
     CentrePartenaireDTO listById(@PathVariable Long id) throws Exception {
         return centrePartenaire.findById(id);
+    }
+    @GetMapping(value = "/getByIdUser/{id}")
+    CentrePartenaireDTO getById(@PathVariable Long id) throws Exception {
+        return centrePartenaire.findByUserId(id);
     }
 
 }

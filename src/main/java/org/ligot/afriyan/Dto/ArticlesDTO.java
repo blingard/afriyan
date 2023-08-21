@@ -19,6 +19,8 @@ public class ArticlesDTO {
 
     private Categorie categorie;
 
+    private int lue;
+
     public ArticlesDTO() {
     }
 
@@ -98,5 +100,21 @@ public class ArticlesDTO {
 
     public void setPhote(String phote) {
         this.phote = phote;
+    }
+
+    public Categorie getCategorie() {
+        return categorie;
+    }
+
+    public void setCategorie(Categorie categorie) {
+        this.categorie = categorie;
+    }
+
+    public int getLue() {
+        return lue;
+    }
+
+    public void setLue(int lue) {
+        this.lue = lue;
     }
 }

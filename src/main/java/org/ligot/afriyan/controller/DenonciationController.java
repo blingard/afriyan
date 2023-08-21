@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/denonciation")
 public class DenonciationController {
@@ -26,6 +28,15 @@ public class DenonciationController {
     @GetMapping(value = "/list/{page}")
     Page<DenonciationDTO> listDenonciation(@PathVariable  int page) throws Exception {
         return denonciation.getPage(page);
+    }
+
+    @GetMapping
+    List<DenonciationDTO> list() throws Exception {
+        return denonciation.get();
+    }
+    @GetMapping("find-by-id/{id}")
+    DenonciationDTO findById(@PathVariable Long id) throws Exception {
+        return denonciation.findById(id);
     }
 
     @PutMapping(value = "/update/{id}")

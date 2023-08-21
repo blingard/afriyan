@@ -11,7 +11,7 @@ public interface IValeurs {
     List<ValeursDTO> getListActive();
     ValeursDTO findById(Long id) throws Exception;
     Page<ValeursDTO> getPage(int lenght);
-    void update(ValeursDTO valeursDTO, Long id);
+    void update(ValeursDTO valeursDTO, Long id) throws Exception;
     void delete(Long id);
 
     void active(Long id);

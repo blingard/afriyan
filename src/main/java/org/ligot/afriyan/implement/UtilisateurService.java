@@ -12,6 +12,7 @@ import org.ligot.afriyan.init.RolesName;
 import org.ligot.afriyan.mapper.UtilisateurMapper;
 import org.ligot.afriyan.repository.IArticlesRepository;
 import org.ligot.afriyan.repository.ICentrePartenaireRepository;
+import org.ligot.afriyan.repository.IDenonciationRepository;
 import org.ligot.afriyan.repository.IUtilisateurRepository;
 import org.ligot.afriyan.service.IGroupes;
 import org.ligot.afriyan.service.IUtilisateur;
@@ -37,14 +38,16 @@ public class UtilisateurService implements IUtilisateur {
     private final ICentrePartenaireRepository iCentrePartenaireRepository;
     private final IArticlesRepository iArticlesRepository;
     private final IGroupes groupesService;
+    private final IDenonciationRepository iDenonciationRepository;
     private final PasswordEncoder passwordEncoder;
     private final UtilisateurMapper mapper;
 
-    public UtilisateurService(IUtilisateurRepository repository, ICentrePartenaireRepository iCentrePartenaireRepository, IArticlesRepository iArticlesRepository, IGroupes groupesService, @Qualifier("passwordEncoder") PasswordEncoder passwordEncoder, UtilisateurMapper mapper) {
+    public UtilisateurService(IUtilisateurRepository repository, ICentrePartenaireRepository iCentrePartenaireRepository, IArticlesRepository iArticlesRepository, IGroupes groupesService, IDenonciationRepository iDenonciationRepository, @Qualifier("passwordEncoder") PasswordEncoder passwordEncoder, UtilisateurMapper mapper) {
         this.repository = repository;
         this.iCentrePartenaireRepository = iCentrePartenaireRepository;
         this.iArticlesRepository = iArticlesRepository;
         this.groupesService = groupesService;
+        this.iDenonciationRepository = iDenonciationRepository;
         this.passwordEncoder = passwordEncoder;
         this.mapper = mapper;
     }
@@ -89,11 +92,11 @@ public class UtilisateurService implements IUtilisateur {
         }
         utilisateurDTO.setId(null);
         utilisateurDTO.setCode(code);
-        utilisateurDTO.setGroupe(groupe);
-        utilisateurDTO.setPwd(passwordEncoder.encode("clientPWD"+code));
+        utilisateurDTO.setGroupe(groupe);//
+        utilisateurDTO.setPwd(passwordEncoder.encode(utilisateurDTO.getPwd()));
         Utilisateur utilisateur = repository.save(mapper.create(utilisateurDTO));
         utilisateur.setStatus(Status.ACTIVE);
-        utilisateur.setIsFirstConnexion(true);
+        utilisateur.setIsFirstConnexion(false);
         return mapper.toDTO(utilisateur);
     }
 
@@ -107,17 +110,15 @@ public class UtilisateurService implements IUtilisateur {
     }
 
     @Override
-    public List<UtilisateurDTO> list() throws Exception {
-        return repository.findAll().stream().map(mapper::toDTO).toList();
+    public List<UtilisateurDTO> list(Long groupId) throws Exception {
+        if(groupId == 0)
+            groupId = 1L;
+        return repository.findByGroupe(new Groupes(groupId)).stream().map(mapper::toDTO).toList();
     }
 
     @Override
-    public Page<UtilisateurDTO> list(int page, Long idGroup) throws Exception {
-        Page<Utilisateur> utilisateurs = repository.findByGroupe(new Groupes(idGroup),PageRequest.of(page, 15));
-        return  new PageImpl<>(
-                utilisateurs.stream().map(mapper::toDTO).toList(),
-                PageRequest.of(page, 15),
-                utilisateurs.getContent().size());
+    public List<UtilisateurDTO> list() throws Exception {
+        return repository.findAll().stream().map(mapper::toDTO).toList();
     }
 
     @Override
@@ -178,6 +179,31 @@ public class UtilisateurService implements IUtilisateur {
         map.put("cp", cpLenght);
         Long articleLenght = iArticlesRepository.count();
         map.put("article", articleLenght);
+        Long denonciationLenght = iDenonciationRepository.count();
+        map.put("denonciation", denonciationLenght);
         return map;
+    }
+
+    @Override
+    public void activeOrDesactive(Long id) throws Exception {
+        Utilisateur utilisateur = repository.findById(id).orElse(null);
+        if(utilisateur == null)
+            throw new Exception("User not found");
+        if(utilisateur.getStatus().equals(Status.INACTIVE))
+            utilisateur.setStatus(Status.ACTIVE);
+        else
+            utilisateur.setStatus(Status.INACTIVE);
+        repository.save(utilisateur);
+
+    }
+
+    @Override
+    public void resetPassword(Long id) throws Exception {
+        Utilisateur utilisateur = repository.findById(id).orElse(null);
+        if(utilisateur == null)
+            throw new Exception("User not found");
+        utilisateur.setPwd(passwordEncoder.encode("123456789"));
+        utilisateur.setIsFirstConnexion(true);
+        repository.save(utilisateur);
     }
 }

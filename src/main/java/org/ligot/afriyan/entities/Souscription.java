@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CurrentTimestamp;
 
 import java.util.Date;
 
@@ -24,6 +25,7 @@ public class Souscription {
     private ServiceEntity service;
 
     @Column(name = "datecreation")
+    @CurrentTimestamp
     private Date datecreation;
 
     @Enumerated(EnumType.STRING)

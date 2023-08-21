@@ -33,8 +33,6 @@ public class ValeursImpl implements IValeurs {
 
     @Override
     public List<ValeursDTO> getList() {
-        List<ValeursDTO> valeursDTOS = repository.findAll().stream().map(mapper::toDTO).collect(Collectors.toList());
-        System.err.println(valeursDTOS.size());
         return repository.findAll().stream().map(mapper::toDTO).collect(Collectors.toList());
     }
     @Override
@@ -63,8 +61,15 @@ public class ValeursImpl implements IValeurs {
     }
 
     @Override
-    public void update(ValeursDTO valeursDTO, Long id) {
+    public void update(ValeursDTO valeursDTO, Long id) throws Exception {
 
+        Valeurs valeurs = repository.findById(id).orElse(null);
+        if(valeurs == null){
+            throw new Exception("Le Valeurs que vous souhaitez modifier n'existes pas");
+        }
+        valeursDTO.setId(id);
+
+        mapper.toDTO(repository.saveAndFlush(mapper.create(valeursDTO)));
     }
 
     @Override

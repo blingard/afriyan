@@ -7,11 +7,14 @@ import java.util.List;
 
 public interface IMissions {
     MissionsDTO saveM(MissionsDTO valeursDTO);
+    List<MissionsDTO> getListAll();
     List<MissionsDTO> getList();
     MissionsDTO findById(Long id) throws Exception;
     Page<MissionsDTO> getPage(int lenght);
-    void update(MissionsDTO valeursDTO, Long id);
+    MissionsDTO update(MissionsDTO missionsDTO, Long id) throws Exception;
     void delete(Long id);
 
     void active(Long id);
+
+    List<MissionsDTO> getListActive();
 }

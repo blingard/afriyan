@@ -23,5 +23,8 @@ public interface IGroupes {
     void removeRoles (Set<RolesDTO> roles, Long id) throws Exception;
     GroupesDTO addUsers (Set<UtilisateurDTO> utilisateurDTOS, Long id) throws Exception;
     void removeUsers (Set<UtilisateurDTO> utilisateurDTOS, Long id) throws Exception;
+    List<RolesDTO> listRoles();
 
+    List<RolesDTO> listGroupRoles(Long id) throws Exception;
 }
+

@@ -42,19 +42,33 @@ public class SecurityConfig {
                             auth
                                     .requestMatchers(
                                             "/api/article/active",
-                                    "/swagger-ui/**",
+                                            "/swagger-ui/**",
                                             "/v3/api-docs/**",
-                                            "/api/article/find-by-id/**",
-                                            "/api/valeur",
-                                            "/api/temoignage/active",
-                                            "/api/missions")//swagger-ui/**","/v3/api-docs/**
-                                    .permitAll()
-                                    .requestMatchers("/api/auth/**")
+                                            "/api/article/get/**",
+                                            "/api/article/active/**",
+                                            "/api/article/get-by-categorie/**",
+                                            "/api/centrepartenaire",
+                                            "/api/centrepartenaire/getById/**",
+                                            "/user/register",
+                                            "/denonciation",
+                                            "/user/register",
+                                            "/denonciation/list/**",
+                                            "/api/file/downloadFile/**",
+                                            "/api/missions",
+                                            "/api/missions/active/**",
+                                            "/api/missions/find-by-id/**",
+                                            "/produit/getById/**",
+                                            "/rapport/getById/**",
+                                            "/rapport/list/**",
+                                            "/api/valeur/find-active",
+                                            "/api/auth/**",
+                                            "/api/parametres/get/**",
+                                            "/api/temoignage/active")
                                     .permitAll()
                                     .requestMatchers(HttpMethod.OPTIONS, "/**")
                                     .permitAll()
                                     .anyRequest()
-                                    .permitAll();//.authenticated();
+                                    .permitAll();//authenticated();
                         }
                 )
                 .sessionManagement(

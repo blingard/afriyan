@@ -8,12 +8,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface IUtilisateurRepository extends JpaRepository<Utilisateur, Long> {
     Optional<Utilisateur> findByCode(String code);
     Optional<Utilisateur> findByEmail(String eMail);
-    Page<Utilisateur> findByGroupe(Groupes groupes, Pageable pageable);
+    List<Utilisateur> findByGroupe(Groupes groupes);
      Utilisateur findByNom(String nom);
 }

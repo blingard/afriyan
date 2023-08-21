@@ -14,8 +14,8 @@ public interface IUtilisateur {
     UtilisateurDTO save(UtilisateurDTO utilisateurDTO, Long idGroupe) throws Exception ;
     UtilisateurDTO register(UtilisateurDTO utilisateurDTO) throws Exception ;
     Page<UtilisateurDTO> list(int page) throws Exception ;
+    List<UtilisateurDTO> list(Long groupId) throws Exception ;
     List<UtilisateurDTO> list() throws Exception ;
-    Page<UtilisateurDTO> list(int page,Long idGroup) throws Exception ;
     UtilisateurDTO update(UtilisateurDTO utilisateurDTO, Long id) throws Exception ;
     void disableUtilisateur(Long id) throws Exception ;
 
@@ -25,4 +25,8 @@ public interface IUtilisateur {
     void changePassword(ChangePwd changePwd) throws Exception;
 
     Map<String, Object> dashboard() throws Exception;
+
+    void activeOrDesactive(Long id) throws Exception;
+
+    void resetPassword(Long id) throws Exception;
 }

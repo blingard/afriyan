@@ -13,6 +13,7 @@ public class PersonneDTO {
     protected String code;
     protected String nom;
     protected String prenom;
+
     protected Date ddn;
     protected String lieu;
     protected String numero_telephone;
@@ -44,6 +45,10 @@ public class PersonneDTO {
     }
 
     public PersonneDTO() {
+    }
+
+    public PersonneDTO(Long id) {
+        this.id = id;
     }
 
     public Long getId() {

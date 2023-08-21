@@ -11,7 +11,9 @@ public interface ICentrePartenaire {
     CentrePartenaireDTO save(CentrePartenaireDTO centrePartenaireDto) throws Exception;
     Page<CentrePartenaireDTO> list(int page) throws Exception;
     List<CentrePartenaireDTO> list() throws Exception;
+    List<CentrePartenaireDTO> listAll() throws Exception;
     CentrePartenaireDTO update(CentrePartenaireDTO centrePartenaireDto, Long id) throws Exception;
     void delete(Long id) throws Exception;
 
+    CentrePartenaireDTO findByUserId(Long id) throws Exception;
 }

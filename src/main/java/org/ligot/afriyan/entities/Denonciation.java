@@ -3,6 +3,7 @@ package org.ligot.afriyan.entities;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CurrentTimestamp;
 
 import java.util.Date;
 
@@ -14,9 +15,11 @@ public class Denonciation {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
     @Column(length = -1)
     private String contenu;
 
+    @CurrentTimestamp
     private Date dateDenonciation = new Date();
 
     @ManyToOne

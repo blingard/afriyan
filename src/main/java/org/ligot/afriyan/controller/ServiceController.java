@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/service")
 public class ServiceController {
@@ -26,6 +28,11 @@ public class ServiceController {
     @GetMapping(value = "/list/{page}")
     Page<ServiceDTO> listService(@PathVariable  int page) throws Exception {
         return serviceEntity.list(page);
+    }
+
+    @GetMapping(value = "/list-by-cp-id/{id}")
+    List<ServiceDTO> listServiceCP(@PathVariable  Long id) throws Exception {
+        return serviceEntity.listServiceCP(id);
     }
 
     @DeleteMapping(value = "/delete/{id}")

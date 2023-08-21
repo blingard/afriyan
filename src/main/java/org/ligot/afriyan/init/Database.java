@@ -39,11 +39,21 @@ public class Database implements CommandLineRunner {
             Roles roles3 = serviceRole.save(new Roles(null, RolesName.ROOT.toString(),"Utilisateur Root","all"));
             Roles roles4 = serviceRole.save(new Roles(null, RolesName.USER.toString(),"Utilisateur","all"));
             Roles roles5 = serviceRole.save(new Roles(null, RolesName.VISITOR.toString(),"Visiteur","all"));
+            Roles roles6 = serviceRole.save(new Roles(null, RolesName.GESTIONNAIRECENTRE.toString(),"Gestionnaire de centre","all"));
+            Groupes groupes2 = new Groupes(
+                    null,
+                    new HashSet<>(),
+                    RolesName.USER.toString(),
+                    "Groupe des Utilisateurs",
+                    "Description",
+                    new HashSet<>());
+            groupes2.getRoles().add(serviceRole.findByNom(RolesName.USER.toString()).get());
+            serviceGroupe.save(groupes2);
             UtilisateurDTO dto = new UtilisateurDTO();
-            dto.setEmail("dsfd@sdf.sdf");
-            dto.setNumero_telephone("1236547789");
-            dto.setNom("sdfsdfdsfsd");
-            dto.setPrenom("sdfsdfsdf");
+            dto.setEmail("youthfp@youthfp.cm");
+            dto.setNumero_telephone("@Youthfp75");
+            dto.setNom("Youthfp");
+            dto.setPrenom("Inc");
             dto.setStatus(Status.ACTIVE);
 
             if(serviceAdmin.codeExist("000000000000000")){
@@ -61,14 +71,18 @@ public class Database implements CommandLineRunner {
             Groupes groupes = new Groupes(
                     null,
                     new HashSet<>(),
-                    RolesName.USER.toString(),
-                    "Groupe des utilisateurs",
+                    RolesName.SUPERADMIN.toString(),
+                    "Groupe des SUPERADMIN",
                     "Description",
                     new HashSet<>());
             groupes.getRoles().add(roles1);
+            groupes.getRoles().add(roles2);
             groupes.getRoles().add(roles3);
-            serviceGroupe.save(groupes);
-            iUtilisateur.save(dto,1L);
+            groupes.getRoles().add(roles4);
+            groupes.getRoles().add(roles5);
+            groupes.getRoles().add(roles6);
+            groupes = serviceGroupe.save(groupes);
+            iUtilisateur.save(dto,groupes.getId());
             Groupes groupes1 = new Groupes(
                     null,
                     new HashSet<>(),
@@ -78,6 +92,7 @@ public class Database implements CommandLineRunner {
                     new HashSet<>());
             groupes1.getRoles().add(roles2);
             serviceGroupe.save(groupes1);
+
         }catch (Exception e){}
 
 

@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProduitDTO {
@@ -13,8 +15,11 @@ public class ProduitDTO {
     private String libelle;
     private String description;
     private Double prix;
-    @JsonIgnoreProperties({"groupe"})
-    private CentrePartenaireDTO centrePartenaireD;
+
+    private Date dateCreation = new Date();
+
+    @JsonIgnoreProperties({"produits", "centrePartenaire"})
+    private ServiceDTO service;
 
     public Long getId() {
         return id;
@@ -54,5 +59,21 @@ public class ProduitDTO {
 
     public void setPrix(Double prix) {
         this.prix = prix;
+    }
+
+    public Date getDateCreation() {
+        return dateCreation;
+    }
+
+    public void setDateCreation(Date dateCreation) {
+        this.dateCreation = dateCreation;
+    }
+
+    public ServiceDTO getService() {
+        return service;
+    }
+
+    public void setService(ServiceDTO service) {
+        this.service = service;
     }
 }

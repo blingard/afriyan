@@ -1,8 +1,11 @@
 package org.ligot.afriyan.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.ligot.afriyan.Dto.CarrouselDTO;
 import org.ligot.afriyan.Dto.UploadFileResponse;
+import org.ligot.afriyan.entities.Carrousel;
 import org.ligot.afriyan.implement.FileStorageService;
+import org.ligot.afriyan.repository.ICarrouselRepository;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -12,26 +15,27 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.net.MalformedURLException;
 
 @RestController
 @RequestMapping("api/file")
 public class FileController {
-    private final FileStorageService fileStorageService;
 
-    public FileController(FileStorageService fileStorageService) {
+    private final FileStorageService fileStorageService;
+    private final ICarrouselRepository repository;
+
+    public FileController(FileStorageService fileStorageService, ICarrouselRepository repository) {
         this.fileStorageService = fileStorageService;
+        this.repository = repository;
     }
 
     @PostMapping("/uploadFile")
-    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
+    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) throws Exception {
         String fileName = fileStorageService.storeFile(file);
 
         String fileDownloadUri = ServletUriComponentsBuilder
                 .fromCurrentContextPath()
-                .path("/downloadFile/")
+                .path("/api/file/downloadFile/")
                 .path(fileName)
                 .toUriString();
 
@@ -39,16 +43,23 @@ public class FileController {
                 file.getContentType(), file.getSize());
     }
 
-    @PostMapping("/uploadMultipleFiles")
-    public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
-        return Arrays.asList(files)
-                .stream()
-                .map(file -> uploadFile(file))
-                .collect(Collectors.toList());
+    @PostMapping("/uploadCarrousel/")
+    public UploadFileResponse uploadCarrousel(@RequestParam("file") MultipartFile file, @RequestBody CarrouselDTO carrousel) throws Exception {
+        String fileName = fileStorageService.storeFileCarrousel(file);
+
+        String fileDownloadUri = ServletUriComponentsBuilder
+                .fromCurrentContextPath()
+                .path("/api/file/downloadFile/")
+                .path(fileName)
+                .toUriString();
+        repository.save(new Carrousel(null, fileDownloadUri, carrousel.getTitre(), carrousel.getDescription(), false));
+
+        return new UploadFileResponse(fileName, fileDownloadUri,
+                file.getContentType(), file.getSize());
     }
 
     @GetMapping("/downloadFile/{fileName:.+}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
+    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) throws MalformedURLException {
         // Load file as Resource
         Resource resource = fileStorageService.loadFileAsResource(fileName);
 

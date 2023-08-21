@@ -2,6 +2,7 @@ package org.ligot.afriyan.implement;
 
 import jakarta.transaction.Transactional;
 import org.ligot.afriyan.Dto.MissionsDTO;
+import org.ligot.afriyan.entities.Denonciation;
 import org.ligot.afriyan.entities.Missions;
 import org.ligot.afriyan.mapper.MissionsMapper;
 import org.ligot.afriyan.repository.IMissionsRepository;
@@ -27,20 +28,23 @@ public class MissionsImpl implements IMissions {
 
     @Override
     public MissionsDTO saveM(MissionsDTO valeursDTO) {
-        System.err.println(valeursDTO.getPhote());
         Missions missions = mapper.create(valeursDTO);
         missions.setStatus(true);
-        System.err.println(missions.getPhote());
         return mapper.toDTO(repository.save(missions));
     }
 
     @Override
-    public List<MissionsDTO> getList() {
+    public List<MissionsDTO> getListAll() {
         return repository
-                .findAllByStatusTrue()
+                .findAll()
                 .stream()
                 .map(mapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<MissionsDTO> getList() {
+        return this.getListAll();
     }
 
     @Override
@@ -64,7 +68,14 @@ public class MissionsImpl implements IMissions {
     }
 
     @Override
-    public void update(MissionsDTO valeursDTO, Long id) {
+    public MissionsDTO update(MissionsDTO missionsDTO, Long id) throws Exception {
+        Missions missions = repository.findById(id).orElse(null);
+        if(missions == null){
+            throw new Exception("Le Denonciation que vous souhaitez modifier n'existes pas");
+        }
+        missionsDTO.setId(id);
+
+        return mapper.toDTO(repository.saveAndFlush(mapper.create(missionsDTO)));
 
     }
 
@@ -83,5 +94,14 @@ public class MissionsImpl implements IMissions {
             missions.setStatus(!missions.isStatus());
             repository.save(missions);
         }
+    }
+
+    @Override
+    public List<MissionsDTO> getListActive() {
+        return repository
+                .findAllByStatusTrue()
+                .stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
     }
 }

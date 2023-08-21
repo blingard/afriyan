@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.ligot.afriyan.Dto.CentrePartenaireDTO;
 import org.ligot.afriyan.Dto.UtilisateurDTO;
 import org.ligot.afriyan.entities.CentrePartenaire;
+import org.ligot.afriyan.entities.Status;
 import org.ligot.afriyan.entities.Utilisateur;
 import org.ligot.afriyan.mapper.CentrePartenaireMapper;
 import org.ligot.afriyan.mapper.UtilisateurMapper;
@@ -46,7 +47,8 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
 
     @Override
     public CentrePartenaireDTO save(CentrePartenaireDTO centrePartenaireDTO) throws Exception {
-        Utilisateur utilisateur = getUser();
+/*        Utilisateur utilisateur = getUser();
+        centrePartenaireDTO.setCreateur(new UtilisateurDTO(utilisateur.getId()));*/
         return mapper.toDTO(repository.save(mapper.create(centrePartenaireDTO)));
     }
     private Utilisateur getUser() throws Exception {
@@ -63,6 +65,11 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
 
     @Override
     public List<CentrePartenaireDTO> list() throws Exception {
+        return repository.findCentrePartenaireByStatus(Status.ACTIVE).stream().map(mapper::toDTO).toList();
+    }
+
+    @Override
+    public List<CentrePartenaireDTO> listAll(){
         return repository.findAll().stream().map(mapper::toDTO).toList();
     }
 
@@ -73,11 +80,20 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
             throw new Exception("Le CentrePartenaire que vous souhaitez modifier n'existes pas");
         }
         centrePartenaireDTO.setId(id);
+        mapper.update(centrePartenaireDTO, centrePartenaire);
         return mapper.toDTO(repository.save(mapper.create(centrePartenaireDTO)));
     }
 
     @Override
     public void delete(Long id) throws Exception {
         repository.deleteById(id);
+    }
+
+    @Override
+    public CentrePartenaireDTO findByUserId(Long id) throws Exception {
+        UtilisateurDTO userDTO = utilisateur.findById(id);
+        if(userDTO == null)
+            throw new Exception("user with ID = "+id+" is null");
+        return mapper.toDTO(repository.findCentrePartenaireByCreateur(new Utilisateur(id)));
     }
 }

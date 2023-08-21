@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CurrentTimestamp;
 
 import java.util.Date;
 
@@ -24,6 +25,7 @@ public class Rapport {
     private String cotenu;
 
     @Column(name = "DATE")
+    @CurrentTimestamp
     private Date date;
 
     @Column(name = "STATUS")

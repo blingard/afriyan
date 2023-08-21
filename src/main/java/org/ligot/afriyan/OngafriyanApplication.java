@@ -19,12 +19,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @SpringBootApplication
 @OpenAPIDefinition(
         servers = {
-                @Server(url = "http://www.youthfp.cm:8080/")
+                @Server(url = "http://localhost:8080/")//www.youthfp.cm
         },
                 info = @Info(
                 title = "AfriYan APIs",
                 version = "1.0",
-                contact = @Contact(name = "ETS Lingot", email = "email@g.com", url = "test.fr"),
+                contact = @Contact(name = "ETS Lingot", email = "youthfp@youthfp.cm", url = "www.youthfp.cm"),
                 description = "AfriYan Information",
                 license = @License(name = "Licence API")))
 @SecurityScheme(name = "auth", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "bearer")

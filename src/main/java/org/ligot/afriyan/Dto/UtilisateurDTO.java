@@ -26,6 +26,10 @@ public class UtilisateurDTO extends PersonneDTO{
     public UtilisateurDTO() {
     }
 
+    public UtilisateurDTO(Long id) {
+        super(id);
+    }
+
     @Override
     public Long getId() {
         return super.getId();

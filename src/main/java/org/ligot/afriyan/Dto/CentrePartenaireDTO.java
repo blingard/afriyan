@@ -1,9 +1,13 @@
 package org.ligot.afriyan.Dto;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.ligot.afriyan.entities.Status;
+
+import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,7 +26,10 @@ public class CentrePartenaireDTO {
     private String type;
     private String nomCommune;
     private String photo;
+    @JsonIgnoreProperties({"groupe"})
     private UtilisateurDTO createur;
+    @JsonIgnoreProperties({"centrePartenaire"})
+    private Set<ServiceDTO> serviceOfferts;
     private Status status;
 
 
@@ -153,5 +160,13 @@ public class CentrePartenaireDTO {
 
     public void setCreateur(UtilisateurDTO createur) {
         this.createur = createur;
+    }
+
+    public Set<ServiceDTO> getServiceOfferts() {
+        return serviceOfferts;
+    }
+
+    public void setServiceOfferts(Set<ServiceDTO> serviceOfferts) {
+        this.serviceOfferts = serviceOfferts;
     }
 }

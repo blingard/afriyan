@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.CurrentTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
@@ -13,7 +15,6 @@ import java.util.Date;
 
 @Entity
 @AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "users",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "code"),
@@ -72,6 +73,7 @@ public class Utilisateur implements Serializable, Comparable<Utilisateur> {
     protected String pwd;
 
     @Column(name = "DATECREATION")
+    @CurrentTimestamp
     protected Date dCreation;
 
     @Column(name = "firstconnexion")
@@ -79,6 +81,14 @@ public class Utilisateur implements Serializable, Comparable<Utilisateur> {
 
     @ManyToOne
     private Groupes groupe;
+
+    public Utilisateur(Long id) {
+        this.id = id;
+    }
+
+    public Utilisateur() {
+    }
+
     @Override
     public int compareTo(Utilisateur o) {
         return 0;

@@ -68,4 +68,9 @@ public class DenonciationImpl implements IDenonciation {
         if(denonciation != null)
             repository.delete(denonciation);
     }
+
+    @Override
+    public List<DenonciationDTO> get() {
+        return repository.findAll().stream().map(mapper::toDTO).toList();
+    }
 }

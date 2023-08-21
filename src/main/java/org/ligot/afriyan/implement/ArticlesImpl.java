@@ -3,8 +3,8 @@ package org.ligot.afriyan.implement;
 import jakarta.transaction.Transactional;
 import org.ligot.afriyan.Dto.ArticlesDTO;
 import org.ligot.afriyan.entities.Articles;
+import org.ligot.afriyan.entities.Categorie;
 import org.ligot.afriyan.entities.TypeDonne;
-import org.ligot.afriyan.entities.Valeurs;
 import org.ligot.afriyan.mapper.ArticlesMapper;
 import org.ligot.afriyan.repository.IArticlesRepository;
 import org.ligot.afriyan.service.IArticles;
@@ -38,9 +38,12 @@ public class ArticlesImpl implements IArticles {
 
     @Override
     public List<ArticlesDTO> getList(TypeDonne typeDonne) {
-
-        System.err.println("sdfsdfsad "+repository.findAllByTypeDonne(typeDonne).size());
         return repository.findAllByTypeDonne(typeDonne).stream().map(mapper::toDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ArticlesDTO> getList(TypeDonne typeDonne, Categorie categorie) {
+        return repository.findAllByTypeDonneAndCategorieAndStatusTrue(typeDonne, categorie).stream().map(mapper::toDTO).collect(Collectors.toList());
     }
 
     @Override
@@ -57,6 +60,16 @@ public class ArticlesImpl implements IArticles {
     }
 
     @Override
+    public ArticlesDTO findByIdActive(Long id) throws Exception {
+        Articles articles = repository.findById(id).orElse(null);
+        if(articles == null)
+            throw new Exception("data not found");
+        articles.setLue(articles.getLue()+1);
+        repository.save(articles);
+        return mapper.toDTO(articles);
+    }
+
+    @Override
     public Page<ArticlesDTO> getPage(int lenght,TypeDonne typeDonne) {
         if(lenght<0)
             lenght = 0;
@@ -69,7 +82,14 @@ public class ArticlesImpl implements IArticles {
     }
 
     @Override
-    public void update(ArticlesDTO articlesDTO, Long id) {
+    public ArticlesDTO update(ArticlesDTO articlesDTO, Long id) throws Exception{
+        Articles article = repository.findById(id).orElse(null);
+        if(article == null){
+            throw new Exception("Le Article que vous souhaitez modifier n'existes pas");
+        }
+        articlesDTO.setId(id);
+        mapper.update(articlesDTO,article);
+        return mapper.toDTO(repository.save(mapper.create(articlesDTO)));
 
     }
 

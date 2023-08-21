@@ -3,6 +3,7 @@ package org.ligot.afriyan.implement;
 import jakarta.transaction.Transactional;
 import org.ligot.afriyan.Dto.ServiceDTO;
 import org.ligot.afriyan.Dto.UtilisateurDTO;
+import org.ligot.afriyan.entities.CentrePartenaire;
 import org.ligot.afriyan.mapper.ServiceMapper;
 import org.ligot.afriyan.repository.IServiceEntityRepository;
 import org.ligot.afriyan.service.IServiceEntity;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -64,5 +66,13 @@ public class ServiceEntityImpl implements IServiceEntity {
     @Override
     public void sendSMS(Set<UtilisateurDTO> utilisateurs, String message) throws Exception {
         System.err.println("Send SMS");
+    }
+
+    @Override
+    public List<ServiceDTO> listServiceCP(Long id) {
+        return repository
+                .findServiceEntitiesByCentrePartenaire(
+                        new CentrePartenaire(id))
+                .stream().map(mapper::toDTO).toList();
     }
 }

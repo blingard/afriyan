@@ -5,14 +5,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class FileStorageProperties {
-    @Value("{file.upload-dir}")
-    private String uploadDir;
+
+    @Value("${file.upload-dir}")
+    private String path;
 
     public String getUploadDir() {
-        return uploadDir;
+        return path;
     }
 
-    public void setUploadDir(String uploadDir) {
-        this.uploadDir = uploadDir;
-    }
 }

@@ -19,14 +19,16 @@ public class MissionsController {
 
     @GetMapping
     public List<MissionsDTO> findAllActive(){
+        return service.getListActive();
+    }
+    @GetMapping("all")
+    public List<MissionsDTO> findAll(){
         return service.getList();
     }
 
     @PostMapping
-    /*@RolesAllowed(value = {"SUPERADMIN"})*/
+    @RolesAllowed(value = {"SUPERADMIN"})
     public MissionsDTO create(@RequestBody MissionsDTO missionsDTO){
-
-        System.err.println(missionsDTO.getPhote());
         return service.saveM(missionsDTO);
     }
 
@@ -43,7 +45,6 @@ public class MissionsController {
     }
 
     @GetMapping("find-by-id/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
     public MissionsDTO findById(@PathVariable Long id) throws Exception {
         return service.findById(id);
     }

@@ -1,11 +1,14 @@
 package org.ligot.afriyan.Dto;
 
-import jakarta.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @NoArgsConstructor
@@ -14,7 +17,11 @@ public class ServiceDTO {
     private Long id;
     private String libelle;
     private String description;
+    @JsonIgnore
+    private Set<ProduitDTO> produits = new HashSet<>();
     private Date dateCreation;
+    @JsonIgnoreProperties({"serviceOfferts"})
+    private CentrePartenaireDTO centrePartenaire;
 
 
     public Long getId() {
@@ -49,4 +56,19 @@ public class ServiceDTO {
         this.dateCreation = dateCreation;
     }
 
+    public Set<ProduitDTO> getProduits() {
+        return produits;
+    }
+
+    public CentrePartenaireDTO getCentrePartenaire() {
+        return centrePartenaire;
+    }
+
+    public void setCentrePartenaire(CentrePartenaireDTO centrePartenaire) {
+        this.centrePartenaire = centrePartenaire;
+    }
+
+    public void setProduits(Set<ProduitDTO> produits) {
+        this.produits = produits;
+    }
 }

@@ -1,10 +1,14 @@
 package org.ligot.afriyan.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CurrentTimestamp;
+
+import java.util.Date;
 
 @Entity
 @AllArgsConstructor
@@ -23,6 +27,13 @@ public class Produit {
     private String description;
     @Column(name = "PRIX")
     private Double prix;
+    @Column(name = "DATE_CREATION")
+    @CurrentTimestamp
+    private Date datCreation;
+	@ManyToOne(optional = false)
+    @JsonIgnoreProperties({"produits"})
+	private ServiceEntity service;
+
 
     public Long getId() {
         return id;
@@ -62,5 +73,21 @@ public class Produit {
 
     public void setPrix(Double prix) {
         this.prix = prix;
+    }
+
+    public ServiceEntity getService() {
+        return service;
+    }
+
+    public void setService(ServiceEntity service) {
+        this.service = service;
+    }
+
+    public Date getDatCreation() {
+        return datCreation;
+    }
+
+    public void setDatCreation(Date datCreation) {
+        this.datCreation = datCreation;
     }
 }
