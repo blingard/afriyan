@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashSet;
 
@@ -33,7 +34,7 @@ public class Database implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        try{
+        /*try{
             Roles roles1 =  serviceRole.save(new Roles(null, RolesName.SUPERADMIN.toString(),"Super utilisateur","all"));
             Roles roles2 = serviceRole.save(new Roles(null, RolesName.ADMIN.toString(),"Admin","all"));
             Roles roles3 = serviceRole.save(new Roles(null, RolesName.ROOT.toString(),"Utilisateur Root","all"));
@@ -93,7 +94,7 @@ public class Database implements CommandLineRunner {
             groupes1.getRoles().add(roles2);
             serviceGroupe.save(groupes1);
 
-        }catch (Exception e){}
+        }catch (Exception e){}*/
 
 
 

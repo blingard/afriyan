@@ -18,4 +18,5 @@ public interface IServiceEntity {
     void sendSMS(Set<UtilisateurDTO> utilisateurs, String message) throws Exception ;
 
     List<ServiceDTO> listServiceCP(Long id);
+    List<ServiceDTO> listAll();
 }

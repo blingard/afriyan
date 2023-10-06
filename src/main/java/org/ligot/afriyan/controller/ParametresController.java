@@ -67,6 +67,10 @@ public class ParametresController {
     }
 
 
+    @GetMapping("get/connect")
+    public Long findConnect() throws Exception {
+        return service.visiteurs();
+    }
     @GetMapping("get/links")
     public Map<String, ParametresDto> findAllLinks(){
         return service.findAllLinks();

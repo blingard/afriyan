@@ -33,7 +33,7 @@ public class CentrePartenaire {
      private String location;
      @Column(name = "TELEPHONE", nullable = false, unique = true)
      private String telephone;
-     @Column(name = "PHOTO", nullable = false, unique = true)
+     @Column(name = "PHOTO")
      private String photo;
      @Column(name = "ADRESSE")
      private String adresse;

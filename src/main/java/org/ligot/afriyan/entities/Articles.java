@@ -21,11 +21,9 @@ public class Articles {
     private String phote;
     private boolean status;
 
-    @Enumerated(EnumType.STRING)
     private Categorie categorie;
     @CurrentTimestamp
     private Date date;
-    @Enumerated(EnumType.STRING)
     private TypeDonne typeDonne;
     private int lue;
 

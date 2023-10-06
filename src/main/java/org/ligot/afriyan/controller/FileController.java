@@ -2,6 +2,7 @@ package org.ligot.afriyan.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.ligot.afriyan.Dto.CarrouselDTO;
+import org.ligot.afriyan.Dto.MediatechRequest;
 import org.ligot.afriyan.Dto.UploadFileResponse;
 import org.ligot.afriyan.entities.Carrousel;
 import org.ligot.afriyan.implement.FileStorageService;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/file")
@@ -41,6 +43,11 @@ public class FileController {
 
         return new UploadFileResponse(fileName, fileDownloadUri,
                 file.getContentType(), file.getSize());
+    }
+
+    @PostMapping("/uploadFile/mediatech")
+    public void uploadFile(@RequestParam MultipartFile file, @RequestParam String text) throws Exception {
+        fileStorageService.storeFileStory(file, text);
     }
 
     @PostMapping("/uploadCarrousel/")

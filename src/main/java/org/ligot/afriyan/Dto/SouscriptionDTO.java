@@ -61,4 +61,15 @@ public class SouscriptionDTO {
     public void setStatus(Status status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "SouscriptionDTO{" +
+                "id=" + id +
+                ", utilisateur=" + utilisateur +
+                ", service=" + service +
+                ", datecreation=" + datecreation +
+                ", status=" + status +
+                '}';
+    }
 }

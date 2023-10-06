@@ -75,4 +75,9 @@ public class ServiceEntityImpl implements IServiceEntity {
                         new CentrePartenaire(id))
                 .stream().map(mapper::toDTO).toList();
     }
+
+    @Override
+    public List<ServiceDTO> listAll() {
+        return repository.findAll().stream().map(mapper::toDTO).toList();
+    }
 }

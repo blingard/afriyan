@@ -5,14 +5,19 @@ import org.ligot.afriyan.Dto.ArticlesDTO;
 import org.ligot.afriyan.entities.Articles;
 import org.ligot.afriyan.entities.Categorie;
 import org.ligot.afriyan.entities.TypeDonne;
+import org.ligot.afriyan.entities.UserConnect;
 import org.ligot.afriyan.mapper.ArticlesMapper;
 import org.ligot.afriyan.repository.IArticlesRepository;
+import org.ligot.afriyan.repository.IUserConnect;
 import org.ligot.afriyan.service.IArticles;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,10 +27,12 @@ import java.util.stream.Collectors;
 public class ArticlesImpl implements IArticles {
     private final IArticlesRepository repository;
     private final ArticlesMapper mapper;
+    private final IUserConnect iUserConnect;
 
-    public ArticlesImpl(IArticlesRepository repository, ArticlesMapper mapper) {
+    public ArticlesImpl(IArticlesRepository repository, ArticlesMapper mapper, IUserConnect iUserConnect) {
         this.repository = repository;
         this.mapper = mapper;
+        this.iUserConnect = iUserConnect;
     }
 
     @Override
@@ -48,6 +55,10 @@ public class ArticlesImpl implements IArticles {
 
     @Override
     public List<ArticlesDTO> getListActive(TypeDonne typeDonne) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        iUserConnect.save(new UserConnect(
+                Date.from(Instant.now()),
+                userDetails.getUsername()));
         return repository.findAllByStatusTrueAndTypeDonne(typeDonne).stream().map(mapper::toDTO).collect(Collectors.toList());
     }
 
