@@ -25,4 +25,6 @@ public interface IParametres {
     List<ParametresDto> find(ParamTypeEnum paramTypeEnum);
 
     ParametresDto findById(Long id) throws Exception;
+
+    Long visiteurs() throws Exception;
 }

@@ -96,4 +96,13 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
             throw new Exception("user with ID = "+id+" is null");
         return mapper.toDTO(repository.findCentrePartenaireByCreateur(new Utilisateur(id)));
     }
+
+    @Override
+    public void active(Long id) {
+        CentrePartenaire centrePartenaire = repository.findById(id).orElse(null);
+        if(centrePartenaire != null){
+            centrePartenaire.setStatus(centrePartenaire.getStatus() == Status.ACTIVE ? Status.INACTIVE : Status.ACTIVE);
+            repository.save(centrePartenaire);
+        }
+    }
 }

@@ -4,15 +4,17 @@ import jakarta.transaction.Transactional;
 import org.ligot.afriyan.Dto.ParametresDto;
 import org.ligot.afriyan.entities.ParamTypeEnum;
 import org.ligot.afriyan.entities.Parametres;
+import org.ligot.afriyan.entities.UserConnect;
 import org.ligot.afriyan.mapper.ParametresMapper;
 import org.ligot.afriyan.repository.IParametresRepository;
+import org.ligot.afriyan.repository.IUserConnect;
 import org.ligot.afriyan.service.IParametres;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.Instant;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,10 +22,12 @@ import java.util.stream.Collectors;
 public class ParametresImpl implements IParametres {
     private final IParametresRepository repository;
     private final ParametresMapper mapper;
+    private final IUserConnect iUserConnect;
 
-    public ParametresImpl(IParametresRepository repository, ParametresMapper mapper) {
+    public ParametresImpl(IParametresRepository repository, ParametresMapper mapper, IUserConnect iUserConnect) {
         this.repository = repository;
         this.mapper = mapper;
+        this.iUserConnect = iUserConnect;
     }
 
     @Override
@@ -42,8 +46,8 @@ public class ParametresImpl implements IParametres {
     @Override
     public void update(ParametresDto parametresDto, Long id) throws Exception {
         Optional<Parametres> parametres = repository.findById(id);
-        if(!parametres.isEmpty())
-            throw new Exception("Item type "+parametres.get().getParamTypeEnum()+" already exist");
+        if(parametres.isEmpty())
+            throw new Exception("Item type "+parametres.get().getParamTypeEnum()+" not found");
         if(parametres.get().getId() != id)
             throw new Exception("Invalid data");
         Parametres parametresTS = parametres.get();
@@ -63,6 +67,10 @@ public class ParametresImpl implements IParametres {
 
     @Override
     public List<ParametresDto> findAllActive() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        iUserConnect.save(new UserConnect(
+                Date.from(Instant.now()),
+                userDetails.getUsername()));
         return repository
                 .findAllByStatusTrueAndParamTypeEnum(ParamTypeEnum.STATISTICS)
                 .stream()
@@ -136,5 +144,10 @@ public class ParametresImpl implements IParametres {
     public ParametresDto findById(Long id) throws Exception {
         Parametres parametres = repository.findById(id).orElseThrow(()->new Exception("Parametre not found"));
         return mapper.toDTO(parametres);
+    }
+
+    @Override
+    public Long visiteurs() throws Exception {
+        return iUserConnect.count();
     }
 }

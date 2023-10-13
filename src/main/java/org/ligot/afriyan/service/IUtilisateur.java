@@ -16,6 +16,7 @@ public interface IUtilisateur {
     Page<UtilisateurDTO> list(int page) throws Exception ;
     List<UtilisateurDTO> list(Long groupId) throws Exception ;
     List<UtilisateurDTO> list() throws Exception ;
+    List<UtilisateurDTO> list(String role) throws Exception ;
     UtilisateurDTO update(UtilisateurDTO utilisateurDTO, Long id) throws Exception ;
     void disableUtilisateur(Long id) throws Exception ;
 

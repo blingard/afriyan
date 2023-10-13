@@ -74,6 +74,18 @@ public class Parametres {
         return paramTypeEnum;
     }
 
+    @Override
+    public String toString() {
+        return "Parametres{" +
+                "id=" + id +
+                ", titre='" + titre + '\'' +
+                ", valeur='" + valeur + '\'' +
+                ", taille='" + taille + '\'' +
+                ", status=" + status +
+                ", paramTypeEnum=" + paramTypeEnum +
+                '}';
+    }
+
     public void setParamTypeEnum(ParamTypeEnum paramTypeEnum) {
         this.paramTypeEnum = paramTypeEnum;
     }

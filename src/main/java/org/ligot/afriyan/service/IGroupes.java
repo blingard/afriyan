@@ -24,6 +24,7 @@ public interface IGroupes {
     GroupesDTO addUsers (Set<UtilisateurDTO> utilisateurDTOS, Long id) throws Exception;
     void removeUsers (Set<UtilisateurDTO> utilisateurDTOS, Long id) throws Exception;
     List<RolesDTO> listRoles();
+    List<GroupesDTO>  getByRole(String role) throws Exception;
 
     List<RolesDTO> listGroupRoles(Long id) throws Exception;
 }

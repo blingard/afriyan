@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/souscription")
 public class SouscriptionController {
@@ -16,6 +18,16 @@ public class SouscriptionController {
     @PostMapping(value = "/save")
     SouscriptionDTO saveSouscription(@RequestBody SouscriptionDTO souscriptionDto) throws Exception {
         return souscription.save(souscriptionDto);
+    }
+
+    @GetMapping(value = "/getByUserId/{id}")
+    List<SouscriptionDTO> listByUserId(@PathVariable Long id) throws Exception {
+        return souscription.findByIdUser(id);
+    }
+
+    @GetMapping(value = "/getByServiceId/{id}")
+    List<SouscriptionDTO> listByServiceId(@PathVariable Long id) throws Exception {
+        return souscription.findByIdService(id);
     }
 
     @PutMapping(value = "/update/{id}")
@@ -36,6 +48,11 @@ public class SouscriptionController {
     @GetMapping(value = "/getById/{id}")
     SouscriptionDTO listById(@PathVariable Long id) throws Exception {
         return souscription.findById(id);
+    }
+
+    @GetMapping(value = "/getByCPId/{id}")
+    List<SouscriptionDTO> listByCPId(@PathVariable Long id) throws Exception {
+        return souscription.findByIdCP(id);
     }
 
 

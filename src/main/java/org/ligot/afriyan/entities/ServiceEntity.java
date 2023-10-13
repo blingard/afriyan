@@ -10,8 +10,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 public class ServiceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,6 +30,22 @@ public class ServiceEntity {
     @ManyToOne
     @JsonIgnoreProperties("serviceOfferts")
     private CentrePartenaire centrePartenaire;
+
+    public ServiceEntity(Long id) {
+        this.id = id;
+    }
+
+    public ServiceEntity() {
+    }
+
+    public ServiceEntity(Long id, String libelle, String description, Set<Produit> produits, Date dateCreation, CentrePartenaire centrePartenaire) {
+        this.id = id;
+        this.libelle = libelle;
+        this.description = description;
+        this.produits = produits;
+        this.dateCreation = dateCreation;
+        this.centrePartenaire = centrePartenaire;
+    }
 
     public Long getId() {
         return id;

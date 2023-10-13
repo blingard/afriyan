@@ -45,5 +45,10 @@ public class ServiceController {
         return serviceEntity.findById(id);
     }
 
+    @GetMapping()
+    List<ServiceDTO> listAll() throws Exception {
+        return serviceEntity.listAll();
+    }
+
 
 }

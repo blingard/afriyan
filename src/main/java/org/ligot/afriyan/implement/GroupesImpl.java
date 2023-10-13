@@ -187,6 +187,13 @@ public class GroupesImpl implements IGroupes {
     }
 
     @Override
+    public List<GroupesDTO> getByRole(String role) throws Exception {
+        Roles roles = iRolesRepository.findByNom(role).orElseThrow(()->new
+                Exception("Group not found"));
+        return repository.findByRolesContaining(roles).stream().map(mapper::toDTO).toList();
+
+    }
+    @Override
     public List<RolesDTO> listGroupRoles(Long id) throws Exception {
         Groupes groupes = repository.findById(id).orElseThrow(()->new
         Exception("Group not found"));

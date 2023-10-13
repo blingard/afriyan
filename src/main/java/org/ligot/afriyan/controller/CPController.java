@@ -1,6 +1,7 @@
 package org.ligot.afriyan.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import org.ligot.afriyan.Dto.CentrePartenaireDTO;
 import org.ligot.afriyan.service.ICentrePartenaire;
@@ -58,6 +59,12 @@ public class CPController {
     @GetMapping(value = "/getByIdUser/{id}")
     CentrePartenaireDTO getById(@PathVariable Long id) throws Exception {
         return centrePartenaire.findByUserId(id);
+    }
+
+    @PutMapping("active/{id}")
+    @RolesAllowed(value = {"SUPERADMIN"})
+    public void active(@PathVariable Long id) throws Exception {
+        centrePartenaire.active(id);
     }
 
 }

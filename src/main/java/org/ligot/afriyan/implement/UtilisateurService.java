@@ -122,6 +122,12 @@ public class UtilisateurService implements IUtilisateur {
     }
 
     @Override
+    public List<UtilisateurDTO> list(String role) throws Exception {
+        List<GroupesDTO> groupes = groupesService.getByRole(role);
+        return this.list();
+    }
+
+    @Override
     public UtilisateurDTO update(UtilisateurDTO utilisateurDTO, Long id) throws Exception {
         return null;
     }

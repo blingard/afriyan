@@ -41,34 +41,39 @@ public class SecurityConfig {
                         auth -> {
                             auth
                                     .requestMatchers(
+                                            "/service",
+                                            "/service/list-by-cp-id/**",
                                             "/api/article/active",
                                             "/swagger-ui/**",
                                             "/v3/api-docs/**",
                                             "/api/article/get/**",
                                             "/api/article/active/**",
                                             "/api/article/get-by-categorie/**",
-                                            "/api/centrepartenaire",
                                             "/api/centrepartenaire/getById/**",
+                                            "/api/centrepartenaire/localisation",
                                             "/user/register",
                                             "/denonciation",
                                             "/user/register",
                                             "/denonciation/list/**",
-                                            "/api/file/downloadFile/**",
+                                            "/api/file/**",
                                             "/api/missions",
+                                            "/generate-pdf/**",
                                             "/api/missions/active/**",
                                             "/api/missions/find-by-id/**",
                                             "/produit/getById/**",
                                             "/rapport/getById/**",
                                             "/rapport/list/**",
                                             "/api/valeur/find-active",
-                                            "/api/auth/**",
+                                            "/api/auth/login",
                                             "/api/parametres/get/**",
-                                            "/api/temoignage/active")
+                                            "/api/temoignage/active",
+                                            "/api/mediatech/active",
+                                            "/api/temoignage/getById/**")
                                     .permitAll()
                                     .requestMatchers(HttpMethod.OPTIONS, "/**")
                                     .permitAll()
                                     .anyRequest()
-                                    .permitAll();//authenticated();
+                                    .authenticated();
                         }
                 )
                 .sessionManagement(

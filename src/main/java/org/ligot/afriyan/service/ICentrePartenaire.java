@@ -16,4 +16,6 @@ public interface ICentrePartenaire {
     void delete(Long id) throws Exception;
 
     CentrePartenaireDTO findByUserId(Long id) throws Exception;
+
+    void active(Long id);
 }
