@@ -33,11 +33,11 @@ public class ValeursImpl implements IValeurs {
 
     @Override
     public List<ValeursDTO> getList() {
-        return repository.findAll().stream().map(mapper::toDTO).collect(Collectors.toList());
+        return repository.findAll().stream().map(mapper::toDTO).toList();
     }
     @Override
     public List<ValeursDTO> getListActive() {
-        return repository.findAllByStatusTrue().stream().map(mapper::toDTO).collect(Collectors.toList());
+        return repository.findAllByStatusTrue().stream().map(mapper::toDTO).toList();
     }
 
     @Override

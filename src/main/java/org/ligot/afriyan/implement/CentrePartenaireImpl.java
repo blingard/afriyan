@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -49,6 +50,7 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
     public CentrePartenaireDTO save(CentrePartenaireDTO centrePartenaireDTO) throws Exception {
 /*        Utilisateur utilisateur = getUser();
         centrePartenaireDTO.setCreateur(new UtilisateurDTO(utilisateur.getId()));*/
+        centrePartenaireDTO.setPhoto(new Date().toString());
         return mapper.toDTO(repository.save(mapper.create(centrePartenaireDTO)));
     }
     private Utilisateur getUser() throws Exception {

@@ -33,6 +33,10 @@ public class ArticlesController {
     public List<ArticlesDTO> findAllActive(){
         return service.getListActive(TypeDonne.ARTICLE);
     }
+    @GetMapping("active/home")
+    public List<ArticlesDTO> find06Active(){
+        return service.get6TopDesc(TypeDonne.ARTICLE);
+    }
 
     @PostMapping
     @RolesAllowed(value = {"SUPERADMIN"})

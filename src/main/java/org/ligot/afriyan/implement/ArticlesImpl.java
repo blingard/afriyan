@@ -13,6 +13,7 @@ import org.ligot.afriyan.service.IArticles;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -55,11 +56,17 @@ public class ArticlesImpl implements IArticles {
 
     @Override
     public List<ArticlesDTO> getListActive(TypeDonne typeDonne) {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        iUserConnect.save(new UserConnect(
-                Date.from(Instant.now()),
-                userDetails.getUsername()));
-        return repository.findAllByStatusTrueAndTypeDonne(typeDonne).stream().map(mapper::toDTO).collect(Collectors.toList());
+        try {
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            iUserConnect.save(new UserConnect(
+                    Date.from(Instant.now()),
+                    userDetails.getUsername()));
+        }catch (Exception ex){
+            iUserConnect.save(new UserConnect(
+                    Date.from(Instant.now()),
+                    "anonymous"));
+        }
+        return repository.findAllByStatusTrueAndTypeDonne(typeDonne).stream().map(mapper::toDTO).toList();
     }
 
     @Override
@@ -109,6 +116,11 @@ public class ArticlesImpl implements IArticles {
         Articles articles = repository.findById(id).orElse(null);
         if(articles != null)
             repository.delete(articles);
+    }
+
+    @Override
+    public List<ArticlesDTO> get6TopDesc(TypeDonne typeDonne) {
+        return repository.findTop6ByTypeDonne(typeDonne,Sort.by("id").descending()).stream().map(mapper::toDTO).toList();
     }
 
     @Override

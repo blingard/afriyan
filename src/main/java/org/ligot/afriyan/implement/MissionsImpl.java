@@ -10,6 +10,7 @@ import org.ligot.afriyan.service.IMissions;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -103,5 +104,10 @@ public class MissionsImpl implements IMissions {
                 .stream()
                 .map(mapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<MissionsDTO> getList4Active() {
+        return repository.findTop4ByStatusTrue(Sort.by("id").descending()).stream().map(mapper::toDTO).toList();
     }
 }

@@ -67,10 +67,16 @@ public class ParametresImpl implements IParametres {
 
     @Override
     public List<ParametresDto> findAllActive() {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        iUserConnect.save(new UserConnect(
-                Date.from(Instant.now()),
-                userDetails.getUsername()));
+        try {
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            iUserConnect.save(new UserConnect(
+                    Date.from(Instant.now()),
+                    userDetails.getUsername()));
+        }catch (Exception ex){
+            iUserConnect.save(new UserConnect(
+                    Date.from(Instant.now()),
+                    "anonymous"));
+        }
         return repository
                 .findAllByStatusTrueAndParamTypeEnum(ParamTypeEnum.STATISTICS)
                 .stream()

@@ -17,4 +17,5 @@ public interface IMissions {
     void active(Long id);
 
     List<MissionsDTO> getListActive();
+    List<MissionsDTO> getList4Active();
 }

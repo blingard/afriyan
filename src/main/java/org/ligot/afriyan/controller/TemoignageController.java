@@ -57,6 +57,12 @@ public class TemoignageController {
         return service.findByIdActive(id);
     }
 
+    @GetMapping("active/home")
+    public List<ArticlesDTO> find06Active(){
+        return service.get6TopDesc(TypeDonne.TEMOIGNAGE);
+    }
+
+
     @PutMapping("/{id}")
     @RolesAllowed(value = {"SUPERADMIN"})
     public void update(@PathVariable Long id, @RequestBody ArticlesDTO valeursDTO) throws Exception {

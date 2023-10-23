@@ -18,6 +18,8 @@ public class Articles {
     private String author;
     @Column(length = -1)
     private String contenu;
+    @Column(length = -1)
+    private String resumer;
     private String phote;
     private boolean status;
 
@@ -54,11 +56,12 @@ public class Articles {
     public Articles(Long id) {
         this.id = id;
     }
-    public Articles(Long id, String title, String author, String contenu, boolean status, Date date) {
+    public Articles(Long id, String title, String author, String contenu, String resumer, boolean status, Date date) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.contenu = contenu;
+        this.resumer = resumer;
         this.status = status;
         this.date = date;
     }
@@ -98,6 +101,15 @@ public class Articles {
     public void setContenu(String contenu) {
         this.contenu = contenu;
     }
+
+    public String getResumer() {
+        return resumer;
+    }
+
+    public void setResumer(String resumer) {
+        this.resumer = resumer;
+    }
+
     public boolean isStatus() {
         return status;
     }

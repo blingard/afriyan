@@ -17,6 +17,7 @@ public interface IArticles {
     Page<ArticlesDTO> getPage(int lenght, TypeDonne typeDonne);
     ArticlesDTO update(ArticlesDTO articlesDTO, Long id) throws Exception;
     void delete(Long id);
+    List<ArticlesDTO> get6TopDesc(TypeDonne typeDonne);
 
     void active(Long id, TypeDonne typeDonne);
 }

@@ -2,6 +2,7 @@ package org.ligot.afriyan.controller;
 
 import jakarta.annotation.security.RolesAllowed;
 import org.ligot.afriyan.Dto.MissionsDTO;
+import org.ligot.afriyan.entities.TypeDonne;
 import org.ligot.afriyan.service.IMissions;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
@@ -59,5 +60,10 @@ public class MissionsController {
     /*@RolesAllowed(value = {"SUPERADMIN"})*/
     public void active(@PathVariable Long id) throws Exception {
         service.active(id);
+    }
+
+    @GetMapping("active/home")
+    public List<MissionsDTO> find06Active(){
+        return service.getList4Active();
     }
 }

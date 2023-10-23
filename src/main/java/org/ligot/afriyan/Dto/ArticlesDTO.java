@@ -1,7 +1,5 @@
 package org.ligot.afriyan.Dto;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.ligot.afriyan.entities.Categorie;
 import org.ligot.afriyan.entities.TypeDonne;
 
@@ -12,6 +10,7 @@ public class ArticlesDTO {
     private String title;
     private String author;
     private String contenu;
+    private String resumer;
     private boolean status;
     private Date date;
     private String phote;
@@ -24,11 +23,12 @@ public class ArticlesDTO {
     public ArticlesDTO() {
     }
 
-    public ArticlesDTO(Long id, String title, String author, String contenu, boolean status, Date date, TypeDonne type, PublicationsDTO publication) {
+    public ArticlesDTO(Long id, String title, String author, String contenu, String resumer, boolean status, Date date, TypeDonne type, PublicationsDTO publication) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.contenu = contenu;
+        this.resumer = resumer;
         this.status = status;
         this.date = date;
         this.typeDonne = type;
@@ -68,6 +68,14 @@ public class ArticlesDTO {
 
     public void setContenu(String contenu) {
         this.contenu = contenu;
+    }
+
+    public String getResumer() {
+        return resumer;
+    }
+
+    public void setResumer(String resumer) {
+        this.resumer = resumer;
     }
 
     public boolean isStatus() {

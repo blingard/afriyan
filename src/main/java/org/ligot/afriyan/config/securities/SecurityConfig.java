@@ -48,6 +48,7 @@ public class SecurityConfig {
                                             "/v3/api-docs/**",
                                             "/api/article/get/**",
                                             "/api/article/active/**",
+                                            "/api/article/active/home",
                                             "/api/article/get-by-categorie/**",
                                             "/api/centrepartenaire/getById/**",
                                             "/api/centrepartenaire/localisation",
@@ -59,6 +60,7 @@ public class SecurityConfig {
                                             "/api/missions",
                                             "/generate-pdf/**",
                                             "/api/missions/active/**",
+                                            "/api/missions/active/home",
                                             "/api/missions/find-by-id/**",
                                             "/produit/getById/**",
                                             "/rapport/getById/**",
@@ -68,6 +70,7 @@ public class SecurityConfig {
                                             "/api/parametres/get/**",
                                             "/api/temoignage/active",
                                             "/api/mediatech/active",
+                                            "/api/temoignage/active/home",
                                             "/api/temoignage/getById/**")
                                     .permitAll()
                                     .requestMatchers(HttpMethod.OPTIONS, "/**")
