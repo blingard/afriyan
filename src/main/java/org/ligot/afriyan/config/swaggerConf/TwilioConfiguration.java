@@ -1,14 +1,15 @@
 package org.ligot.afriyan.config.swaggerConf;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.List;
 @Configuration
-@ConfigurationProperties("twilio")
 public class TwilioConfiguration {
+    @Value("${twilio.accountSid}")
     private String accountSid;
+    @Value("${twilio.authToken}")
     private String authToken;
+    @Value("${twilio.phoneNumber}")
     private String phoneNumber;
 
     public String getAccountSid() {

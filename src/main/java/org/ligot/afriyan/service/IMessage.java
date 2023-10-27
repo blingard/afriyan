@@ -11,7 +11,5 @@ public interface IMessage {
     MessageDTO  findById(Long id) throws Exception;
     MessageDTO save(MessageDTO messageDto) throws Exception;
     Page<MessageDTO> list(int page) throws Exception;
-    MessageDTO update(MessageDTO messageDto, Long id) throws Exception;
-    void delete(Long id) throws Exception;
 
 }

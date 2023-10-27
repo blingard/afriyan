@@ -1,6 +1,9 @@
 package org.ligot.afriyan.implement;
 
 import jakarta.transaction.Transactional;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.ligot.afriyan.Dto.GroupesDTO;
 import org.ligot.afriyan.Dto.MessageDTO;
 import org.ligot.afriyan.entities.Message;
@@ -17,18 +20,14 @@ import java.util.Set;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class MessageImpl implements IMessage {
-    private final MessageMapper mapper;
-    private final IMessageRepository repository;
-
-    private final IGroupes iGroupes;
+    MessageMapper mapper;
+    IMessageRepository repository;
+    TwilioService twilioService;
+    IGroupes iGroupes;
     private final int PAGE_SIZE = 15;
-
-    public MessageImpl(MessageMapper mapper, IMessageRepository repository, IGroupes iGroupes) {
-        this.mapper = mapper;
-        this.repository = repository;
-        this.iGroupes = iGroupes;
-    }
 
     @Override
     public MessageDTO findById(Long id) throws Exception {
@@ -38,30 +37,14 @@ public class MessageImpl implements IMessage {
         }
         return mapper.toDTO(message);
     }
-
     @Override
     public MessageDTO save(MessageDTO messageDTO) throws Exception {
+        twilioService.sendSms(messageDTO.getContacts(),messageDTO.getCorps());
         return mapper.toDTO(repository.save(mapper.create(messageDTO)));
     }
-
     @Override
     public Page<MessageDTO> list(int page) throws Exception {
         Page<Message> pages = repository.findAll(PageRequest.of(page,PAGE_SIZE));
         return new PageImpl<>(pages.map(mapper::toDTO).toList(),PageRequest.of(page,PAGE_SIZE),pages.getTotalElements());
-    }
-
-    @Override
-    public MessageDTO update(MessageDTO messageDTO, Long id) throws Exception {
-        Message message = repository.findById(id).orElse(null);
-        if(message == null){
-            throw new Exception("Le Message que vous souhaitez modifier n'existes pas");
-        }
-        messageDTO.setId(id);
-        return mapper.toDTO(repository.save(mapper.create(messageDTO)));
-    }
-
-    @Override
-    public void delete(Long id) throws Exception {
-        repository.deleteById(id);
     }
 }
