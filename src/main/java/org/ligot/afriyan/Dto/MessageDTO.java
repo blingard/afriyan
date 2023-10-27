@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.ligot.afriyan.entities.Status;
 
+import java.util.HashSet;
+import java.util.Set;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,6 +22,8 @@ public class MessageDTO {
     private String corps;
     @NotNull
     private Status status;
+    @JsonIgnoreProperties
+    private Set<String> contacts = new HashSet<>();
     @JsonIgnoreProperties({"groupe"})
     private UtilisateurDTO utilisateur;
 
@@ -56,6 +61,14 @@ public class MessageDTO {
 
     public UtilisateurDTO getUtilisateur() {
         return utilisateur;
+    }
+
+    public Set<String> getContacts() {
+        return contacts;
+    }
+
+    public void setContacts(Set<String> contacts) {
+        this.contacts = contacts;
     }
 
     public void setUtilisateur(UtilisateurDTO utilisateur) {
