@@ -1,5 +1,8 @@
 package org.ligot.afriyan.init;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.ligot.afriyan.Dto.UtilisateurDTO;
 import org.ligot.afriyan.entities.Administrateur;
 import org.ligot.afriyan.entities.Groupes;
@@ -18,19 +21,13 @@ import java.util.Date;
 import java.util.HashSet;
 
 @Component
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class Database implements CommandLineRunner {
-    private final IGroupesRepository serviceGroupe;
-    private final IRolesRepository serviceRole;
-    private final IAdministrateur serviceAdmin;
-    @Autowired
-    private IUtilisateur iUtilisateur;
-
-    public Database(IGroupesRepository serviceGroupe, IRolesRepository serviceRole, IAdministrateur serviceAdmin) {
-        this.serviceGroupe = serviceGroupe;
-        this.serviceRole = serviceRole;
-        this.serviceAdmin = serviceAdmin;
-    }
-
+    IGroupesRepository serviceGroupe;
+    IRolesRepository serviceRole;
+    IAdministrateur serviceAdmin;
+    IUtilisateur iUtilisateur;
 
     @Override
     public void run(String... args) throws Exception {
