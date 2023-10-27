@@ -1,14 +1,11 @@
 package org.ligot.afriyan.entities;
 
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -29,6 +26,8 @@ public class Message {
     @Column(name = "Status")
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    private Set<String> contactsSet = new HashSet<>();
 
     @ManyToOne
     private Utilisateur utilisateur;
@@ -71,5 +70,13 @@ public class Message {
 
     public void setUtilisateur(Utilisateur utilisateur) {
         this.utilisateur = utilisateur;
+    }
+
+    public Set<String> getContactsSet() {
+        return contactsSet;
+    }
+
+    public void setContactsSet(Set<String> contactsSet) {
+        this.contactsSet = contactsSet;
     }
 }

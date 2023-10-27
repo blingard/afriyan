@@ -19,7 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @SpringBootApplication
 @OpenAPIDefinition(
         servers = {
-                @Server(url = "http://www.youthfp.cm:8080/")//www.youthfp.cm
+                @Server(url = "http://localhost:8080/")//www.youthfp.cm
         },
                 info = @Info(
                 title = "AfriYan APIs",
