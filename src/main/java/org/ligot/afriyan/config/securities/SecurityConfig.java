@@ -41,6 +41,7 @@ public class SecurityConfig {
                         auth -> {
                             auth
                                     .requestMatchers(
+                                            "/test/**",
                                             "/service",
                                             "/service/list-by-cp-id/**",
                                             "/api/article/active",

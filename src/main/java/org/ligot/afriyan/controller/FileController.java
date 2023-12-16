@@ -30,7 +30,7 @@ public class FileController {
         this.fileStorageService = fileStorageService;
         this.repository = repository;
     }
-
+/*
     @PostMapping("/uploadFile")
     public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) throws Exception {
         String fileName = fileStorageService.storeFile(file);
@@ -87,5 +87,5 @@ public class FileController {
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
-    }
+    }*/
 }
