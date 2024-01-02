@@ -24,16 +24,16 @@ public class Sondage {
 
     @OneToOne
     private Scheduler scheduler;
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Questions> questions = new HashSet<>(0);
 
     @Enumerated(EnumType.STRING)
     @Column(name = "state")
     private EtatSondage state;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "domain")
-    private Categorie domain;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<CategorieEntities> domain = new HashSet<>(0);
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type_user")
@@ -102,11 +102,11 @@ public class Sondage {
         this.state = state;
     }
 
-    public Categorie getDomain() {
+    public Set<CategorieEntities> getDomain() {
         return domain;
     }
 
-    public void setDomain(Categorie domain) {
+    public void setDomain(Set<CategorieEntities> domain) {
         this.domain = domain;
     }
 

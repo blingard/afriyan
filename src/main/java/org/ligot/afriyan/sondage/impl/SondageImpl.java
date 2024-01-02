@@ -1,14 +1,13 @@
 package org.ligot.afriyan.sondage.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.ligot.afriyan.sondage.dto.AnswerDTO;
-import org.ligot.afriyan.sondage.dto.QuestionsDTO;
-import org.ligot.afriyan.sondage.dto.SchedulerDTO;
-import org.ligot.afriyan.sondage.dto.SondageDTO;
+import org.ligot.afriyan.sondage.dto.*;
 import org.ligot.afriyan.sondage.entities.Questions;
 import org.ligot.afriyan.sondage.entities.Sondage;
 import org.ligot.afriyan.sondage.enumerations.EtatSondage;
+import org.ligot.afriyan.sondage.mapper.CategorieEntitieMapper;
 import org.ligot.afriyan.sondage.mapper.SondageMapper;
+import org.ligot.afriyan.sondage.repo.CategorieEntitiesRepo;
 import org.ligot.afriyan.sondage.repo.SondageRepo;
 import org.ligot.afriyan.sondage.service.QuestionsService;
 import org.ligot.afriyan.sondage.service.SchedulerService;
@@ -26,12 +25,16 @@ public class SondageImpl implements SondageService {
     private final SondageMapper mapper;
     private final QuestionsService questionsService;
     private final SchedulerService schedulerService;
+    private final CategorieEntitiesRepo categorieEntitiesRepo;
+    private final CategorieEntitieMapper categorieEntitieMapper;
 
-    public SondageImpl(SondageRepo repo, SondageMapper mapper, QuestionsService questionsService, SchedulerService schedulerService) {
+    public SondageImpl(SondageRepo repo, SondageMapper mapper, QuestionsService questionsService, SchedulerService schedulerService, CategorieEntitiesRepo categorieEntitiesRepo, CategorieEntitieMapper categorieEntitieMapper) {
         this.repo = repo;
         this.mapper = mapper;
         this.questionsService = questionsService;
         this.schedulerService = schedulerService;
+        this.categorieEntitiesRepo = categorieEntitiesRepo;
+        this.categorieEntitieMapper = categorieEntitieMapper;
     }
 
     @Override
@@ -42,6 +45,7 @@ public class SondageImpl implements SondageService {
         sondage.setScheduler(null);
         sondage.setState(EtatSondage.CREATED);
         sondage.getQuestions().clear();
+        sondage.getDomain().clear();
         sondageDTO.getQuestions().forEach(
                 questions -> {
                     try {
@@ -50,6 +54,7 @@ public class SondageImpl implements SondageService {
                     }
                 }
         );
+    sondageDTO.getDomain().forEach(domain -> categorieEntitiesRepo.findById(domain.getId()).ifPresent(sondage.getDomain()::add));
         repo.save(sondage);
     }
 
@@ -138,6 +143,12 @@ public class SondageImpl implements SondageService {
             throw new Exception("Incoherent Data");
         questionsService.update(idQuestion, questionsDTO);
     }
+
+    @Override
+    public List<CategorieEntitiesDTO> findCategoriesDTO() {
+        return categorieEntitiesRepo.findAll().stream().map(categorieEntitieMapper::toDTO).toList();
+    }
+
     private Sondage verifieStatus(Long id, List<EtatSondage> states) throws Exception {
         Sondage sondage = repo.findById(id).orElseThrow(()->new Exception("Sondage not found"));
         for (EtatSondage state: states)

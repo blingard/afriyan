@@ -1,5 +1,6 @@
 package org.ligot.afriyan.sondage.service;
 
+import org.ligot.afriyan.sondage.dto.CategorieEntitiesDTO;
 import org.ligot.afriyan.sondage.dto.QuestionsDTO;
 import org.ligot.afriyan.sondage.dto.SchedulerDTO;
 import org.ligot.afriyan.sondage.dto.SondageDTO;
@@ -23,4 +24,6 @@ public interface SondageService {
     Map<String, String> sondageStat(Long id) throws Exception;
     Map<String, String> sondageStat() throws Exception;
     void updateQuestion(Long idSondage, Long idQuestion, QuestionsDTO questionsDTO) throws Exception;
+
+    List<CategorieEntitiesDTO> findCategoriesDTO();
 }

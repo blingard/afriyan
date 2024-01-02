@@ -17,10 +17,10 @@ public class Questions {
     @Column(name = "type_response")
     private TypeResponse typeResponse;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Answer> values = new HashSet<>(0);
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<ModelResponse> modelResponses = new HashSet<>(0);
     private String libelle;
     private int position;

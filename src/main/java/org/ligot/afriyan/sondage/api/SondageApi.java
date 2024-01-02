@@ -2,6 +2,7 @@ package org.ligot.afriyan.sondage.api;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.ligot.afriyan.sondage.dto.CategorieEntitiesDTO;
 import org.ligot.afriyan.sondage.dto.QuestionsDTO;
 import org.ligot.afriyan.sondage.dto.SchedulerDTO;
 import org.ligot.afriyan.sondage.dto.SondageDTO;
@@ -34,6 +35,10 @@ public class SondageApi {
     @GetMapping("/active")
     public ResponseEntity<List<SondageDTO>> listAllActive() throws Exception{
         return ResponseEntity.ok(service.findAllSondageDTO(EtatSondage.ACTIVE.toString()));
+    }
+    @GetMapping("/categories")
+    public ResponseEntity<List<CategorieEntitiesDTO>> listCategories() throws Exception{
+        return ResponseEntity.ok(service.findCategoriesDTO());
     }
 
     @PostMapping("/save")

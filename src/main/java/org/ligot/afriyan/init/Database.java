@@ -1,36 +1,33 @@
 package org.ligot.afriyan.init;
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import org.ligot.afriyan.Dto.UtilisateurDTO;
-import org.ligot.afriyan.entities.Administrateur;
-import org.ligot.afriyan.entities.Groupes;
-import org.ligot.afriyan.entities.Roles;
-import org.ligot.afriyan.entities.Status;
-import org.ligot.afriyan.repository.IGroupesRepository;
-import org.ligot.afriyan.repository.IRolesRepository;
-import org.ligot.afriyan.service.IAdministrateur;
-import org.ligot.afriyan.service.IUtilisateur;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.ligot.afriyan.entities.*;
+import org.ligot.afriyan.sondage.entities.CategorieEntities;
+import org.ligot.afriyan.sondage.repo.CategorieEntitiesRepo;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashSet;
+import java.util.*;
 
 @Component
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-@RequiredArgsConstructor
 public class Database implements CommandLineRunner {
-    IGroupesRepository serviceGroupe;
-    IRolesRepository serviceRole;
-    IAdministrateur serviceAdmin;
-    IUtilisateur iUtilisateur;
+    private final CategorieEntitiesRepo repo;
+
+    public Database(CategorieEntitiesRepo repo) {
+        this.repo = repo;
+    }
 
     @Override
     public void run(String... args) throws Exception {
+       /* try{
+            List<CategorieEntities> entitiesList = new ArrayList<>(Categorie.values().length);
+      for (Categorie categorie : Categorie.values()) {
+          System.err.println(categorie);
+        entitiesList.add(new CategorieEntities(null, categorie));
+      }
+            repo.saveAll(entitiesList);
+        }catch (Exception exception){
+
+        }*/
         /*try{
             Roles roles1 =  serviceRole.save(new Roles(null, RolesName.SUPERADMIN.toString(),"Super utilisateur","all"));
             Roles roles2 = serviceRole.save(new Roles(null, RolesName.ADMIN.toString(),"Admin","all"));
