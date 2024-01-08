@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
-import org.ligot.afriyan.entities.Categorie;
 import org.ligot.afriyan.sondage.enumerations.EtatSondage;
 import org.ligot.afriyan.sondage.enumerations.TypeUserSondage;
 

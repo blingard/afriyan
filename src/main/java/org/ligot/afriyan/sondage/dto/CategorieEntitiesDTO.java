@@ -2,6 +2,8 @@ package org.ligot.afriyan.sondage.dto;
 
 import org.ligot.afriyan.entities.Categorie;
 
+import java.io.Serializable;
+
 public class CategorieEntitiesDTO {
     private Long id;
 

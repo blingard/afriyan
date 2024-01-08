@@ -47,14 +47,16 @@ public class SondageImpl implements SondageService {
         sondage.getQuestions().clear();
         sondage.getDomain().clear();
         sondageDTO.getQuestions().forEach(
+                System.err::println
+                /*
                 questions -> {
                     try {
                         sondage.getQuestions().add(questionsService.save(questions));
                     } catch (Exception e) {
                     }
                 }
-        );
-    sondageDTO.getDomain().forEach(domain -> categorieEntitiesRepo.findById(domain.getId()).ifPresent(sondage.getDomain()::add));
+        */);
+        sondageDTO.getDomain().forEach(domain -> categorieEntitiesRepo.findById(domain.getId()).ifPresent(sondage.getDomain()::add));
         repo.save(sondage);
     }
 
