@@ -21,7 +21,6 @@ public class Sondage {
     private String name;
     private String createUser;
     private LocalDateTime createDate;
-
     @OneToOne
     private Scheduler scheduler;
     @OneToMany(fetch = FetchType.EAGER)

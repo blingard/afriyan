@@ -2,7 +2,6 @@ package org.ligot.afriyan.Dto;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -15,26 +14,17 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MessageDTO {
-    private Long id;
     @NotNull
     private String objects;
     @NotNull
     private String corps;
     @NotNull
     private Status status;
-    @JsonIgnoreProperties
     private Set<String> contacts = new HashSet<>();
     @JsonIgnoreProperties({"groupe"})
     private UtilisateurDTO utilisateur;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+   
     public String getObjects() {
         return objects;
     }

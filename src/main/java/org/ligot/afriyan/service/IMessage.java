@@ -3,8 +3,6 @@ package org.ligot.afriyan.service;
 import org.ligot.afriyan.Dto.MessageDTO;
 import org.springframework.data.domain.Page;
 
-import java.util.Set;
-
 
 public interface IMessage {
 

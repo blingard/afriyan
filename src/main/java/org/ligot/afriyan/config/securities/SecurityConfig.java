@@ -55,7 +55,7 @@ public class SecurityConfig {
                                             "/api/centrepartenaire/localisation",
                                             "/user/register",
                                             "/denonciation",
-                                            "/message/save",
+                                            "/api/message/save",
                                             "/user/register",
                                             "/denonciation/list/**",
                                             "/api/file/**",
