@@ -2,13 +2,10 @@ package org.ligot.afriyan.config.securities;
 
 import org.ligot.afriyan.Dto.LoginRequest;
 import org.ligot.afriyan.Dto.UtilisateurDTO;
-import org.ligot.afriyan.entities.Utilisateur;
-import org.ligot.afriyan.repository.IUtilisateurRepository;
 import org.ligot.afriyan.service.IUtilisateur;
 import org.ligot.afriyan.service.UserDetailsServiceImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 

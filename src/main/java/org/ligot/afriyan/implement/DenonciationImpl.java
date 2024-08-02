@@ -3,9 +3,6 @@ package org.ligot.afriyan.implement;
 import jakarta.transaction.Transactional;
 import org.ligot.afriyan.Dto.DenonciationDTO;
 import org.ligot.afriyan.entities.Denonciation;
-import org.ligot.afriyan.entities.Message;
-import org.ligot.afriyan.entities.Produit;
-import org.ligot.afriyan.entities.TypeDonne;
 import org.ligot.afriyan.mapper.DenonciationMapper;
 import org.ligot.afriyan.repository.IDenonciationRepository;
 import org.ligot.afriyan.service.IDenonciation;
@@ -15,8 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
+ 
 @Service
 @Transactional
 public class DenonciationImpl implements IDenonciation {

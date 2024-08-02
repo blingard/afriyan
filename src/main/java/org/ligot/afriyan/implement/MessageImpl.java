@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.ligot.afriyan.Dto.GroupesDTO;
 import org.ligot.afriyan.Dto.MessageDTO;
 import org.ligot.afriyan.entities.Message;
 import org.ligot.afriyan.mapper.MessageMapper;
@@ -16,8 +15,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
-
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -25,8 +22,7 @@ import java.util.Set;
 public class MessageImpl implements IMessage {
     MessageMapper mapper;
     IMessageRepository repository;
-    TwilioService twilioService;
-    IGroupes iGroupes;
+    VonageService vonageService;
     private final int PAGE_SIZE = 15;
 
     @Override
@@ -39,7 +35,7 @@ public class MessageImpl implements IMessage {
     }
     @Override
     public MessageDTO save(MessageDTO messageDTO) throws Exception {
-        twilioService.sendSms(messageDTO.getContacts(),messageDTO.getCorps());
+        vonageService.sendSms(messageDTO.getContacts(),messageDTO.getCorps());
         return mapper.toDTO(repository.save(mapper.create(messageDTO)));
     }
     @Override
