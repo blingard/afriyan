@@ -22,7 +22,8 @@ import org.springframework.stereotype.Service;
 public class MessageImpl implements IMessage {
     MessageMapper mapper;
     IMessageRepository repository;
-    VonageService vonageService;
+    TwilioService twilioService;
+    IGroupes iGroupes;
     private final int PAGE_SIZE = 15;
 
     @Override
@@ -35,7 +36,7 @@ public class MessageImpl implements IMessage {
     }
     @Override
     public MessageDTO save(MessageDTO messageDTO) throws Exception {
-        vonageService.sendSms(messageDTO.getContacts(),messageDTO.getCorps());
+        twilioService.sendSms(messageDTO.getContacts(),messageDTO.getCorps());
         return mapper.toDTO(repository.save(mapper.create(messageDTO)));
     }
     @Override

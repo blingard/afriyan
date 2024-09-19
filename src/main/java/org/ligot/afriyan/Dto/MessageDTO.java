@@ -10,9 +10,6 @@ import org.ligot.afriyan.entities.Status;
 import java.util.HashSet;
 import java.util.Set;
 
-
-@AllArgsConstructor
-@NoArgsConstructor
 public class MessageDTO {
     @NotNull
     private String objects;
@@ -64,4 +61,19 @@ public class MessageDTO {
     public void setUtilisateur(UtilisateurDTO utilisateur) {
         this.utilisateur = utilisateur;
     }
+
+    public MessageDTO(@NotNull String objects, @NotNull String corps, @NotNull Status status, Set<String> contacts,
+            UtilisateurDTO utilisateur) {
+        this.objects = objects;
+        this.corps = corps;
+        this.status = status;
+        this.contacts = contacts;
+        this.utilisateur = utilisateur;
+    }
+
+    public MessageDTO() {
+        super();
+    }
+
+    
 }

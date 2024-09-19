@@ -13,7 +13,6 @@ public class TwilioService {
 
     private final TwilioConfiguration twilioConfiguration;
     public TwilioService(TwilioConfiguration twilioConfiguration) {
-
         this.twilioConfiguration = twilioConfiguration;
         Twilio.init(twilioConfiguration.getAccountSid(), twilioConfiguration.getAuthToken());
     }

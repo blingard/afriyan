@@ -10,7 +10,7 @@ public class TwilioConfiguration {
     @Value("${twilio.authToken}")
     private String authToken;
     @Value("${twilio.phoneNumber}")
-    private String phoneNumber;
+    private String phoneNumber;   
 
     public String getAccountSid() {
         return accountSid;
