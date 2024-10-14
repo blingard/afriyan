@@ -9,11 +9,13 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface QuestionsMapper {
     Questions toEntity(QuestionsDTO questionsDTO);
+
+
+    @Mapping(source = "modelResponses", target = "modelResponses")
     QuestionsDTO toDTO(Questions questions);
 
     @Mapping(source = "id", target = "id", ignore = true)
     @Mapping(source = "typeResponse", target = "typeResponse", ignore = true)
-    @Mapping(source = "values", target = "values", ignore = true)
     @Mapping(source = "modelResponses", target = "modelResponses", ignore = true)
     void update(QuestionsDTO questionsDTO, @MappingTarget Questions questions);
 }

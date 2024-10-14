@@ -1,0 +1,33 @@
+2024-08-03 05:17:11.077 [] INFO  - org.ligot.afriyan.OngafriyanApplication - Starting OngafriyanApplication using Java 17.0.1 with PID 3056 (C:\Users\GLC\Documents\Project\Java\Formation\bizz\ongafriyan\target\classes started by GLC in C:\Users\GLC\Documents\Project\Java\Formation\bizz\ongafriyan)
+2024-08-03 05:17:11.084 [] INFO  - org.ligot.afriyan.OngafriyanApplication - The following 1 profile is active: "dev"
+2024-08-03 05:17:11.170 [] INFO  - org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-08-03 05:17:11.171 [] INFO  - org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-08-03 05:17:12.889 [] INFO  - org.springframework.data.repository.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-08-03 05:17:13.130 [] INFO  - org.springframework.data.repository.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 232 ms. Found 28 JPA repository interfaces.
+2024-08-03 05:17:13.903 [] INFO  - org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8087 (http)
+2024-08-03 05:17:13.911 [] INFO  - org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2024-08-03 05:17:13.912 [] INFO  - org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.10]
+2024-08-03 05:17:13.978 [] INFO  - org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-08-03 05:17:13.980 [] INFO  - org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2808 ms
+2024-08-03 05:17:14.286 [] INFO  - org.hibernate.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-08-03 05:17:14.347 [] INFO  - org.hibernate.Version - HHH000412: Hibernate ORM core version 6.2.5.Final
+2024-08-03 05:17:14.350 [] INFO  - org.hibernate.cfg.Environment - HHH000406: Using bytecode reflection optimizer
+2024-08-03 05:17:14.492 [] INFO  - org.hibernate.bytecode.internal.BytecodeProviderInitiator - HHH000021: Bytecode provider name : bytebuddy
+2024-08-03 05:17:14.641 [] INFO  - org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-08-03 05:17:14.659 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2024-08-03 05:17:14.917 [] INFO  - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@64b81f03
+2024-08-03 05:17:14.920 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2024-08-03 05:17:15.502 [] INFO  - org.hibernate.bytecode.internal.BytecodeProviderInitiator - HHH000021: Bytecode provider name : bytebuddy
+2024-08-03 05:17:16.348 [] INFO  - org.hibernate.metamodel.internal.EntityInstantiatorPojoStandard - HHH000182: No default (no-argument) constructor for class: org.ligot.afriyan.entities.UserConnect (class must be instantiated by Interceptor)
+2024-08-03 05:17:16.685 [] INFO  - org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2024-08-03 05:17:17.227 [] INFO  - org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-08-03 05:17:18.721 [] INFO  - org.springframework.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-08-03 05:17:19.786 [] INFO  - org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2024-08-03 05:17:19.855 [] INFO  - org.springframework.security.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@2fabbcd4, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@14160915, org.springframework.security.web.context.SecurityContextHolderFilter@6bce6eb6, org.springframework.security.web.header.HeaderWriterFilter@1d3b02ac, org.springframework.security.web.authentication.logout.LogoutFilter@79a7423, org.ligot.afriyan.config.securities.JwtAuthenticationFilter@4a1cc982, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@7fcff59, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@e6b13db, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@63efe52, org.springframework.security.web.session.SessionManagementFilter@7d484790, org.springframework.security.web.access.ExceptionTranslationFilter@75e4c54, org.springframework.security.web.access.intercept.AuthorizationFilter@2e32a682]
+2024-08-03 05:17:20.307 [] INFO  - org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2024-08-03 05:17:20.390 [] INFO  - org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port(s): 8087 (http) with context path ''
+2024-08-03 05:17:20.410 [] INFO  - org.ligot.afriyan.OngafriyanApplication - Started OngafriyanApplication in 9.813 seconds (process running for 11.103)
+2024-08-03 05:17:21.088 [] INFO  - org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-08-03 05:17:21.090 [] INFO  - org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2024-08-03 05:17:21.093 [] INFO  - org.springframework.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2024-08-03 05:18:37.029 [] INFO  - org.springdoc.api.AbstractOpenApiResource - Init duration for springdoc-openapi is: 1101 ms

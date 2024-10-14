@@ -32,7 +32,7 @@ public class FileController {
     }
 /*
     @PostMapping("/uploadFile")
-    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) throws Exception {
+    public UploadFileResponse uploadFile(v) throws Exception {
         String fileName = fileStorageService.storeFile(file);
 
         String fileDownloadUri = ServletUriComponentsBuilder

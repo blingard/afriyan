@@ -11,7 +11,7 @@ public class CategorieEntities {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "domain")
+    @Column(name = "domain", unique = true)
     private Categorie domain;
 
     public CategorieEntities() {

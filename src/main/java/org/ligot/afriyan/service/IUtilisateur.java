@@ -22,6 +22,7 @@ public interface IUtilisateur {
 
     UtilisateurDTO findByName(String nom) throws Exception;
     UtilisateurDTO findByLogin(String login) throws Exception;
+    UtilisateurDTO login(String login) throws Exception;
 
     void changePassword(ChangePwd changePwd) throws Exception;
 

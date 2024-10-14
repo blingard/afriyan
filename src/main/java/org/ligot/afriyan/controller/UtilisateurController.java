@@ -23,6 +23,7 @@ public class UtilisateurController {
 
     @PostMapping("register")
     public UtilisateurDTO register(@RequestBody UtilisateurDTO utilisateurDTO) throws Exception {
+        System.err.println("register");
         return service.register(utilisateurDTO);
     }
 

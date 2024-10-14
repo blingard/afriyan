@@ -1,11 +1,5 @@
 package org.ligot.afriyan.Dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-
 public class LoginRequest {
     private String login;
     private String password;

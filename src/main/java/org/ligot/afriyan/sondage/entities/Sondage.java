@@ -116,4 +116,20 @@ public class Sondage {
     public void setTypeUser(TypeUserSondage typeUser) {
         this.typeUser = typeUser;
     }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("Sondage{");
+        sb.append("id=").append(id);
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", createUser='").append(createUser).append('\'');
+        sb.append(", createDate=").append(createDate);
+        sb.append(", scheduler=").append(scheduler);
+        sb.append(", questions=").append(questions);
+        sb.append(", state=").append(state);
+        sb.append(", domain=").append(domain);
+        sb.append(", typeUser=").append(typeUser);
+        sb.append('}');
+        return sb.toString();
+    }
 }

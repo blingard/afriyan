@@ -20,10 +20,10 @@ package org.ligot.afriyan.config.securities;
         import org.springframework.web.cors.CorsConfiguration;
         import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
         import org.springframework.web.filter.CorsFilter;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+
 public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtAuthenticationFilter jwtAuthFilter;
@@ -46,7 +46,7 @@ public class SecurityConfig {
                                             "/service",
                                             "/service/list-by-cp-id/**",
                                             "/api/article/active",
-                                            "/swagger-ui/**",
+                                            "//swagger-ui-custom.html",
                                             "/v3/api-docs/**",
                                             "/api/article/get/**",
                                             "/api/article/active/**",
@@ -79,7 +79,7 @@ public class SecurityConfig {
                                     .requestMatchers(HttpMethod.OPTIONS, "/**")
                                     .permitAll()
                                     .anyRequest()
-                                    .authenticated();
+                                    .permitAll();//authenticated();
                         }
                 )
                 .sessionManagement(
