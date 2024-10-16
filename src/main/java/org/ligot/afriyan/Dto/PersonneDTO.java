@@ -21,7 +21,7 @@ public class PersonneDTO {
     protected String location;
     protected String anonymat;
     protected Sexe sexe;
-    @Email
+    //@Email
     protected String email;
     protected Status status;
     protected boolean isFirstConnexion;

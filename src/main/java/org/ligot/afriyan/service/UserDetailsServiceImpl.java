@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -25,9 +26,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Utilisateur user = repository.findByEmail(username).orElseThrow(()->new UsernameNotFoundException("User with username "+username+" don't exist"));
-        if(user.getStatus().equals(Status.INACTIVE))
+        Optional<Utilisateur> user = repository.findByEmail(username);
+        if (user.isEmpty()) {
+            user = repository.findByCode(username);
+            if(user.isEmpty())
+                new UsernameNotFoundException("User with username " + username + " don't exist");
+        }
+        if(user.get().getStatus().equals(Status.INACTIVE))
            throw new UsernameNotFoundException("User with username "+username+" is disable please contact administrator");
-        return UserDetailsImpl.build(user,user.getGroupe().getRoles());
+        return UserDetailsImpl.build(user.get(),user.get().getGroupe().getRoles());
     }
 }

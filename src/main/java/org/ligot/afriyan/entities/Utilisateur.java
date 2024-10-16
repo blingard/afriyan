@@ -64,8 +64,8 @@ public class Utilisateur implements Serializable, Comparable<Utilisateur> {
     protected Status status = Status.ACTIVE;
 
     @Column(name = "EMAIL")
-    @Email(message = "Veuillez saisir une adresse mail")
-    @NotBlank
+    //@Email(message = "Veuillez saisir une adresse mail")
+    //@NotBlank
     @Size(max = 50)
     protected String email;
 

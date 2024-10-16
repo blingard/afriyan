@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/rendezvous")
 public class RendezVousController {
@@ -36,6 +38,11 @@ public class RendezVousController {
     @GetMapping(value = "/getById/{id}")
     RendezVousDTO listById(@PathVariable Long id) throws Exception {
         return rendezVous.findById(id);
+    }
+
+    @GetMapping(value = "/getByuserId/{id}")
+    List<RendezVousDTO> findByUserId(@PathVariable Long id) throws Exception {
+        return rendezVous.findByUserId(id);
     }
 
 

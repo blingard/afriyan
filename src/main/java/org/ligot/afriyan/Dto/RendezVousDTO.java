@@ -19,6 +19,9 @@ public class RendezVousDTO {
     private UtilisateurDTO utilisateur;
     @JsonIgnoreProperties({"serviceOfferts","produits","createur"})
     private CentrePartenaireDTO centrePartenaire;
+
+    @JsonIgnoreProperties({"produits","centrePartenaire"})
+    private ServiceDTO serviceEntity;
     private StatusRdv rdv;
 
     public Long getId() {
@@ -83,5 +86,13 @@ public class RendezVousDTO {
 
     public void setRdv(StatusRdv rdv) {
         this.rdv = rdv;
+    }
+
+    public ServiceDTO getServiceEntity() {
+        return serviceEntity;
+    }
+
+    public void setServiceEntity(ServiceDTO serviceEntity) {
+        this.serviceEntity = serviceEntity;
     }
 }

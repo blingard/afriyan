@@ -21,12 +21,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.ligot.afriyan.implement.Utils.genCode;
 
@@ -62,6 +64,9 @@ public class UtilisateurService implements IUtilisateur {
 
     @Override
     public UtilisateurDTO save(UtilisateurDTO utilisateurDTO, Long idGroupe) throws Exception {
+        System.err.println("passwordEncoder.encode(123456789)");
+        System.err.println(passwordEncoder.encode("123456789"));
+        System.err.println("passwordEncoder.encode(123456789)");
         GroupesDTO groupe = groupesService.findById(idGroupe);
         boolean codeIsCreate = false;
         String code = "";
@@ -73,6 +78,7 @@ public class UtilisateurService implements IUtilisateur {
         utilisateurDTO.setId(null);
         utilisateurDTO.setCode(code);
         utilisateurDTO.setGroupe(groupe);
+        //Send SMS to created user
         utilisateurDTO.setPwd(passwordEncoder.encode("123456789"));
         Utilisateur utilisateur = mapper.create(utilisateurDTO);
         utilisateur.setStatus(Status.ACTIVE);
@@ -93,10 +99,12 @@ public class UtilisateurService implements IUtilisateur {
         utilisateurDTO.setId(null);
         utilisateurDTO.setCode(code);
         utilisateurDTO.setGroupe(groupe);//
+        utilisateurDTO.setStatus(Status.ACTIVE);
         utilisateurDTO.setPwd(passwordEncoder.encode(utilisateurDTO.getPwd()));
-        Utilisateur utilisateur = repository.save(mapper.create(utilisateurDTO));
+        Utilisateur utilisateur = mapper.create(utilisateurDTO);
         utilisateur.setStatus(Status.ACTIVE);
         utilisateur.setIsFirstConnexion(false);
+        utilisateur = repository.save(mapper.create(utilisateurDTO));
         return mapper.toDTO(utilisateur);
     }
 
@@ -123,7 +131,7 @@ public class UtilisateurService implements IUtilisateur {
 
     @Override
     public List<UtilisateurDTO> list(String role) throws Exception {
-        List<GroupesDTO> groupes = groupesService.getByRole(role);
+        groupesService.getByRole(role);
         return this.list();
     }
 
@@ -159,6 +167,17 @@ public class UtilisateurService implements IUtilisateur {
         if(utilisateur == null)
             throw new Exception("User with login = "+login+" not found");
         return mapper.toDTO(utilisateur);
+    }
+
+    @Override
+    public UtilisateurDTO login(String login) throws Exception {
+        Optional<Utilisateur> user = repository.findByEmail(login);
+        if (user.isEmpty()) {
+            user = repository.findByCode(login);
+            if(user.isEmpty())
+                new UsernameNotFoundException("User with username " + login + " don't exist");
+        }
+        return mapper.toDTO(user.get());
     }
 
     @Override

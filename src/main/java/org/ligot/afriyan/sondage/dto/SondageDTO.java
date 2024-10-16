@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import org.ligot.afriyan.entities.Categorie;
+import org.ligot.afriyan.sondage.entities.CategorieEntities;
 import org.ligot.afriyan.sondage.enumerations.EtatSondage;
 import org.ligot.afriyan.sondage.enumerations.TypeUserSondage;
 
@@ -20,7 +21,7 @@ public class SondageDTO {
     @NotNull
     private EtatSondage state;
     @NotNull
-    private Categorie domain;
+    private Set<CategorieEntitiesDTO> domain = new HashSet<>(0);
     @NotNull
     private TypeUserSondage typeUser;
 
@@ -31,7 +32,7 @@ public class SondageDTO {
         this.id = id;
     }
 
-    public SondageDTO(Long id, String name, String createUser, LocalDateTime createDate, SchedulerDTO scheduler, Set<QuestionsDTO> questions, EtatSondage state, Categorie domain, TypeUserSondage typeUser) {
+    public SondageDTO(Long id, String name, String createUser, LocalDateTime createDate, SchedulerDTO scheduler, Set<QuestionsDTO> questions, EtatSondage state, Set<CategorieEntitiesDTO> domain, TypeUserSondage typeUser) {
         this.id = id;
         this.name = name;
         this.createUser = createUser;
@@ -99,11 +100,11 @@ public class SondageDTO {
         this.state = state;
     }
 
-    public Categorie getDomain() {
+    public Set<CategorieEntitiesDTO> getDomain() {
         return domain;
     }
 
-    public void setDomain(Categorie domain) {
+    public void setDomain(Set<CategorieEntitiesDTO> domain) {
         this.domain = domain;
     }
 

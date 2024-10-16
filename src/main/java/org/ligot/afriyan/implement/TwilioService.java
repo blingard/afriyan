@@ -19,6 +19,7 @@ public class TwilioService {
 
     public void sendSms(Set<String> toNumbers, String message) {
         for (String phone : toNumbers) {
+
             Message.creator(new PhoneNumber(phone), new PhoneNumber(twilioConfiguration.getPhoneNumber()), message).create();
         }
     }

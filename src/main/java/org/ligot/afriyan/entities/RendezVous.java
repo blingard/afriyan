@@ -20,16 +20,24 @@ public class RendezVous {
     private String libelle;
     @Column(name = "DATE_RDV")
     private Date dateRdv;
+
     @Column(name = "HEURE_DEBUT")
     private String heureDebut;
+
     @Column(name = "HEURE_FIN")
     private String heureFin;
+
     @ManyToOne
     @JoinColumn(name = "UTILISATEUR", referencedColumnName = "IDENTIFIANT")
     private Utilisateur utilisateur;
+
     @ManyToOne
     @JoinColumn(name = "CENTRE_PARTENAIRE", referencedColumnName = "IDENTIFIANT")
     private CentrePartenaire centrePartenaire;
+
+    @ManyToOne
+    @JoinColumn(name = "SERVICEENTITY", referencedColumnName = "IDENTIFIANT")
+    private ServiceEntity serviceEntity;
 
     @Column(name = "STATUS")
     @Enumerated(EnumType.STRING)
@@ -97,5 +105,13 @@ public class RendezVous {
 
     public void setRdv(StatusRdv rdv) {
         this.rdv = rdv;
+    }
+
+    public ServiceEntity getServiceEntity() {
+        return serviceEntity;
+    }
+
+    public void setServiceEntity(ServiceEntity serviceEntity) {
+        this.serviceEntity = serviceEntity;
     }
 }

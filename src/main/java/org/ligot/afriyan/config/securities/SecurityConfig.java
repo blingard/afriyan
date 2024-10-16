@@ -12,6 +12,7 @@ package org.ligot.afriyan.config.securities;
         import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
         import org.springframework.security.config.annotation.web.builders.HttpSecurity;
         import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+        import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
         import org.springframework.security.config.http.SessionCreationPolicy;
         import org.springframework.security.crypto.password.PasswordEncoder;
         import org.springframework.security.web.SecurityFilterChain;
@@ -19,10 +20,10 @@ package org.ligot.afriyan.config.securities;
         import org.springframework.web.cors.CorsConfiguration;
         import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
         import org.springframework.web.filter.CorsFilter;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+
 public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtAuthenticationFilter jwtAuthFilter;
@@ -36,7 +37,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         auth -> {
                             auth
@@ -45,7 +46,7 @@ public class SecurityConfig {
                                             "/service",
                                             "/service/list-by-cp-id/**",
                                             "/api/article/active",
-                                            "/swagger-ui/**",
+                                            "//swagger-ui-custom.html",
                                             "/v3/api-docs/**",
                                             "/api/article/get/**",
                                             "/api/article/active/**",
@@ -78,7 +79,7 @@ public class SecurityConfig {
                                     .requestMatchers(HttpMethod.OPTIONS, "/**")
                                     .permitAll()
                                     .anyRequest()
-                                    .authenticated();
+                                    .permitAll();//authenticated();
                         }
                 )
                 .sessionManagement(

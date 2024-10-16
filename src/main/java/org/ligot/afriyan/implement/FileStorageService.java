@@ -19,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.StandardCopyOption;
+import java.util.Base64;
 
 @Service
 public class FileStorageService {
@@ -114,6 +115,27 @@ public class FileStorageService {
         }
     }
 
+    public String storeParagraphFileImage(MultipartFile file) throws Exception {
+        // Normalize file name
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        try {
+            // Check if the file's name contains invalid characters
+            if(fileName.contains("..")) {
+                throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
+            }
+
+            String[] a = fileName.trim().split("\\.");
+            String name = String.valueOf(System.currentTimeMillis())+'.'+a[1];
+            Path targetLocation = Paths.get(createDirectory("/paragraph/image"))
+                    .toAbsolutePath().normalize().resolve(name);
+            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+
+            return name;
+        } catch (IOException ex) {
+            throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
+        }
+    }
+
     public Resource loadFileAsResource(String fileName) throws MalformedURLException {
         try {
             Path filePath = Paths.get("uploads/").resolve(fileName).normalize();
@@ -125,6 +147,25 @@ public class FileStorageService {
             }
         } catch (MalformedURLException ex) {
             throw new MyFileNotFoundException("File not found " + fileName, ex);
+        }
+    }
+
+    private byte[] getFile(String filePath) {
+        try{
+            String file = this.fileStorageProperties.getUploadDir().trim()+filePath;
+            Path encryptedImagePath = Paths.get(file);
+            return Files.readAllBytes(encryptedImagePath);
+        }catch (Exception ex){
+            return null;
+        }
+    }
+
+    public String convertImageToBase64(String imagePath) {
+        try {
+            byte[] fileContent = getFile(imagePath);
+            return Base64.getEncoder().encodeToString(fileContent);
+        } catch (Exception e) {
+            return null;
         }
     }
 }

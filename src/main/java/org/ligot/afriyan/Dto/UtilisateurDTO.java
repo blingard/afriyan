@@ -7,7 +7,7 @@ import org.ligot.afriyan.entities.Status;
 
 import java.util.Date;
 
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UtilisateurDTO extends PersonneDTO{
 
 

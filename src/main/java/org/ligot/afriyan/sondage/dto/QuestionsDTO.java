@@ -7,7 +7,6 @@ import org.ligot.afriyan.sondage.enumerations.TypeResponse;
 public class QuestionsDTO {
     private Long id;
     private TypeResponse typeResponse;
-    private Set<AnswerDTO> values = new HashSet<>(0);
     private Set<ModelResponseDTO> modelResponses = new HashSet<>(0);
     private String libelle;
     private int position;
@@ -19,10 +18,9 @@ public class QuestionsDTO {
         this.id = id;
     }
 
-    public QuestionsDTO(Long id, TypeResponse typeResponse, Set<AnswerDTO> values, Set<ModelResponseDTO> modelResponses, String libelle, int position) {
+    public QuestionsDTO(Long id, TypeResponse typeResponse, Set<ModelResponseDTO> modelResponses, String libelle, int position) {
         this.id = id;
         this.typeResponse = typeResponse;
-        this.values = values;
         this.modelResponses = modelResponses;
         this.libelle = libelle;
         this.position = position;
@@ -42,14 +40,6 @@ public class QuestionsDTO {
 
     public void setTypeResponse(TypeResponse typeResponse) {
         this.typeResponse = typeResponse;
-    }
-
-    public Set<AnswerDTO> getValues() {
-        return values;
-    }
-
-    public void setValues(Set<AnswerDTO> values) {
-        this.values = values;
     }
 
     public Set<ModelResponseDTO> getModelResponses() {

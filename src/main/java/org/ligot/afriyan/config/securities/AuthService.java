@@ -39,6 +39,6 @@ public class AuthService {
     }
 
     public UtilisateurDTO getUtilisateurByLogin(String login) throws Exception {
-        return repository.findByLogin(login);
+        return repository.login(login);
     }
 }

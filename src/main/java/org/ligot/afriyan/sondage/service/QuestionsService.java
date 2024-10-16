@@ -10,6 +10,8 @@ public interface QuestionsService {
     Questions update(Long id, QuestionsDTO questionsDTO) throws Exception;
 
     QuestionsDTO findById(Long id) throws Exception;
+
+    Questions findByIdEntity(Long id) throws Exception;
     void addAnswer(Long idQuestion, AnswerDTO answerDTO) throws Exception;
 
 }

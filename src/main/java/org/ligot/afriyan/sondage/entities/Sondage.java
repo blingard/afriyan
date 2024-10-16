@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
-import org.ligot.afriyan.entities.Categorie;
 import org.ligot.afriyan.sondage.enumerations.EtatSondage;
 import org.ligot.afriyan.sondage.enumerations.TypeUserSondage;
 
@@ -23,16 +22,16 @@ public class Sondage {
     private LocalDateTime createDate;
     @OneToOne
     private Scheduler scheduler;
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Questions> questions = new HashSet<>(0);
 
     @Enumerated(EnumType.STRING)
     @Column(name = "state")
     private EtatSondage state;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "domain")
-    private Categorie domain;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<CategorieEntities> domain = new HashSet<>(0);
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type_user")
@@ -101,11 +100,11 @@ public class Sondage {
         this.state = state;
     }
 
-    public Categorie getDomain() {
+    public Set<CategorieEntities> getDomain() {
         return domain;
     }
 
-    public void setDomain(Categorie domain) {
+    public void setDomain(Set<CategorieEntities> domain) {
         this.domain = domain;
     }
 
@@ -115,5 +114,21 @@ public class Sondage {
 
     public void setTypeUser(TypeUserSondage typeUser) {
         this.typeUser = typeUser;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("Sondage{");
+        sb.append("id=").append(id);
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", createUser='").append(createUser).append('\'');
+        sb.append(", createDate=").append(createDate);
+        sb.append(", scheduler=").append(scheduler);
+        sb.append(", questions=").append(questions);
+        sb.append(", state=").append(state);
+        sb.append(", domain=").append(domain);
+        sb.append(", typeUser=").append(typeUser);
+        sb.append('}');
+        return sb.toString();
     }
 }

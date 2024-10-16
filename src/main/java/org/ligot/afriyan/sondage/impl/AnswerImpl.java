@@ -11,9 +11,9 @@ import org.ligot.afriyan.sondage.service.AnswerService;
 import org.ligot.afriyan.sondage.service.ModelResponseService;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.time.Instant;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -33,23 +33,12 @@ public class AnswerImpl implements AnswerService {
     public Answer save(AnswerDTO answerDTO) {
         Answer answer = mapper.toEntity(answerDTO);
         answer.setId(null);
-        answer.getValues().clear();
-        if(answerDTO.getTypeResponse()== TypeResponse.OPEN){
-            answerDTO.getValues().forEach(modelResponseDTO -> answer.getValues().add(modelResponseService.save(modelResponseDTO)));
-        }else if(answerDTO.getTypeResponse()== TypeResponse.BINAIRY){
-            answerDTO.getValues().forEach(
-                    modelResponseDTO -> {
-                        ModelResponse modelResponse = modelResponseService.findEntityById(modelResponseDTO.getId());
-                        if(modelResponse != null)
-                            answer.getValues().add(modelResponse);
-                    });
-        }else if(answerDTO.getTypeResponse()== TypeResponse.MULTIPLE){
-            answerDTO.getValues().forEach(
-                    modelResponseDTO -> {
-                        ModelResponse modelResponse = modelResponseService.findEntityById(modelResponseDTO.getId());
-                        if(modelResponse != null)
-                            answer.getValues().add(modelResponse);
-                    });
+        answer.setDateTime(Instant.now());
+        if(answerDTO.getTypeResponse()== TypeResponse.BINAIRY){
+            Long id = answerDTO.getValues().stream().collect(Collectors.toList()).get(0).getId();
+            ModelResponse modelResponse = modelResponseService.findEntityById(id);
+            if(modelResponse != null)
+                answer.setValues(List.of(modelResponse));
         }
         return repo.save(answer);
     }

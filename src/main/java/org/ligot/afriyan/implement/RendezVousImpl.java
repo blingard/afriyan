@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -33,6 +34,11 @@ public class RendezVousImpl implements IRendezVous {
             throw new Exception("Le RendezVous que vous souhaitez modifier n'existes pas");
         }
         return mapper.toDTO(rendezVous);
+    }
+
+    @Override
+    public List<RendezVousDTO> findByUserId(Long id) throws Exception {
+        return repository.findRendezVousByUtilisateur_Id(id).stream().map(mapper::toDTO).collect(Collectors.toList());
     }
 
     @Override

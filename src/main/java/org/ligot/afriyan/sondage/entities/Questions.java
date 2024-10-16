@@ -17,10 +17,8 @@ public class Questions {
     @Column(name = "type_response")
     private TypeResponse typeResponse;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    private Set<Answer> values = new HashSet<>(0);
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<ModelResponse> modelResponses = new HashSet<>(0);
     private String libelle;
     private int position;
@@ -33,10 +31,14 @@ public class Questions {
         this.id = id;
     }
 
-    public Questions(Long id, TypeResponse typeResponse, Set<Answer> values, Set<ModelResponse> modelResponses, String libelle, int position) {
+    public Questions(
+            Long id,
+            TypeResponse typeResponse,
+            Set<ModelResponse> modelResponses,
+            String libelle,
+            int position) {
         this.id = id;
         this.typeResponse = typeResponse;
-        this.values = values;
         this.modelResponses = modelResponses;
         this.libelle = libelle;
         this.position = position;
@@ -56,14 +58,6 @@ public class Questions {
 
     public void setTypeResponse(TypeResponse typeResponse) {
         this.typeResponse = typeResponse;
-    }
-
-    public Set<Answer> getValues() {
-        return values;
-    }
-
-    public void setValues(Set<Answer> values) {
-        this.values = values;
     }
 
     public Set<ModelResponse> getModelResponses() {
@@ -88,5 +82,17 @@ public class Questions {
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("Questions{");
+        sb.append("id=").append(id);
+        sb.append(", typeResponse=").append(typeResponse);
+        sb.append(", modelResponses=").append(modelResponses);
+        sb.append(", libelle='").append(libelle).append('\'');
+        sb.append(", position=").append(position);
+        sb.append('}');
+        return sb.toString();
     }
 }
