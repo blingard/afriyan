@@ -72,8 +72,7 @@ public class SecurityConfig {
                                             "/api/parametres/get/**",
                                             "/api/temoignage/active",
                                             "/api/mediatech/active",
-                                            "/api/temoignage/active/home",
-                                            "/api/temoignage/getById/**")
+                                              "/api/temoignage/getById/**")
                                     .permitAll()
                                     .requestMatchers(HttpMethod.OPTIONS, "/**")
                                     .permitAll()
