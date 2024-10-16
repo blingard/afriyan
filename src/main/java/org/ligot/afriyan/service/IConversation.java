@@ -1,15 +1,16 @@
 package org.ligot.afriyan.service;
 
-import org.ligot.afriyan.Dto.ConversationDTO;
+import java.util.Map;
+import java.util.Set;
+
+import org.ligot.afriyan.Dto.MessageDTO;
 import org.springframework.data.domain.Page;
 
 
-public interface IConversation {
+public interface IMessage {
 
-    ConversationDTO findById(Long id) throws Exception;
-    ConversationDTO save(ConversationDTO conversationDto) throws Exception;
-    Page<ConversationDTO> list(int page);
-    ConversationDTO update(ConversationDTO conversationDto, Long id) throws Exception;
-    void delete(Long id) throws Exception;
+    MessageDTO  findById(Long id) throws Exception;
+    Map<String, String> save(MessageDTO messageDto) throws Exception;
+    Page<MessageDTO> list(int page) throws Exception;
 
 }

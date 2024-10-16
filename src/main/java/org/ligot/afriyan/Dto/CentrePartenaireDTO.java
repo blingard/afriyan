@@ -2,6 +2,7 @@ package org.ligot.afriyan.Dto;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.ligot.afriyan.entities.Status;
@@ -27,6 +28,7 @@ public class CentrePartenaireDTO {
     private String nomCommune;
     private String photo;
     @JsonIgnoreProperties({"groupe"})
+    @NotNull
     private UtilisateurDTO createur;
     @JsonIgnoreProperties({"centrePartenaire"})
     private Set<ServiceDTO> serviceOfferts;

@@ -4,6 +4,10 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+
+import java.util.Map;
+import java.util.Set;
+
 import org.ligot.afriyan.Dto.MessageDTO;
 import org.ligot.afriyan.entities.Message;
 import org.ligot.afriyan.mapper.MessageMapper;
@@ -14,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
 
 @Service
 @Transactional
@@ -35,9 +40,9 @@ public class MessageImpl implements IMessage {
         return mapper.toDTO(message);
     }
     @Override
-    public MessageDTO save(MessageDTO messageDTO) throws Exception {
-        twilioService.sendSms(messageDTO.getContacts(),messageDTO.getCorps());
-        return mapper.toDTO(repository.save(mapper.create(messageDTO)));
+    public Map<String, String> save(MessageDTO messageDTO) throws Exception {
+        Map<String, String> mapStatus=twilioService.sendSms(messageDTO.getContacts(),messageDTO.getCorps());
+        return mapStatus;
     }
     @Override
     public Page<MessageDTO> list(int page) throws Exception {
