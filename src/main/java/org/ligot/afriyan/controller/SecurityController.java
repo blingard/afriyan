@@ -26,7 +26,7 @@ public class SecurityController {
         Map<String, Object> data = new HashMap<>();
         String accessToken = "Bearer "+service.login(loginRequest);
         data.put("accessToken", accessToken);
-        UtilisateurDTO utilisateur = service.getUtilisateurByLogin(loginRequest.getLogin());
+        UtilisateurDTO utilisateur = service.getUtilisateurByLogin(loginRequest.getLogin().trim());
         utilisateur.getGroupe().getRoles().clear();
         data.put("user", utilisateur);
         String refreshToken = "Bearer "+service.refreshToken(utilisateur.getId());

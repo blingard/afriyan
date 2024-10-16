@@ -1,12 +1,9 @@
 package org.ligot.afriyan.controller;
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-
 import java.util.Map;
 
 import org.ligot.afriyan.Dto.MessageDTO;
+import org.ligot.afriyan.Dto.SendOneSMSDTO;
 import org.ligot.afriyan.service.IMessage;
 import org.springframework.data.domain.Page;
 
@@ -15,17 +12,19 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "api/message")
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@RequiredArgsConstructor
 public class    MessageController {
 
-    IMessage message;
+    private final IMessage message;
 
-    @PostMapping(value = "save")
-    Map<String, String> saveMessage(@RequestBody MessageDTO messageDto) throws Exception {
-        //Set<Map<String, String>>
-        Map<String, String> mapResponse= message.save(messageDto);
-        return mapResponse;
+    public MessageController(IMessage message) {
+        this.message = message;
+    }
+
+    @PostMapping(value = "save") Map<String, String> saveMessage(@RequestBody MessageDTO messageDto) throws Exception {
+        return message.save(messageDto);
+    }
+    @PostMapping(value = "sendsms") void sendOneSMS(@RequestBody SendOneSMSDTO messageDto) throws Exception {
+        message.sendOne(messageDto);
     }
 
     @GetMapping(value = "/list/{page}")

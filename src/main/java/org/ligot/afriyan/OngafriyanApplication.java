@@ -15,6 +15,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 @SpringBootApplication
 @OpenAPIDefinition(
         servers = {
@@ -39,5 +42,10 @@ public class OngafriyanApplication {
     @Bean("passwordEncoder")
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public ExecutorService executorService(){
+        return Executors.newCachedThreadPool();
     }
 }

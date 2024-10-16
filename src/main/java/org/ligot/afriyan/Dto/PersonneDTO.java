@@ -1,6 +1,8 @@
 package org.ligot.afriyan.Dto;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import org.ligot.afriyan.entities.Sexe;
 import org.ligot.afriyan.entities.Status;
 
@@ -11,11 +13,17 @@ public class PersonneDTO {
 
     protected Long id;
     protected String code;
+
+    @NotNull
     protected String nom;
+    @NotNull
     protected String prenom;
 
     protected Date ddn;
     protected String lieu;
+
+    @NotNull(message = "numero te telephone null")
+    @Pattern(regexp = "^6\\d{8}$", message = "Le numéro de téléphone doit contenir 9 chiffres et commencer par 6.")
     protected String numero_telephone;
     protected String photo;
     protected String location;

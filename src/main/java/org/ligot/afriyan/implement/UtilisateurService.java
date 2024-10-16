@@ -25,10 +25,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
 
 import static org.ligot.afriyan.implement.Utils.genCode;
 
@@ -43,8 +41,10 @@ public class UtilisateurService implements IUtilisateur {
     private final IDenonciationRepository iDenonciationRepository;
     private final PasswordEncoder passwordEncoder;
     private final UtilisateurMapper mapper;
+    private final TwilioService twilioService;
+    private final ExecutorService executorService;
 
-    public UtilisateurService(IUtilisateurRepository repository, ICentrePartenaireRepository iCentrePartenaireRepository, IArticlesRepository iArticlesRepository, IGroupes groupesService, IDenonciationRepository iDenonciationRepository, @Qualifier("passwordEncoder") PasswordEncoder passwordEncoder, UtilisateurMapper mapper) {
+    public UtilisateurService(IUtilisateurRepository repository, ICentrePartenaireRepository iCentrePartenaireRepository, IArticlesRepository iArticlesRepository, IGroupes groupesService, IDenonciationRepository iDenonciationRepository, @Qualifier("passwordEncoder") PasswordEncoder passwordEncoder, UtilisateurMapper mapper, TwilioService twilioService, ExecutorService executorService) {
         this.repository = repository;
         this.iCentrePartenaireRepository = iCentrePartenaireRepository;
         this.iArticlesRepository = iArticlesRepository;
@@ -52,6 +52,8 @@ public class UtilisateurService implements IUtilisateur {
         this.iDenonciationRepository = iDenonciationRepository;
         this.passwordEncoder = passwordEncoder;
         this.mapper = mapper;
+        this.twilioService = twilioService;
+        this.executorService = executorService;
     }
 
     @Override
@@ -64,9 +66,8 @@ public class UtilisateurService implements IUtilisateur {
 
     @Override
     public UtilisateurDTO save(UtilisateurDTO utilisateurDTO, Long idGroupe) throws Exception {
-        System.err.println("passwordEncoder.encode(123456789)");
-        System.err.println(passwordEncoder.encode("123456789"));
-        System.err.println("passwordEncoder.encode(123456789)");
+        boolean sendSMS = true;
+        String pwd = genCode();
         GroupesDTO groupe = groupesService.findById(idGroupe);
         boolean codeIsCreate = false;
         String code = "";
@@ -78,16 +79,52 @@ public class UtilisateurService implements IUtilisateur {
         utilisateurDTO.setId(null);
         utilisateurDTO.setCode(code);
         utilisateurDTO.setGroupe(groupe);
-        //Send SMS to created user
-        utilisateurDTO.setPwd(passwordEncoder.encode("123456789"));
+        utilisateurDTO.setPwd(passwordEncoder.encode(pwd));
         Utilisateur utilisateur = mapper.create(utilisateurDTO);
         utilisateur.setStatus(Status.ACTIVE);
         utilisateur.setIsFirstConnexion(true);
-        return mapper.toDTO(repository.save(utilisateur));
+        try {
+            saveIt(mapper.create(utilisateurDTO));
+            executorService.execute(()->{
+                String message = "Felicitation pour votre Inscription. Login:";
+                message = message+(utilisateur.getEmail()==null ? utilisateur.getCode() : utilisateur.getEmail());
+                message = message+" \n Password:"+pwd;
+                twilioService.sendOneSms(utilisateurDTO.getNumero_telephone(),message);
+            });
+            return mapper.toDTO(utilisateur);
+        }catch (Exception ex){
+            sendSMS=false;
+            throw ex;
+        }
+    }
+
+
+    private Utilisateur saveIt(Utilisateur utilisateur)throws Exception{
+        try {
+            checkIfUserExist(utilisateur);
+            return repository.save(utilisateur);
+        }catch (Exception ex){
+            throw ex;
+        }
+    }
+
+    private Utilisateur updateIt(Utilisateur utilisateur)throws Exception{
+        try {
+            return repository.save(utilisateur);
+        }catch (Exception ex){
+            throw ex;
+        }
+    }
+    private void checkIfUserExist(Utilisateur utilisateur) throws Exception{
+        if(repository.findByEmail(utilisateur.getEmail()).isPresent())
+            throw new Exception("Email deja utilise");
+        if(repository.findByNumero_telephone(utilisateur.getNumero_telephone())!=null)
+            throw new Exception("Numerode telephone deja utilise");
     }
 
     @Override
     public UtilisateurDTO register(UtilisateurDTO utilisateurDTO) throws Exception {
+        boolean sendSMS = true;
         GroupesDTO groupe = groupesService.findByName(RolesName.USER.toString());
         boolean codeIsCreate = false;
         String code = "";
@@ -104,8 +141,19 @@ public class UtilisateurService implements IUtilisateur {
         Utilisateur utilisateur = mapper.create(utilisateurDTO);
         utilisateur.setStatus(Status.ACTIVE);
         utilisateur.setIsFirstConnexion(false);
-        utilisateur = repository.save(mapper.create(utilisateurDTO));
-        return mapper.toDTO(utilisateur);
+
+        try {
+            utilisateur = saveIt(mapper.create(utilisateurDTO));
+            executorService.execute(()->{
+                String message = "Felicitation pour votre Inscription. Pour vous connecter, utiliser le login ";
+                    message = message+(utilisateurDTO.getEmail()==null ? utilisateurDTO.getCode() : utilisateurDTO.getEmail().trim());
+                    message = message+" via le lien client.youthfp.cm";
+                twilioService.sendOneSms(utilisateurDTO.getNumero_telephone().trim(),message);
+                });
+                return mapper.toDTO(utilisateur);
+        }catch (Exception ex){
+            throw ex;
+        }
     }
 
     @Override
@@ -137,6 +185,9 @@ public class UtilisateurService implements IUtilisateur {
 
     @Override
     public UtilisateurDTO update(UtilisateurDTO utilisateurDTO, Long id) throws Exception {
+        Utilisateur utilisateur = repository.findById(id).orElse(null);
+        if(utilisateur == null)
+            throw new Exception("User with id "+id+" don't exist");
         return null;
     }
 
@@ -163,7 +214,7 @@ public class UtilisateurService implements IUtilisateur {
 
     @Override
     public UtilisateurDTO findByLogin(String login) throws Exception {
-        Utilisateur utilisateur = repository.findByEmail(login).orElse(null);
+        Utilisateur utilisateur = repository.findByEmail(login).orElse(repository.findByCode(login.trim()).orElse(null));
         if(utilisateur == null)
             throw new Exception("User with login = "+login+" not found");
         return mapper.toDTO(utilisateur);
@@ -190,7 +241,7 @@ public class UtilisateurService implements IUtilisateur {
             throw new Exception("Password not valid");
         if(changePwd.getConfirmPwd().length() < 8)
             throw new Exception("Password not valid");
-        utilisateur.setPwd(passwordEncoder.encode(changePwd.getConfirmPwd()));
+        utilisateur.setPwd(passwordEncoder.encode(changePwd.getConfirmPwd().trim()));
         utilisateur.setIsFirstConnexion(false);
         repository.save(utilisateur);
     }
@@ -225,10 +276,20 @@ public class UtilisateurService implements IUtilisateur {
     @Override
     public void resetPassword(Long id) throws Exception {
         Utilisateur utilisateur = repository.findById(id).orElse(null);
-        if(utilisateur == null)
-            throw new Exception("User not found");
-        utilisateur.setPwd(passwordEncoder.encode("123456789"));
-        utilisateur.setIsFirstConnexion(true);
-        repository.save(utilisateur);
+        final String pwd = genCode();
+        try{
+            if(utilisateur == null)
+                throw new Exception("User not found");
+            utilisateur.setPwd(passwordEncoder.encode(pwd));
+            utilisateur.setIsFirstConnexion(true);
+            updateIt(utilisateur);
+            executorService.execute(()->{
+                String message = "Votre mot de passe a ete reinitialiser par l'administrateur. Votre nouveau mot de passe est:";
+                message = message+pwd;
+                twilioService.sendOneSms(utilisateur.getNumero_telephone().trim(),message);
+            });
+        }catch (Exception ex){}
+
+
     }
 }

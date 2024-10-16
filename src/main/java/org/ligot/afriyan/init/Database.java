@@ -22,6 +22,8 @@ public class Database implements CommandLineRunner {
     private final IAdministrateur serviceAdmin;
     private final IUtilisateur iUtilisateur;
 
+
+
     public Database(CategorieEntitiesRepo repo, IGroupesRepository serviceGroupe, IRolesRepository serviceRole, IAdministrateur serviceAdmin, IUtilisateur iUtilisateur) {
         this.repo = repo;
         this.serviceGroupe = serviceGroupe;
@@ -75,7 +77,7 @@ public class Database implements CommandLineRunner {
                 administrateur.setPwd("1234");
                 administrateur.setdCreation(new Date());
                 //administrateur.getRoles().add(roles1);
-                serviceAdmin.save(administrateur);
+                //serviceAdmin.save(administrateur);
             }
             /*Groupes groupes = new Groupes(
                     null,
@@ -93,7 +95,7 @@ public class Database implements CommandLineRunner {
             groupes = serviceGroupe.save(groupes);
             */
             //iUtilisateur.save(dto,groupes.getId());
-            iUtilisateur.save(dto,1L);
+            //iUtilisateur.save(dto,1L);
             /*Groupes groupes1 = new Groupes(
                     null,
                     new HashSet<>(),

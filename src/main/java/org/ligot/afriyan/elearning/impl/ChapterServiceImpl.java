@@ -110,13 +110,15 @@ public class ChapterServiceImpl implements ChapterService {
         Set<ParagraphsDTO> paragraphsDTOS = new HashSet<>(0);
         chapitresDTO.getParagraphes().forEach(paragraphsDTO -> {
             ParagraphsDTO localParagraph = paragraphsDTO;
-            if(paragraphsDTO.getType()== TypeParagraph.IMAGE){
-                String[] elements = paragraphsDTO.getContent().split(":");
-                String imageBase64 = fileStorageService.convertImageToBase64("uploads/paragraph/image/"+elements[0]);
-                String image = "data:image/"+elements[1]+";base64,"+imageBase64;
-                localParagraph.setContent(image);
+            if(paragraphsDTO.isStatus()) {
+                if (paragraphsDTO.getType() == TypeParagraph.IMAGE) {
+                    String[] elements = paragraphsDTO.getContent().split(":");
+                    String imageBase64 = fileStorageService.convertImageToBase64("paragraph/image/" + elements[0]);
+                    String image = "data:image/" + elements[1] + ";base64," + imageBase64;
+                    localParagraph.setContent(image);
+                }
+                paragraphsDTOS.add(localParagraph);
             }
-            paragraphsDTOS.add(localParagraph);
         });
         chapitresDTO.getParagraphes().clear();
         chapitresDTO.setParagraphes(paragraphsDTOS);

@@ -1,6 +1,7 @@
 package org.ligot.afriyan.controller;
 
 import jakarta.annotation.security.RolesAllowed;
+import jakarta.validation.Valid;
 import org.ligot.afriyan.Dto.ChangePwd;
 import org.ligot.afriyan.Dto.UtilisateurDTO;
 import org.ligot.afriyan.entities.TypeDonne;
@@ -23,14 +24,13 @@ public class UtilisateurController {
     }
 
     @PostMapping("register")
-    public UtilisateurDTO register(@RequestBody UtilisateurDTO utilisateurDTO) throws Exception {
-        System.err.println("register");
+    public UtilisateurDTO register(@Valid @RequestBody UtilisateurDTO utilisateurDTO) throws Exception {
         return service.register(utilisateurDTO);
     }
 
     @PostMapping("admin")
-    /*@RolesAllowed(value = {"SUPERADMIN"})*/
-    public UtilisateurDTO create(@RequestBody UtilisateurDTO utilisateurDTO) throws Exception {
+    @RolesAllowed(value = {"SUPERADMIN"})
+    public UtilisateurDTO create(@Valid @RequestBody UtilisateurDTO utilisateurDTO) throws Exception {
         return service.save(utilisateurDTO, utilisateurDTO.getGroupe().getId());
     }
 
@@ -53,7 +53,7 @@ public class UtilisateurController {
     }
 
     @DeleteMapping("/{id}")
-    /*@RolesAllowed(value = {"SUPERADMIN","ROOT"})*/
+    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
     public void delete(@PathVariable Long id) throws Exception {
         service.disableUtilisateur(id);
     }

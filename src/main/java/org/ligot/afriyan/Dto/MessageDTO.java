@@ -11,13 +11,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class MessageDTO {
-    @NotNull
     private String objects;
     @NotNull
     private String corps;
-    @NotNull
+
     private Status status;
-    private Set<String> contacts = new HashSet<>();
+    private Set<String> contacts = new HashSet<>(0);
     @JsonIgnoreProperties({"groupe"})
     private UtilisateurDTO utilisateur;
 

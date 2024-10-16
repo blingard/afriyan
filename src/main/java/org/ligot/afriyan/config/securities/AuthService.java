@@ -26,11 +26,11 @@ public class AuthService {
     public Object login(LoginRequest loginRequest) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequest.getLogin(),
-                        loginRequest.getPassword()
+                        loginRequest.getLogin().trim(),
+                        loginRequest.getPassword().trim()
                 )
         );
-        UserDetails use = service.loadUserByUsername(loginRequest.getLogin());
+        UserDetails use = service.loadUserByUsername(loginRequest.getLogin().trim());
         return jwtService.generateToken(use);
     }
 

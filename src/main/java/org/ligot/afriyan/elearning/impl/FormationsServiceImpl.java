@@ -68,7 +68,8 @@ public class FormationsServiceImpl implements FormationsService {
         Set<ChapitresDTO> chapitresDTOS = new HashSet<>(0);
         formationsDTO.getChapitres().forEach(chapitresDTO -> {
             try {
-                chapitresDTOS.add(chapterService.getById(chapitresDTO.getId()));
+                if(chapitresDTO.isStatus())
+                    chapitresDTOS.add(chapterService.getById(chapitresDTO.getId()));
             } catch (Exception e) {
             }
         });
