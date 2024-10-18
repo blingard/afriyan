@@ -66,8 +66,9 @@ public class UtilisateurService implements IUtilisateur {
 
     @Override
     public UtilisateurDTO save(UtilisateurDTO utilisateurDTO, Long idGroupe) throws Exception {
-        boolean sendSMS = true;
         String pwd = genCode();
+        System.err.println("saveutilisateur");
+        System.err.println("pwd: "+pwd);
         GroupesDTO groupe = groupesService.findById(idGroupe);
         boolean codeIsCreate = false;
         String code = "";
@@ -84,16 +85,17 @@ public class UtilisateurService implements IUtilisateur {
         utilisateur.setStatus(Status.ACTIVE);
         utilisateur.setIsFirstConnexion(true);
         try {
-            saveIt(mapper.create(utilisateurDTO));
-            executorService.execute(()->{
+            saveIt(utilisateur);
+            System.err.println("saved");
+            /*executorService.execute(()->{
                 String message = "Felicitation pour votre Inscription. Login:";
                 message = message+(utilisateur.getEmail()==null ? utilisateur.getCode() : utilisateur.getEmail());
                 message = message+" \n Password:"+pwd;
                 twilioService.sendOneSms(utilisateurDTO.getNumero_telephone(),message);
-            });
+            });*/
             return mapper.toDTO(utilisateur);
         }catch (Exception ex){
-            sendSMS=false;
+            ex.printStackTrace();
             throw ex;
         }
     }
@@ -116,6 +118,7 @@ public class UtilisateurService implements IUtilisateur {
         }
     }
     private void checkIfUserExist(Utilisateur utilisateur) throws Exception{
+        System.err.println(utilisateur.getNumero_telephone());
         if(repository.findByEmail(utilisateur.getEmail()).isPresent())
             throw new Exception("Email deja utilise");
         if(repository.findByNumero_telephone(utilisateur.getNumero_telephone())!=null)
@@ -143,7 +146,7 @@ public class UtilisateurService implements IUtilisateur {
         utilisateur.setIsFirstConnexion(false);
 
         try {
-            utilisateur = saveIt(mapper.create(utilisateurDTO));
+            utilisateur = saveIt(utilisateur);
             executorService.execute(()->{
                 String message = "Felicitation pour votre Inscription. Pour vous connecter, utiliser le login ";
                     message = message+(utilisateurDTO.getEmail()==null ? utilisateurDTO.getCode() : utilisateurDTO.getEmail().trim());
@@ -206,7 +209,7 @@ public class UtilisateurService implements IUtilisateur {
 
     @Override
     public UtilisateurDTO findByName(String nom) throws Exception {
-        Utilisateur utilisateur = repository.findByNom(nom);
+        Utilisateur utilisateur = repository.findByEmail(nom).orElse(null);
         if(utilisateur == null)
             throw new Exception("User with id = "+nom+" don't exist");
         return mapper.toDTO(utilisateur);

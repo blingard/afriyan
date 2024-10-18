@@ -79,7 +79,7 @@ public class Utilisateur implements Serializable, Comparable<Utilisateur> {
     @Column(name = "firstconnexion")
     private boolean isFirstConnexion = true;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Groupes groupe;
 
     public Utilisateur(Long id) {

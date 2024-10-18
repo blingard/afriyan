@@ -1,6 +1,7 @@
 package org.ligot.afriyan.elearning.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.ligot.afriyan.Constantes;
 import org.ligot.afriyan.elearning.dto.ParagraphsDTO;
 import org.ligot.afriyan.elearning.entities.Chapitres;
 import org.ligot.afriyan.elearning.entities.Paragraphs;
@@ -29,21 +30,16 @@ public class ParagraphServiceImpl implements ParagraphService {
         this.fileStorageService = fileStorageService;
     }
 
-    private Paragraphs saveImageParagraph(ParagraphsDTO paragraphsDTO, MultipartFile file) throws Exception{
-        String name = fileStorageService.storeParagraphFileImage(file);
-        Paragraphs paragraphs = mapper.toEntity(paragraphsDTO);
-        String[] elements = name.split("\\.");
-        name=name+":"+elements[1];
-        paragraphs.setContent(name);
-        return repo.save(paragraphs);
-    }
-
     @Override
     public void save(Long idChapter, ParagraphsDTO paragraphsDTO, MultipartFile file) throws Exception {
         Chapitres chapitres = chapterRepo.findById(idChapter).orElseThrow(()->new Exception("Chapter not found"));
         Paragraphs paragraphs = switch (paragraphsDTO.getType()){
             case TEXT -> repo.save(mapper.toEntity(paragraphsDTO));
-            case IMAGE -> saveImageParagraph(paragraphsDTO, file);
+            case IMAGE -> {
+                String name = fileStorageService.storeParagraphFileImage(file, Constantes.PARAGRAPHIMAGESUBPATH);
+                paragraphsDTO.setContent(name);
+                yield repo.save(mapper.toEntity(paragraphsDTO));
+            }
         };
         chapitres.getParagraphes().add(paragraphs);
        if(chapitres.getOrderParagraph()==null){

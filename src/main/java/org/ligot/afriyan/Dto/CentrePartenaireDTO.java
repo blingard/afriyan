@@ -33,6 +33,12 @@ public class CentrePartenaireDTO {
     @JsonIgnoreProperties({"centrePartenaire"})
     private Set<ServiceDTO> serviceOfferts;
     private Status status;
+    private Double superficie;
+    private int nombreLit;
+    private int nombreBat;
+    private int category;
+    private boolean morgue;
+    private String region;
 
 
 
@@ -170,5 +176,53 @@ public class CentrePartenaireDTO {
 
     public void setServiceOfferts(Set<ServiceDTO> serviceOfferts) {
         this.serviceOfferts = serviceOfferts;
+    }
+
+    public Double getSuperficie() {
+        return superficie;
+    }
+
+    public void setSuperficie(Double superficie) {
+        this.superficie = superficie;
+    }
+
+    public int getNombreLit() {
+        return nombreLit;
+    }
+
+    public void setNombreLit(int nombreLit) {
+        this.nombreLit = nombreLit;
+    }
+
+    public int getNombreBat() {
+        return nombreBat;
+    }
+
+    public void setNombreBat(int nombreBat) {
+        this.nombreBat = nombreBat;
+    }
+
+    public int getCategory() {
+        return category;
+    }
+
+    public void setCategory(int category) {
+        this.category = category;
+    }
+
+    public boolean isMorgue() {
+        return morgue;
+    }
+
+    public void setMorgue(boolean morgue) {
+        this.morgue = morgue;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
     }
 }

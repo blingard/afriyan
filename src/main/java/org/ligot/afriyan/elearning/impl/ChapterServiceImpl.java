@@ -1,6 +1,7 @@
 package org.ligot.afriyan.elearning.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.ligot.afriyan.Constantes;
 import org.ligot.afriyan.config.file.FileStorageProperties;
 import org.ligot.afriyan.elearning.dto.ChapitresDTO;
 import org.ligot.afriyan.elearning.dto.ParagraphsDTO;
@@ -92,7 +93,7 @@ public class ChapterServiceImpl implements ChapterService {
                 ParagraphsDTO localParagraph = paragraphsDTO;
                 if(paragraphsDTO.getType()== TypeParagraph.IMAGE){
                     String[] elements = paragraphsDTO.getContent().split(":");
-                    String imageBase64 = fileStorageService.convertImageToBase64("paragraph/image/"+elements[0]);
+                    String imageBase64 = fileStorageService.convertImageToBase64( Constantes.PARAGRAPHIMAGESUBPATH1+elements[0]);
                     String image = "data:image/"+elements[1]+";base64,"+imageBase64;
                     localParagraph.setContent(image);
                 }

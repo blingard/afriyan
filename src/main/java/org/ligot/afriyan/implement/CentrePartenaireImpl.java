@@ -1,8 +1,10 @@
 package org.ligot.afriyan.implement;
 
 import jakarta.transaction.Transactional;
+import org.ligot.afriyan.Constantes;
 import org.ligot.afriyan.Dto.CentrePartenaireDTO;
 import org.ligot.afriyan.Dto.UtilisateurDTO;
+import org.ligot.afriyan.elearning.entities.Paragraphs;
 import org.ligot.afriyan.entities.CentrePartenaire;
 import org.ligot.afriyan.entities.Status;
 import org.ligot.afriyan.entities.Utilisateur;
@@ -16,7 +18,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -25,15 +29,16 @@ import java.util.List;
 public class CentrePartenaireImpl implements ICentrePartenaire {
     private final CentrePartenaireMapper mapper;
     private final ICentrePartenaireRepository repository;
-
+    private final FileStorageService fileStorageService;
     private UtilisateurMapper utilisateurMapper;
-
     private final IUtilisateur utilisateur;
     private final int PAGE_SIZE = 15;
 
-    public CentrePartenaireImpl(CentrePartenaireMapper mapper, ICentrePartenaireRepository repository, IUtilisateur utilisateur) {
+    public CentrePartenaireImpl(CentrePartenaireMapper mapper, ICentrePartenaireRepository repository, FileStorageService fileStorageService, UtilisateurMapper utilisateurMapper, IUtilisateur utilisateur) {
         this.mapper = mapper;
         this.repository = repository;
+        this.fileStorageService = fileStorageService;
+        this.utilisateurMapper = utilisateurMapper;
         this.utilisateur = utilisateur;
     }
 
@@ -43,15 +48,27 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
         if(centrePartenaire == null){
             throw new Exception("Le CentrePartenaire que vous souhaitez modifier n'existes pas");
         }
-        return mapper.toDTO(centrePartenaire);
+        return findWithFile(centrePartenaire);
+    }
+
+    private CentrePartenaireDTO findWithFile(CentrePartenaire centrePartenaire){
+        String[] elements = centrePartenaire.getPhoto().split(":");
+        Arrays.stream(elements).forEach(System.err::println);
+        String imageBase64 = fileStorageService.convertImageToBase64(Constantes.CENTREPARTENAIREIMAGESUBPATH1+elements[0]);
+        String image = "data:image/"+elements[1]+";base64,"+imageBase64;
+        CentrePartenaireDTO centrePartenaireDTO = mapper.toDTO(centrePartenaire);
+        centrePartenaireDTO.setPhoto(image);
+        return centrePartenaireDTO;
     }
 
     @Override
-    public CentrePartenaireDTO save(CentrePartenaireDTO centrePartenaireDTO) throws Exception {
-/*        Utilisateur utilisateur = getUser();
-        centrePartenaireDTO.setCreateur(new UtilisateurDTO(utilisateur.getId()));*/
-        centrePartenaireDTO.setPhoto(new Date().toString());
-        return mapper.toDTO(repository.save(mapper.create(centrePartenaireDTO)));
+    public CentrePartenaireDTO save(MultipartFile file, CentrePartenaireDTO centrePartenaireDTO) throws Exception {
+        Utilisateur utilisateur = getUser();
+        centrePartenaireDTO.setCreateur(new UtilisateurDTO(utilisateur.getId()));
+        String name = fileStorageService.storeParagraphFileImage(file, Constantes.CENTREPARTENAIREIMAGESUBPATH);
+        CentrePartenaire centrePartenaire = mapper.create(centrePartenaireDTO);
+        centrePartenaire.setPhoto(name);
+        return mapper.toDTO(repository.save(centrePartenaire));
     }
     private Utilisateur getUser() throws Exception {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -62,17 +79,17 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
     @Override
     public Page<CentrePartenaireDTO> list(int page) throws Exception {
         Page<CentrePartenaire> pages = repository.findAll(PageRequest.of(page,PAGE_SIZE));
-        return new PageImpl<>(pages.map(mapper::toDTO).toList(),PageRequest.of(page,PAGE_SIZE),pages.getTotalElements());
+        return new PageImpl<>(pages.map(this::findWithFile).toList(),PageRequest.of(page,PAGE_SIZE),pages.getTotalElements());
     }
 
     @Override
     public List<CentrePartenaireDTO> list() throws Exception {
-        return repository.findCentrePartenaireByStatus(Status.ACTIVE).stream().map(mapper::toDTO).toList();
+        return repository.findCentrePartenaireByStatus(Status.ACTIVE).stream().map(this::findWithFile).toList();
     }
 
     @Override
     public List<CentrePartenaireDTO> listAll(){
-        return repository.findAll().stream().map(mapper::toDTO).toList();
+        return repository.findAll().stream().map(this::findWithFile).toList();
     }
 
     @Override

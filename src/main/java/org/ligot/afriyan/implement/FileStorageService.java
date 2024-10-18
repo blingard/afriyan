@@ -19,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.Base64;
 
 @Service
@@ -115,7 +116,7 @@ public class FileStorageService {
         }
     }
 
-    public String storeParagraphFileImage(MultipartFile file) throws Exception {
+    public String storeParagraphFileImage(MultipartFile file, String fileSubPath) throws Exception {
         // Normalize file name
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         try {
@@ -126,10 +127,11 @@ public class FileStorageService {
 
             String[] a = fileName.trim().split("\\.");
             String name = String.valueOf(System.currentTimeMillis())+'.'+a[1];
-            Path targetLocation = Paths.get(createDirectory("/paragraph/image"))
+            Path targetLocation = Paths.get(createDirectory(fileSubPath))
                     .toAbsolutePath().normalize().resolve(name);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-
+            String[] elements = name.split("\\.");
+            name=name+":"+elements[1];
             return name;
         } catch (IOException ex) {
             throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
@@ -152,7 +154,9 @@ public class FileStorageService {
 
     private byte[] getFile(String filePath) {
         try{
+
             String file = this.fileStorageProperties.getUploadDir().trim()+filePath;
+            System.err.println(file);
             Path encryptedImagePath = Paths.get(file);
             return Files.readAllBytes(encryptedImagePath);
         }catch (Exception ex){

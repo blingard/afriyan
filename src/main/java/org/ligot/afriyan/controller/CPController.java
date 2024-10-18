@@ -1,12 +1,17 @@
 package org.ligot.afriyan.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import org.ligot.afriyan.Dto.CentrePartenaireDTO;
+import org.ligot.afriyan.elearning.dto.ParagraphsDTO;
 import org.ligot.afriyan.service.ICentrePartenaire;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,9 +25,18 @@ public class CPController {
         this.centrePartenaire = centrePartenaire;
     }
 
-    @PostMapping("save")
+/*    @PostMapping("save")
     CentrePartenaireDTO saveCentre(@RequestBody @Valid CentrePartenaireDTO centrePartenaireDto) throws Exception {
         return centrePartenaire.save(centrePartenaireDto);
+    }*/
+
+    @PostMapping("save")
+    public ResponseEntity<?> saveCentre(
+            @RequestParam(name = "file",required = false) MultipartFile file,
+            @RequestParam( "jsonData") String jsonData) throws Exception {
+        CentrePartenaireDTO centrePartenaireDto = new ObjectMapper().readValue(jsonData, CentrePartenaireDTO.class);
+        centrePartenaire.save(file, centrePartenaireDto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/update/{id}")

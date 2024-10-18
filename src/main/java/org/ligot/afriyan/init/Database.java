@@ -35,23 +35,23 @@ public class Database implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
        try{
-              for (Categorie categorie : Categorie.values()) {
-                  System.err.println(categorie);
-                if(repo.findByDomain(categorie).isEmpty())
-                    repo.save(new CategorieEntities(null, categorie));
-              }
+
 
         }catch (Exception exception){
 
         }
         try{
+           /* for (Categorie categorie : Categorie.values()) {
+                if(repo.findByDomain(categorie).isEmpty())
+                    repo.save(new CategorieEntities(null, categorie));
+            }*/
             /*Roles roles1 =  serviceRole.save(new Roles(null, RolesName.SUPERADMIN.toString(),"Super utilisateur","all"));
             Roles roles2 = serviceRole.save(new Roles(null, RolesName.ADMIN.toString(),"Admin","all"));
             Roles roles3 = serviceRole.save(new Roles(null, RolesName.ROOT.toString(),"Utilisateur Root","all"));
             Roles roles4 = serviceRole.save(new Roles(null, RolesName.USER.toString(),"Utilisateur","all"));
             Roles roles5 = serviceRole.save(new Roles(null, RolesName.VISITOR.toString(),"Visiteur","all"));
-            Roles roles6 = serviceRole.save(new Roles(null, RolesName.GESTIONNAIRECENTRE.toString(),"Gestionnaire de centre","all"));*/
-            /*Groupes groupes2 = new Groupes(
+            Roles roles6 = serviceRole.save(new Roles(null, RolesName.GESTIONNAIRECENTRE.toString(),"Gestionnaire de centre","all"));
+            Groupes groupes2 = new Groupes(
                     null,
                     new HashSet<>(),
                     RolesName.USER.toString(),
@@ -59,26 +59,26 @@ public class Database implements CommandLineRunner {
                     "Description",
                     new HashSet<>());
             groupes2.getRoles().add(serviceRole.findByNom(RolesName.USER.toString()).get());
-            serviceGroupe.save(groupes2);
-            */UtilisateurDTO dto = new UtilisateurDTO();
+            serviceGroupe.save(groupes2);*/
+            UtilisateurDTO dto = new UtilisateurDTO();
             dto.setEmail("youthfp@youthfp.cm");
             dto.setNumero_telephone("@Youthfp75");
             dto.setNom("Youthfp");
             dto.setPrenom("Inc");
             dto.setStatus(Status.ACTIVE);
 
-            if(serviceAdmin.codeExist("000000000000000")){
+            /*if(serviceAdmin.codeExist("000000000000000")){
                 Administrateur administrateur = new Administrateur();
-                //administrateur.getRoles().add(roles1);
+                administrateur.getRoles().add(roles1);
                 administrateur.setCode("000000000000000");
                 administrateur.setNom("Administrateur");
                 administrateur.setPrenom("Administrateur");
                 administrateur.setEmail("root@test.com");
                 administrateur.setPwd("1234");
                 administrateur.setdCreation(new Date());
-                //administrateur.getRoles().add(roles1);
-                //serviceAdmin.save(administrateur);
-            }
+                administrateur.getRoles().add(roles1);
+                serviceAdmin.save(administrateur);
+            }*/
             /*Groupes groupes = new Groupes(
                     null,
                     new HashSet<>(),
@@ -92,11 +92,10 @@ public class Database implements CommandLineRunner {
             groupes.getRoles().add(roles4);
             groupes.getRoles().add(roles5);
             groupes.getRoles().add(roles6);
-            groupes = serviceGroupe.save(groupes);
-            */
-            //iUtilisateur.save(dto,groupes.getId());
-            //iUtilisateur.save(dto,1L);
-            /*Groupes groupes1 = new Groupes(
+            groupes = serviceGroupe.save(groupes);*/
+
+            //iUtilisateur.save(dto,153L);
+           /* Groupes groupes1 = new Groupes(
                     null,
                     new HashSet<>(),
                     RolesName.ADMIN.toString(),
@@ -104,8 +103,8 @@ public class Database implements CommandLineRunner {
                     "Description",
                     new HashSet<>());
             groupes1.getRoles().add(roles2);
-            serviceGroupe.save(groupes1);
-*/
+            serviceGroupe.save(groupes1);*/
+
         }catch (Exception e){}
 
 

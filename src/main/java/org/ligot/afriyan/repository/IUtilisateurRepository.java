@@ -18,8 +18,8 @@ public interface IUtilisateurRepository extends JpaRepository<Utilisateur, Long>
     Optional<Utilisateur> findByCode(String code);
     Optional<Utilisateur> findByEmail(String eMail);
 
-    @Query("SELECT u FROM Utilisateur u WHERE u.numero_telephone =: num")
-    Utilisateur findByNumero_telephone(@Param("num") String phone);
+    @Query("SELECT u FROM Utilisateur u WHERE u.numero_telephone = ?1")
+    Utilisateur findByNumero_telephone(String phone);
     List<Utilisateur> findByGroupe(Groupes groupes);
      Utilisateur findByNom(String nom);
 }
