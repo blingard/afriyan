@@ -5,6 +5,7 @@ import org.ligot.afriyan.Constantes;
 import org.ligot.afriyan.elearning.dto.ParagraphsDTO;
 import org.ligot.afriyan.elearning.entities.Chapitres;
 import org.ligot.afriyan.elearning.entities.Paragraphs;
+import org.ligot.afriyan.elearning.entities.TypeParagraph;
 import org.ligot.afriyan.elearning.mapper.ParagraphsMapper;
 import org.ligot.afriyan.elearning.repo.ChapterRepo;
 import org.ligot.afriyan.elearning.repo.ParagraphRepo;
@@ -55,6 +56,8 @@ public class ParagraphServiceImpl implements ParagraphService {
         Paragraphs paragraphs = findById(id);
         if(!paragraphs.isStatus())
             throw new Exception("Paragraphe not found");
+        if(paragraphs.getType() != TypeParagraph.TEXT)
+            throw new Exception("Paragraphe non modifiable");
         mapper.update(paragraphsDTO, paragraphs);
         repo.save(paragraphs);
     }

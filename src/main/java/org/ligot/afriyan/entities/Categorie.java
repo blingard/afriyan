@@ -10,8 +10,9 @@ public enum Categorie {
     DROGUE_STUPEFIANT,
     IVG,
     VVG,
-    Autres;
+    Autres,
+    YOUNGLEAD;
 
-    //"VIOLENCE BASE SUR LE GENRE"
+    //"VIOLENCE BASE SUR LE GENRE"=="VVG"
 
 }

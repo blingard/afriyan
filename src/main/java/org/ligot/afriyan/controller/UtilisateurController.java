@@ -1,5 +1,6 @@
 package org.ligot.afriyan.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import org.ligot.afriyan.Dto.ChangePwd;
@@ -7,15 +8,16 @@ import org.ligot.afriyan.Dto.UtilisateurDTO;
 import org.ligot.afriyan.entities.TypeDonne;
 import org.ligot.afriyan.service.IUtilisateur;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/user")
-@CrossOrigin(origins = "http://localhost:3000")
 public class UtilisateurController {
     private final IUtilisateur service;
 
@@ -68,6 +70,12 @@ public class UtilisateurController {
     /*@RolesAllowed(value = {"SUPERADMIN"})*/
     public void update(@PathVariable Long id, @RequestBody UtilisateurDTO utilisateurDTO) throws Exception {
         service.update(utilisateurDTO, id);
+    }
+    @PutMapping()
+    public String addImage(
+            @RequestParam(name = "file",required = false) MultipartFile file,
+            @RequestParam( "id") Long idFormat) throws Exception {
+        return service.update(file, idFormat);
     }
 
     @PutMapping("active/{id}")

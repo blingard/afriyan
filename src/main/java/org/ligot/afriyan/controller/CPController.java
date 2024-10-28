@@ -25,12 +25,8 @@ public class CPController {
         this.centrePartenaire = centrePartenaire;
     }
 
-/*    @PostMapping("save")
-    CentrePartenaireDTO saveCentre(@RequestBody @Valid CentrePartenaireDTO centrePartenaireDto) throws Exception {
-        return centrePartenaire.save(centrePartenaireDto);
-    }*/
-
     @PostMapping("save")
+    @RolesAllowed(value = {"SUPERADMIN"})
     public ResponseEntity<?> saveCentre(
             @RequestParam(name = "file",required = false) MultipartFile file,
             @RequestParam( "jsonData") String jsonData) throws Exception {
@@ -64,6 +60,12 @@ public class CPController {
     @DeleteMapping(value = "/delete/{id}")
     void deleteCentre (@PathVariable Long id) throws Exception{
         centrePartenaire.delete(id);
+    }
+
+    @GetMapping("/proches/{latitude}/{longitude}")
+    public List<CentrePartenaireDTO> getCentrePartenaireProches(@PathVariable double latitude, @PathVariable double longitude) {
+        double rayon = 50.0D; // rayon de 50 km
+        return centrePartenaire.trouverCPProches(latitude, longitude, rayon);
     }
 
     @GetMapping(value = "/getById/{id}")

@@ -3,8 +3,8 @@ package org.ligot.afriyan.implement;
 import jakarta.transaction.Transactional;
 import org.ligot.afriyan.Constantes;
 import org.ligot.afriyan.Dto.CentrePartenaireDTO;
+import org.ligot.afriyan.Dto.ServiceDTO;
 import org.ligot.afriyan.Dto.UtilisateurDTO;
-import org.ligot.afriyan.elearning.entities.Paragraphs;
 import org.ligot.afriyan.entities.CentrePartenaire;
 import org.ligot.afriyan.entities.Status;
 import org.ligot.afriyan.entities.Utilisateur;
@@ -12,6 +12,7 @@ import org.ligot.afriyan.mapper.CentrePartenaireMapper;
 import org.ligot.afriyan.mapper.UtilisateurMapper;
 import org.ligot.afriyan.repository.ICentrePartenaireRepository;
 import org.ligot.afriyan.service.ICentrePartenaire;
+import org.ligot.afriyan.service.IServiceEntity;
 import org.ligot.afriyan.service.IUtilisateur;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -20,9 +21,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -32,42 +32,60 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
     private final FileStorageService fileStorageService;
     private UtilisateurMapper utilisateurMapper;
     private final IUtilisateur utilisateur;
+    private final IServiceEntity iServiceEntity;
     private final int PAGE_SIZE = 15;
 
-    public CentrePartenaireImpl(CentrePartenaireMapper mapper, ICentrePartenaireRepository repository, FileStorageService fileStorageService, UtilisateurMapper utilisateurMapper, IUtilisateur utilisateur) {
+    public CentrePartenaireImpl(CentrePartenaireMapper mapper, ICentrePartenaireRepository repository, FileStorageService fileStorageService, UtilisateurMapper utilisateurMapper, IUtilisateur utilisateur, IServiceEntity iServiceEntity) {
         this.mapper = mapper;
         this.repository = repository;
         this.fileStorageService = fileStorageService;
         this.utilisateurMapper = utilisateurMapper;
         this.utilisateur = utilisateur;
+        this.iServiceEntity = iServiceEntity;
     }
 
     @Override
     public CentrePartenaireDTO findById(Long id) throws Exception {
         CentrePartenaire centrePartenaire = repository.findById(id).orElse(null);
         if(centrePartenaire == null){
-            throw new Exception("Le CentrePartenaire que vous souhaitez modifier n'existes pas");
+            throw new Exception("L' USRAJ' que vous souhaitez modifier n'existes pas");
         }
         return findWithFile(centrePartenaire);
     }
 
+    private ServiceDTO traitement(ServiceDTO serviceDTO){
+        serviceDTO.setCentrePartenaire(null);
+        serviceDTO.setProduits(new HashSet<>(0));
+        serviceDTO.setDateCreation(null);
+        return serviceDTO;
+    }
+
     private CentrePartenaireDTO findWithFile(CentrePartenaire centrePartenaire){
-        String[] elements = centrePartenaire.getPhoto().split(":");
-        Arrays.stream(elements).forEach(System.err::println);
-        String imageBase64 = fileStorageService.convertImageToBase64(Constantes.CENTREPARTENAIREIMAGESUBPATH1+elements[0]);
-        String image = "data:image/"+elements[1]+";base64,"+imageBase64;
         CentrePartenaireDTO centrePartenaireDTO = mapper.toDTO(centrePartenaire);
-        centrePartenaireDTO.setPhoto(image);
+        Set<ServiceDTO> serviceDTOS = iServiceEntity.listServiceCP(centrePartenaire.getId()).stream().map(this::traitement).collect(Collectors.toSet());
+        centrePartenaireDTO.setServiceOfferts(serviceDTOS);
+        try {
+            String[] elements = centrePartenaire.getPhoto().split(":");
+            String imageBase64 = fileStorageService.convertImageToBase64(Constantes.CENTREPARTENAIREIMAGESUBPATH1+elements[0]);
+            String image = "data:image/"+elements[1]+";base64,"+imageBase64;
+            centrePartenaireDTO.setPhoto(image);
+        }catch (Exception ex){}
         return centrePartenaireDTO;
     }
 
     @Override
     public CentrePartenaireDTO save(MultipartFile file, CentrePartenaireDTO centrePartenaireDTO) throws Exception {
-        Utilisateur utilisateur = getUser();
-        centrePartenaireDTO.setCreateur(new UtilisateurDTO(utilisateur.getId()));
+        getUser();
         String name = fileStorageService.storeParagraphFileImage(file, Constantes.CENTREPARTENAIREIMAGESUBPATH);
         CentrePartenaire centrePartenaire = mapper.create(centrePartenaireDTO);
         centrePartenaire.setPhoto(name);
+        Utilisateur utilisateur = new Utilisateur(centrePartenaireDTO.getCreateur().getId());
+        if(repository.findCentrePartenaireByCreateur(utilisateur).isPresent())
+            throw new Exception("Cet utilisateur est deja gestionnaire de l'USRAJ");
+        if(repository.findCentrePartenaireByTelephone(centrePartenaireDTO.getTelephone().trim()).isPresent())
+            throw new Exception("Ce numero de telephone est deja utilise par une USRAJ");
+        if(repository.findCentrePartenaireByNom(centrePartenaireDTO.getNom().trim()).isPresent())
+            throw new Exception("Ce nom est deja utilise par une USRAJ");
         return mapper.toDTO(repository.save(centrePartenaire));
     }
     private Utilisateur getUser() throws Exception {
@@ -87,6 +105,26 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
         return repository.findCentrePartenaireByStatus(Status.ACTIVE).stream().map(this::findWithFile).toList();
     }
 
+    private double calculerDistance(double lat1, double lon1, double lat2, double lon2) {
+        final int R = 6371; // Rayon de la Terre en km
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c; // la distance en km
+    }
+
+    @Override
+    public List<CentrePartenaireDTO> trouverCPProches(double userLat, double userLon, double rayon) {
+        List<CentrePartenaire> centrePartenaires = repository.findAll();
+        return centrePartenaires.stream()
+                .filter(h -> calculerDistance(userLat, userLon, Double.valueOf(h.getLatittude()), Double.valueOf(h.getLongitude())) <= rayon)
+                .map(this::findWithFile)
+                .toList();
+    }
+
     @Override
     public List<CentrePartenaireDTO> listAll(){
         return repository.findAll().stream().map(this::findWithFile).toList();
@@ -96,7 +134,7 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
     public CentrePartenaireDTO update(CentrePartenaireDTO centrePartenaireDTO, Long id) throws Exception {
         CentrePartenaire centrePartenaire = repository.findById(id).orElse(null);
         if(centrePartenaire == null){
-            throw new Exception("Le CentrePartenaire que vous souhaitez modifier n'existes pas");
+            throw new Exception("L' USRAJ' que vous souhaitez modifier n'existes pas");
         }
         centrePartenaireDTO.setId(id);
         mapper.update(centrePartenaireDTO, centrePartenaire);
@@ -113,7 +151,7 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
         UtilisateurDTO userDTO = utilisateur.findById(id);
         if(userDTO == null)
             throw new Exception("user with ID = "+id+" is null");
-        return mapper.toDTO(repository.findCentrePartenaireByCreateur(new Utilisateur(id)));
+        return mapper.toDTO(repository.findCentrePartenaireByCreateur(new Utilisateur(id)).orElse(null));
     }
 
     @Override

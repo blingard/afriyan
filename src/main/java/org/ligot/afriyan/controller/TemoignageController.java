@@ -30,7 +30,7 @@ public class TemoignageController {
 
     @PostMapping
     @RolesAllowed(value = {"SUPERADMIN"})
-    public ArticlesDTO create(@RequestBody ArticlesDTO valeursDTO){
+    public ArticlesDTO create(@RequestBody ArticlesDTO valeursDTO) throws Exception {
         return service.save(valeursDTO);
     }
 

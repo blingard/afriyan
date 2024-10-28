@@ -1,12 +1,15 @@
 package org.ligot.afriyan.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.security.RolesAllowed;
 import org.ligot.afriyan.Dto.ArticlesDTO;
+import org.ligot.afriyan.Dto.CentrePartenaireDTO;
 import org.ligot.afriyan.entities.Categorie;
 import org.ligot.afriyan.entities.TypeDonne;
 import org.ligot.afriyan.service.IArticles;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -40,8 +43,10 @@ public class ArticlesController {
 
     @PostMapping
     @RolesAllowed(value = {"SUPERADMIN"})
-    public ArticlesDTO create(@RequestBody ArticlesDTO valeursDTO){
-        return service.save(valeursDTO);
+    public ArticlesDTO create(@RequestParam(name = "file",required = false) MultipartFile file,
+                              @RequestParam( "jsonData") String jsonData)throws Exception{
+        ArticlesDTO articlesDTO = new ObjectMapper().readValue(jsonData, ArticlesDTO.class);
+        return service.save(file, articlesDTO);
     }
 
     @GetMapping("/{id}")

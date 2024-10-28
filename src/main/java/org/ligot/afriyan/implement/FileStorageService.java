@@ -156,7 +156,6 @@ public class FileStorageService {
         try{
 
             String file = this.fileStorageProperties.getUploadDir().trim()+filePath;
-            System.err.println(file);
             Path encryptedImagePath = Paths.get(file);
             return Files.readAllBytes(encryptedImagePath);
         }catch (Exception ex){

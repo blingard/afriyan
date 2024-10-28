@@ -19,4 +19,5 @@ public interface ICentrePartenaire {
     CentrePartenaireDTO findByUserId(Long id) throws Exception;
 
     void active(Long id);
+    List<CentrePartenaireDTO> trouverCPProches(double userLat, double userLon, double rayon);
 }

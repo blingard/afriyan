@@ -1,15 +1,17 @@
 package org.ligot.afriyan.implement;
 
 import jakarta.transaction.Transactional;
+import org.ligot.afriyan.Constantes;
 import org.ligot.afriyan.Dto.ArticlesDTO;
-import org.ligot.afriyan.entities.Articles;
-import org.ligot.afriyan.entities.Categorie;
-import org.ligot.afriyan.entities.TypeDonne;
-import org.ligot.afriyan.entities.UserConnect;
+import org.ligot.afriyan.Dto.CentrePartenaireDTO;
+import org.ligot.afriyan.Dto.UtilisateurDTO;
+import org.ligot.afriyan.entities.*;
 import org.ligot.afriyan.mapper.ArticlesMapper;
+import org.ligot.afriyan.mapper.UtilisateurMapper;
 import org.ligot.afriyan.repository.IArticlesRepository;
 import org.ligot.afriyan.repository.IUserConnect;
 import org.ligot.afriyan.service.IArticles;
+import org.ligot.afriyan.service.IUtilisateur;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -17,8 +19,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,28 +34,66 @@ public class ArticlesImpl implements IArticles {
     private final ArticlesMapper mapper;
     private final IUserConnect iUserConnect;
 
-    public ArticlesImpl(IArticlesRepository repository, ArticlesMapper mapper, IUserConnect iUserConnect) {
+    private final IUtilisateur utilisateur;
+    private final UtilisateurMapper utilisateurMapper;
+
+    private final FileStorageService fileStorageService;
+
+    public ArticlesImpl(IArticlesRepository repository, ArticlesMapper mapper, IUserConnect iUserConnect, IUtilisateur utilisateur, UtilisateurMapper utilisateurMapper, FileStorageService fileStorageService) {
         this.repository = repository;
         this.mapper = mapper;
         this.iUserConnect = iUserConnect;
+        this.utilisateur = utilisateur;
+        this.utilisateurMapper = utilisateurMapper;
+        this.fileStorageService = fileStorageService;
     }
 
     @Override
-    public ArticlesDTO save(ArticlesDTO articlesDTO) {
+    public ArticlesDTO save(MultipartFile file, ArticlesDTO articlesDTO) throws Exception {
+        getUser();
+        String name = fileStorageService.storeParagraphFileImage(file, Constantes.ARTICLEIMAGESUBPATH);
+        Articles articles = mapper.create(articlesDTO);
+        articles.setDate(new Date());
+        articles.setStatus(false);
+        articles.setPhote(name);
+        return mapper.toDTO(repository.save(articles));
+    }
+
+    @Override
+    public ArticlesDTO save(ArticlesDTO articlesDTO) throws Exception {
         Articles articles = mapper.create(articlesDTO);
         articles.setDate(new Date());
         articles.setStatus(false);
         return mapper.toDTO(repository.save(articles));
     }
 
+    private Utilisateur getUser() throws Exception {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        UtilisateurDTO utilisateurDTO = utilisateur.findByName(username);
+        return utilisateurMapper.create(utilisateurDTO);
+    }
+
+    private ArticlesDTO findWithFile(Articles articles){
+        ArticlesDTO articlesDTO = mapper.toDTO(articles);
+        try {
+            String[] elements = articles.getPhote().split(":");
+            String imageBase64 = fileStorageService.convertImageToBase64(Constantes.ARTICLEIMAGESUBPATH1+elements[0]);
+            String image = "data:image/"+elements[1]+";base64,"+imageBase64;
+            articlesDTO.setPhote(image);
+        }catch (Exception ex){
+
+        }
+        return articlesDTO;
+    }
+
     @Override
     public List<ArticlesDTO> getList(TypeDonne typeDonne) {
-        return repository.findAllByTypeDonne(typeDonne).stream().map(mapper::toDTO).collect(Collectors.toList());
+        return repository.findAllByTypeDonne(typeDonne).stream().map(this::findWithFile).collect(Collectors.toList());
     }
 
     @Override
     public List<ArticlesDTO> getList(TypeDonne typeDonne, Categorie categorie) {
-        return repository.findAllByTypeDonneAndCategorieAndStatusTrue(typeDonne, categorie).stream().map(mapper::toDTO).collect(Collectors.toList());
+        return repository.findAllByTypeDonneAndCategorieAndStatusTrue(typeDonne, categorie).stream().map(this::findWithFile).collect(Collectors.toList());
     }
 
     @Override
@@ -66,7 +108,7 @@ public class ArticlesImpl implements IArticles {
                     Date.from(Instant.now()),
                     "anonymous"));
         }
-        return repository.findAllByStatusTrueAndTypeDonne(typeDonne).stream().map(mapper::toDTO).toList();
+        return repository.findAllByStatusTrueAndTypeDonne(typeDonne).stream().map(this::findWithFile).toList();
     }
 
     @Override
@@ -74,7 +116,7 @@ public class ArticlesImpl implements IArticles {
         Articles articles = repository.findById(id).orElse(null);
         if(articles == null)
             throw new Exception("data not found");
-        return mapper.toDTO(articles);
+        return findWithFile(articles);
     }
 
     @Override
@@ -84,7 +126,7 @@ public class ArticlesImpl implements IArticles {
             throw new Exception("data not found");
         articles.setLue(articles.getLue()+1);
         repository.save(articles);
-        return mapper.toDTO(articles);
+        return findWithFile(articles);
     }
 
     @Override
@@ -93,7 +135,7 @@ public class ArticlesImpl implements IArticles {
             lenght = 0;
         Page<Articles> page = repository.findAllByTypeDonne(typeDonne, PageRequest.of(lenght,15));
         return new PageImpl<>(
-                page.getContent().stream().map(mapper::toDTO).collect(Collectors.toList()),
+                page.getContent().stream().map(this::findWithFile).collect(Collectors.toList()),
                 PageRequest.of(lenght, 15),
                 page.getSize()
         );
@@ -120,7 +162,7 @@ public class ArticlesImpl implements IArticles {
 
     @Override
     public List<ArticlesDTO> get6TopDesc(TypeDonne typeDonne) {
-        return repository.findTop6ByTypeDonne(typeDonne,Sort.by("id").descending()).stream().map(mapper::toDTO).toList();
+        return repository.findTop6ByTypeDonne(typeDonne,Sort.by("id").descending()).stream().map(this::findWithFile).toList();
     }
 
     @Override

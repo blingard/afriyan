@@ -1,10 +1,9 @@
 package org.ligot.afriyan.implement;
 
 import jakarta.transaction.Transactional;
-import org.ligot.afriyan.Dto.ChangePwd;
-import org.ligot.afriyan.Dto.GroupesDTO;
-import org.ligot.afriyan.Dto.UserDetailsImpl;
-import org.ligot.afriyan.Dto.UtilisateurDTO;
+import org.ligot.afriyan.Constantes;
+import org.ligot.afriyan.Dto.*;
+import org.ligot.afriyan.entities.CentrePartenaire;
 import org.ligot.afriyan.entities.Groupes;
 import org.ligot.afriyan.entities.Status;
 import org.ligot.afriyan.entities.Utilisateur;
@@ -24,9 +23,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
+import java.util.stream.Collectors;
 
 import static org.ligot.afriyan.implement.Utils.genCode;
 
@@ -43,8 +44,9 @@ public class UtilisateurService implements IUtilisateur {
     private final UtilisateurMapper mapper;
     private final TwilioService twilioService;
     private final ExecutorService executorService;
+    private final FileStorageService fileStorageService;
 
-    public UtilisateurService(IUtilisateurRepository repository, ICentrePartenaireRepository iCentrePartenaireRepository, IArticlesRepository iArticlesRepository, IGroupes groupesService, IDenonciationRepository iDenonciationRepository, @Qualifier("passwordEncoder") PasswordEncoder passwordEncoder, UtilisateurMapper mapper, TwilioService twilioService, ExecutorService executorService) {
+    public UtilisateurService(IUtilisateurRepository repository, ICentrePartenaireRepository iCentrePartenaireRepository, IArticlesRepository iArticlesRepository, IGroupes groupesService, IDenonciationRepository iDenonciationRepository, @Qualifier("passwordEncoder") PasswordEncoder passwordEncoder, UtilisateurMapper mapper, TwilioService twilioService, ExecutorService executorService, FileStorageService fileStorageService) {
         this.repository = repository;
         this.iCentrePartenaireRepository = iCentrePartenaireRepository;
         this.iArticlesRepository = iArticlesRepository;
@@ -54,6 +56,7 @@ public class UtilisateurService implements IUtilisateur {
         this.mapper = mapper;
         this.twilioService = twilioService;
         this.executorService = executorService;
+        this.fileStorageService = fileStorageService;
     }
 
     @Override
@@ -61,14 +64,12 @@ public class UtilisateurService implements IUtilisateur {
         Utilisateur utilisateur = repository.findById(id).orElse(null);
         if(utilisateur == null)
             throw new Exception("User with id = "+id+" don't exist");
-        return mapper.toDTO(utilisateur);
+        return findWithFile(utilisateur);
     }
 
     @Override
     public UtilisateurDTO save(UtilisateurDTO utilisateurDTO, Long idGroupe) throws Exception {
         String pwd = genCode();
-        System.err.println("saveutilisateur");
-        System.err.println("pwd: "+pwd);
         GroupesDTO groupe = groupesService.findById(idGroupe);
         boolean codeIsCreate = false;
         String code = "";
@@ -118,7 +119,6 @@ public class UtilisateurService implements IUtilisateur {
         }
     }
     private void checkIfUserExist(Utilisateur utilisateur) throws Exception{
-        System.err.println(utilisateur.getNumero_telephone());
         if(repository.findByEmail(utilisateur.getEmail()).isPresent())
             throw new Exception("Email deja utilise");
         if(repository.findByNumero_telephone(utilisateur.getNumero_telephone())!=null)
@@ -144,7 +144,6 @@ public class UtilisateurService implements IUtilisateur {
         Utilisateur utilisateur = mapper.create(utilisateurDTO);
         utilisateur.setStatus(Status.ACTIVE);
         utilisateur.setIsFirstConnexion(false);
-
         try {
             utilisateur = saveIt(utilisateur);
             executorService.execute(()->{
@@ -163,7 +162,7 @@ public class UtilisateurService implements IUtilisateur {
     public Page<UtilisateurDTO> list(int page) throws Exception {
         Page<Utilisateur> utilisateurs = repository.findAll(PageRequest.of(page, 15));
         return  new PageImpl<>(
-                utilisateurs.stream().map(mapper::toDTO).toList(),
+                utilisateurs.stream().map(this::findWithFile).toList(),
                 PageRequest.of(page, 15),
                 utilisateurs.getContent().size());
     }
@@ -172,12 +171,12 @@ public class UtilisateurService implements IUtilisateur {
     public List<UtilisateurDTO> list(Long groupId) throws Exception {
         if(groupId == 0)
             groupId = 1L;
-        return repository.findByGroupe(new Groupes(groupId)).stream().map(mapper::toDTO).toList();
+        return repository.findByGroupe(new Groupes(groupId)).stream().map(this::findWithFile).toList();
     }
 
     @Override
     public List<UtilisateurDTO> list() throws Exception {
-        return repository.findAll().stream().map(mapper::toDTO).toList();
+        return repository.findAll().stream().map(this::findWithFile).toList();
     }
 
     @Override
@@ -191,7 +190,44 @@ public class UtilisateurService implements IUtilisateur {
         Utilisateur utilisateur = repository.findById(id).orElse(null);
         if(utilisateur == null)
             throw new Exception("User with id "+id+" don't exist");
-        return null;
+        if(utilisateurDTO.getId()!=utilisateur.getId())
+            throw new Exception("Information non concordante");
+        mapper.update(utilisateurDTO, utilisateur);
+        repository.save(utilisateur);
+        return findWithFile(utilisateur);
+    }
+
+    private UtilisateurDTO findWithFile(Utilisateur utilisateur){
+        UtilisateurDTO utilisateurDTO = mapper.toDTO(utilisateur);
+        try {
+            String[] elements = utilisateur.getPhoto().split(":");
+            String imageBase64 = fileStorageService.convertImageToBase64(Constantes.USERIMAGESUBPATH1+elements[0]);
+            String image = "data:image/"+elements[1]+";base64,"+imageBase64;
+            utilisateurDTO.setPhoto(image);
+        }catch (Exception ex){}
+        return utilisateurDTO;
+    }
+
+    @Override
+    public String update(MultipartFile file, Long id) throws Exception {
+        Utilisateur utilisateur = getUser();
+        Utilisateur utilisateurSave = repository.findById(id).orElse(null);
+        if(utilisateurSave==null){
+            throw new Exception("Erreur: information non concordante");
+        }
+        if(utilisateur.getId()!=utilisateurSave.getId()){
+            throw new Exception("Erreur: information non concordante");
+        }
+        String name = fileStorageService.storeParagraphFileImage(file, Constantes.USERIMAGESUBPATH);
+        utilisateurSave.setPhoto(name);
+        repository.save(utilisateurSave);
+        return findWithFile(utilisateur).getPhoto();
+    }
+
+    private Utilisateur getUser() throws Exception {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        UtilisateurDTO utilisateurDTO = this.findByName(username);
+        return mapper.create(utilisateurDTO);
     }
 
     @Override
@@ -220,7 +256,7 @@ public class UtilisateurService implements IUtilisateur {
         Utilisateur utilisateur = repository.findByEmail(login).orElse(repository.findByCode(login.trim()).orElse(null));
         if(utilisateur == null)
             throw new Exception("User with login = "+login+" not found");
-        return mapper.toDTO(utilisateur);
+        return this.findWithFile(utilisateur);
     }
 
     @Override
@@ -231,7 +267,7 @@ public class UtilisateurService implements IUtilisateur {
             if(user.isEmpty())
                 new UsernameNotFoundException("User with username " + login + " don't exist");
         }
-        return mapper.toDTO(user.get());
+        return this.findWithFile(user.get());
     }
 
     @Override

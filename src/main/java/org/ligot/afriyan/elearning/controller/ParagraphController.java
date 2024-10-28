@@ -50,6 +50,13 @@ public class ParagraphController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PutMapping("update/{id}")
+    @RolesAllowed(value = {"SUPERADMIN"})
+    public ResponseEntity<?> update(@PathVariable("id")Long id, @RequestBody ParagraphsDTO paragraphsDTO) throws Exception{
+        services.update(id, paragraphsDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PostMapping(value = "{idChapter}")
     @RolesAllowed(value = {"SUPERADMIN"})
     public ResponseEntity<?> create(

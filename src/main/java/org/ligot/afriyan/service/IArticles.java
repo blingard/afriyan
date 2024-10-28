@@ -4,11 +4,13 @@ import org.ligot.afriyan.Dto.ArticlesDTO;
 import org.ligot.afriyan.entities.Categorie;
 import org.ligot.afriyan.entities.TypeDonne;
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface IArticles {
-    ArticlesDTO save(ArticlesDTO articlesDTO);
+    ArticlesDTO save(MultipartFile file, ArticlesDTO articlesDTO) throws Exception;
+    ArticlesDTO save(ArticlesDTO articlesDTO) throws Exception;
     List<ArticlesDTO> getList(TypeDonne typeDonne);
     List<ArticlesDTO> getList(TypeDonne typeDonne, Categorie categorie);
     List<ArticlesDTO> getListActive(TypeDonne typeDonne);
