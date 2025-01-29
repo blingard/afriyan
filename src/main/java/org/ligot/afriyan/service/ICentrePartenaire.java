@@ -14,9 +14,10 @@ public interface ICentrePartenaire {
     List<CentrePartenaireDTO> list() throws Exception;
     List<CentrePartenaireDTO> listAll() throws Exception;
     CentrePartenaireDTO update(CentrePartenaireDTO centrePartenaireDto, Long id) throws Exception;
+    void updateUser(Long userId, Long idCP) throws Exception;
     void delete(Long id) throws Exception;
 
-    CentrePartenaireDTO findByUserId(Long id) throws Exception;
+    List<CentrePartenaireDTO> findByUserId(Long id) throws Exception;
 
     void active(Long id);
     List<CentrePartenaireDTO> trouverCPProches(double userLat, double userLon, double rayon);

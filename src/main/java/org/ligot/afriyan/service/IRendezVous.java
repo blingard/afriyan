@@ -9,10 +9,13 @@ import java.util.List;
 public interface IRendezVous {
     RendezVousDTO  findById(Long id) throws Exception;
     List<RendezVousDTO>  findByUserId(Long id) throws Exception;
+    List<RendezVousDTO>  findByCPId(Long id) throws Exception;
     RendezVousDTO save(RendezVousDTO rendezVousDto) throws Exception;
     Page<RendezVousDTO> list(int page);
     Page<RendezVousDTO> list(int page, Long idUser) throws Exception;
     RendezVousDTO update(RendezVousDTO rendezVousDto, Long id) throws Exception;
+    RendezVousDTO updateAdmin(RendezVousDTO rendezVousDto, Long id) throws Exception;
     void delete(Long id) throws Exception;
+    void annuller(Long idRdv, Long idUser) throws Exception;
 
 }

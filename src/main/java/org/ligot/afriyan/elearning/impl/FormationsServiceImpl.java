@@ -11,10 +11,13 @@ import org.ligot.afriyan.elearning.repo.FormationUserRepo;
 import org.ligot.afriyan.elearning.repo.FormationsRepo;
 import org.ligot.afriyan.elearning.service.ChapterService;
 import org.ligot.afriyan.elearning.service.FormationsService;
-import org.ligot.afriyan.sondage.entities.QuestionResponse;
+import org.ligot.afriyan.entities.Utilisateur;
+import org.ligot.afriyan.implement.UtilsService;
+import org.ligot.afriyan.sondage.entities.Resultats;
 import org.ligot.afriyan.sondage.entities.Sondage;
 import org.ligot.afriyan.sondage.enumerations.TypeUserSondage;
 import org.ligot.afriyan.sondage.repo.QuestionResponseRepo;
+import org.ligot.afriyan.sondage.repo.ResultatsRepo;
 import org.ligot.afriyan.sondage.repo.SondageRepo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -29,14 +32,18 @@ import java.util.stream.Collectors;
 public class FormationsServiceImpl implements FormationsService {
 
     private final FormationsRepo repo;
+    private final ResultatsRepo resultatsRepo;
+    private final UtilsService utilsService;
     private final FormationsMapper mapper;
     private final ChapterService chapterService;
     private final FormationUserRepo formationUserRepo;
     private final SondageRepo sondageRepo;
     private final QuestionResponseRepo questionResponseRepo;
 
-    public FormationsServiceImpl(FormationsRepo repo, FormationsMapper mapper, ChapterService chapterService, FormationUserRepo formationUserRepo, SondageRepo sondageRepo, QuestionResponseRepo questionResponseRepo) {
+    public FormationsServiceImpl(FormationsRepo repo, ResultatsRepo resultatsRepo, UtilsService utilsService, FormationsMapper mapper, ChapterService chapterService, FormationUserRepo formationUserRepo, SondageRepo sondageRepo, QuestionResponseRepo questionResponseRepo) {
         this.repo = repo;
+        this.resultatsRepo = resultatsRepo;
+        this.utilsService = utilsService;
         this.mapper = mapper;
         this.chapterService = chapterService;
         this.formationUserRepo = formationUserRepo;
@@ -61,20 +68,7 @@ public class FormationsServiceImpl implements FormationsService {
 
     @Override
     public FormationsDTO findById(Long idFormation) throws Exception {
-        Formations formations = getById(idFormation);
-        if(!formations.isStatus())
-            throw new Exception("Not found");
-        FormationsDTO formationsDTO = mapper.toDTO(formations);
-        Set<ChapitresDTO> chapitresDTOS = new HashSet<>(0);
-        formationsDTO.getChapitres().forEach(chapitresDTO -> {
-            try {
-                if(chapitresDTO.isStatus())
-                    chapitresDTOS.add(chapterService.getById(chapitresDTO.getId()));
-            } catch (Exception e) {
-            }
-        });
-        formationsDTO.getChapitres().clear();
-        formationsDTO.setChapitres(chapitresDTOS);
+        FormationsDTO formationsDTO = findByIdUser(idFormation);
         formationsDTO.setQuizz(null);
         return formationsDTO;
     }
@@ -85,60 +79,95 @@ public class FormationsServiceImpl implements FormationsService {
         if(!formations.isStatus())
             throw new Exception("Not found");
         FormationsDTO formationsDTO = mapper.toDTO(formations);
-        Set<ChapitresDTO> chapitresDTOS = new HashSet<>(0);
+        List<ChapitresDTO> chapitresDTOS = new ArrayList<>(0);
         formationsDTO.getChapitres().forEach(chapitresDTO -> {
             try {
-                chapitresDTOS.add(chapterService.getById(chapitresDTO.getId()));
+                ChapitresDTO chapitres = chapterService.getById(chapitresDTO.getId());
+                if(chapitres.isStatus() && !chapitres.getParagraphes().isEmpty()) {
+                    chapitresDTOS.add(chapitres);
+                }
             } catch (Exception e) {
             }
         });
-        formationsDTO.getChapitres().clear();
-        formationsDTO.setChapitres(chapitresDTOS);
+        Collections.sort(chapitresDTOS);
+        formationsDTO=constructOrder(formationsDTO, chapitresDTOS);
         return formationsDTO;
     }
 
     @Override
     public List<FormationsDTO> findAllByIdUser(Long idUser) throws Exception {
-        List<FormationsDTO> formationsDTOS = new ArrayList<>(0);
         List<FormationsUser> formationsUsers = formationUserRepo.findByUserId(idUser);
-        formationsUsers.forEach(formationsUser -> {
-            try {
-                Formations formations = repo.findById(formationsUser.getFormationId()).orElseThrow();
-                formationsDTOS.add(mapper.toDTO(formations));
-            }catch (Exception ex){}
-        });
-        return formationsDTOS;
+        return getData(formationsUsers);
     }
 
     @Override
     public List<FormationsDTO> findFinishByIdUser(Long idUser) throws Exception {
-        List<FormationsDTO> formationsDTOS = new ArrayList<>(0);
         List<FormationsUser> formationsUsers = formationUserRepo.findByUserIdAndFinishIsTrue(idUser);
+        return getData(formationsUsers);
+
+    }
+
+    private List<FormationsDTO> getData(List<FormationsUser> formationsUsers){
+        List<FormationsDTO> formations = new ArrayList<>(0);
+        List<FormationsDTO> formationsDTOS = new ArrayList<>(0);
         formationsUsers.forEach(formationsUser -> {
             try {
-                Formations formations = repo.findById(formationsUser.getFormationId()).orElseThrow();
-                formationsDTOS.add(mapper.toDTO(formations));
+                Formations formation = repo.findById(formationsUser.getFormationId()).orElseThrow();
+                formationsDTOS.add(mapper.toDTO(formation));
             }catch (Exception ex){}
+        });
+        formationsDTOS.forEach(formationsDTO -> {
+            Set<ChapitresDTO> chapitresDTOS = new HashSet<>(0);
+            formationsDTO.getChapitres().forEach(chapitresDTO -> {
+                Set<ParagraphsDTO> paragraphsDTOS = new HashSet<>(0);
+                chapitresDTO.getParagraphes().forEach(paragraphsDTO -> {
+                    if(paragraphsDTO.isStatus())
+                        paragraphsDTOS.add(paragraphsDTO);
+                });
+                if(chapitresDTO.isStatus() && !chapitresDTO.getParagraphes().isEmpty()) {
+                    ChapitresDTO dto = chapitresDTO;
+                    dto.getParagraphes().clear();
+                    dto.setParagraphes(paragraphsDTOS);
+                    chapitresDTOS.add(dto);
+                }
+            });
+            FormationsDTO dto = formationsDTO;
+            dto.getChapitres().clear();
+            dto.setChapitres(chapitresDTOS);
+            if(!dto.getChapitres().isEmpty())
+                formations.add(dto);
         });
         return formationsDTOS;
     }
 
     @Override
     public List<FormationsDTO> findNotFinishByIdUser(Long idUser) throws Exception {
-        List<FormationsDTO> formationsDTOS = new ArrayList<>(0);
         List<FormationsUser> formationsUsers = formationUserRepo.findByUserIdAndFinishIsFalse(idUser);
-        formationsUsers.forEach(formationsUser -> {
-            try {
-                Formations formations = repo.findById(formationsUser.getFormationId()).orElseThrow();
-                formationsDTOS.add(mapper.toDTO(formations));
-            }catch (Exception ex){}
-        });
-        return formationsDTOS;
+        return getData(formationsUsers);
     }
 
     @Override
     public FormationsDTO findByIdAdmin(Long idFormation) throws Exception {
         return mapper.toDTO(getById(idFormation));
+    }
+
+    @Override
+    public FormationsDTO findByIdAdminWithDetail(Long idFormation) throws Exception {
+        Formations formations = getById(idFormation);
+        /*if(!formations.isStatus())
+            throw new Exception("Not found");*/
+        FormationsDTO formationsDTO = mapper.toDTO(formations);
+        List<ChapitresDTO> chapitresDTOS = new ArrayList<>(0);
+        formationsDTO.getChapitres().forEach(chapitresDTO -> {
+            try {
+                ChapitresDTO chapitres = chapterService.getByIdAdmin(chapitresDTO.getId());
+                chapitresDTOS.add(chapitres);
+            } catch (Exception e) {
+            }
+        });
+        Collections.sort(chapitresDTOS);
+        formationsDTO=constructOrder(formationsDTO, chapitresDTOS);
+        return formationsDTO;
     }
 
     @Override
@@ -167,7 +196,7 @@ public class FormationsServiceImpl implements FormationsService {
                     if(paragraphsDTO.isStatus())
                         paragraphsDTOS.add(paragraphsDTO);
                 });
-                if(chapitresDTO.isStatus()) {
+                if(chapitresDTO.isStatus() && !chapitresDTO.getParagraphes().isEmpty()) {
                     ChapitresDTO dto = chapitresDTO;
                     dto.getParagraphes().clear();
                     dto.setParagraphes(paragraphsDTOS);
@@ -177,10 +206,13 @@ public class FormationsServiceImpl implements FormationsService {
             FormationsDTO dto = formationsDTO;
             dto.getChapitres().clear();
             dto.setChapitres(chapitresDTOS);
-            formations.add(dto);
+            if(!dto.getChapitres().isEmpty())
+                formations.add(dto);
         });
         return formations;
     }
+
+
 
     @Override
     public void enable(Long id) throws Exception {
@@ -221,7 +253,37 @@ public class FormationsServiceImpl implements FormationsService {
         repo.save(formations);
     }
 
+    @Override
+    public Resultats certificate(Long idFormation) throws Exception {
+        Utilisateur utilisateur = utilsService.getUser();
+        Formations formations = new Formations();
+        formations.setId(idFormation);
+        return resultatsRepo.findAllByUtilisateurAndFormationAndStatusTrue(utilisateur, formations).orElseThrow(()->new Exception("Pas de certificat pour cet utilisateur"));
+    }
+
+    @Override
+    public Resultats certificateAdmin(Long idUser, Long idFormation) throws Exception{
+        Utilisateur utilisateur = utilsService.getUserById(idUser);
+        Formations formations = new Formations();
+        formations.setId(idFormation);
+        return resultatsRepo.findAllByUtilisateurAndFormationAndStatusTrue(utilisateur, formations).orElseThrow(()->new Exception("Pas de certificat pour cet utilisateur"));
+    }
+
     private Formations getById(Long id)throws Exception{
         return repo.findById(id).orElseThrow(()->new Exception("not found"));
+    }
+    private FormationsDTO constructOrder(FormationsDTO formationsDTO, List<ChapitresDTO> chapterList){
+        String order ="";
+        for(int i = 0;i<=(chapterList.size()-1);i=i+1){
+            if(i==0){
+                order = chapterList.get(0).getId().toString();
+            }else {
+                order = order+","+chapterList.get(i).getId().toString();
+            }
+        }
+        formationsDTO.setOrderChapter(order);
+        formationsDTO.getChapitres().clear();
+        formationsDTO.setChapitres(chapterList.stream().collect(Collectors.toSet()));
+        return formationsDTO;
     }
 }

@@ -58,7 +58,7 @@ public class CentrePartenaire {
      @OneToMany(fetch = FetchType.EAGER)
      private Set<ServiceEntity> serviceOfferts = new HashSet<>();
 
-     @Column(columnDefinition = "numeric(10, 2) default 0.0")
+    // @Column(columnDefinition = "numeric(10, 2) default 0.0")
      private Double superficie;
 
      @Column(columnDefinition = "integer default 0")

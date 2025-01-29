@@ -3,6 +3,7 @@ package org.ligot.afriyan.implement;
 import jakarta.transaction.Transactional;
 import org.ligot.afriyan.Dto.RendezVousDTO;
 import org.ligot.afriyan.entities.RendezVous;
+import org.ligot.afriyan.entities.StatusRdv;
 import org.ligot.afriyan.mapper.RendezVousMapper;
 import org.ligot.afriyan.repository.IRendezVousRepository;
 import org.ligot.afriyan.service.IRendezVous;
@@ -11,6 +12,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +41,19 @@ public class RendezVousImpl implements IRendezVous {
 
     @Override
     public List<RendezVousDTO> findByUserId(Long id) throws Exception {
-        return repository.findRendezVousByUtilisateur_Id(id).stream().map(mapper::toDTO).collect(Collectors.toList());
+        return repository.findRendezVousByUtilisateur_Id(id).stream().map(this::trait).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<RendezVousDTO> findByCPId(Long id) throws Exception {
+        return repository.findRendezVousByAndCentrePartenaire_Id(id).stream().map(this::trait).filter(rendezVousDTO -> rendezVousDTO.getRdv()==StatusRdv.PRIS).collect(Collectors.toList());
+    }
+    private RendezVousDTO trait(RendezVous rendezVous){
+        if(rendezVous.getDateRdv().before(Date.from(Instant.now()))){
+            rendezVous.setRdv(StatusRdv.ANNULLER);
+            repository.save(rendezVous);
+        }
+        return mapper.toDTO(rendezVous);
     }
 
     @Override
@@ -63,14 +78,29 @@ public class RendezVousImpl implements IRendezVous {
     public RendezVousDTO update(RendezVousDTO rendezVousDto, Long id) throws Exception {
         RendezVous rendezVous = repository.findById(id).orElse(null);
         if (rendezVous == null){
-            throw new Exception("Le RendezVousq que vous souhaitez modifier n'existes pas");
+            throw new Exception("Le RendezVous que vous souhaitez modifier n'existes pas");
         }
-
         return mapper.toDTO(repository.saveAndFlush(mapper.create(rendezVousDto)));
     }
 
     @Override
+    public RendezVousDTO updateAdmin(RendezVousDTO rendezVousDto, Long id) throws Exception {
+        RendezVous rendezVous = repository.findById(id).orElseThrow(()->new Exception("Le RendezVous que vous souhaitez modifier n'existes pas"));
+        mapper.update(rendezVousDto, rendezVous);
+        return mapper.toDTO(repository.save(rendezVous));
+    }
+
+    @Override
     public void delete(Long id) throws Exception{
-        repository.deleteById(id);
+        RendezVous rendezVous = repository.findById(id).orElseThrow(()->new Exception("not found"));
+        rendezVous.setRdv(StatusRdv.ANNULLER);
+        repository.save(rendezVous);
+    }
+
+    @Override
+    public void annuller(Long idRdv, Long idUser) throws Exception{
+        RendezVous rendezVous = repository.findByIdAndUtilisateur_Id(idRdv, idUser).orElseThrow(()->new Exception("not found"));
+        rendezVous.setRdv(StatusRdv.ANNULLER);
+        repository.save(rendezVous);
     }
 }

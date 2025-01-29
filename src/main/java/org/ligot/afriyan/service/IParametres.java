@@ -1,5 +1,6 @@
 package org.ligot.afriyan.service;
 
+import org.ligot.afriyan.Dto.PageDTO;
 import org.ligot.afriyan.Dto.ParametresDto;
 import org.ligot.afriyan.entities.ParamTypeEnum;
 
@@ -22,9 +23,12 @@ public interface IParametres {
 
     Map<String, ParametresDto> findAllLinks();
 
-    List<ParametresDto> find(ParamTypeEnum paramTypeEnum);
+    PageDTO<ParametresDto> find(ParamTypeEnum paramTypeEnum, int page);
 
     ParametresDto findById(Long id) throws Exception;
 
     Long visiteurs() throws Exception;
+
+    PageDTO<ParametresDto> findAllByPage(int page);
+
 }

@@ -25,7 +25,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class CentrePartenaireImpl implements ICentrePartenaire {
     private final CentrePartenaireMapper mapper;
     private final ICentrePartenaireRepository repository;
@@ -69,19 +68,19 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
             String imageBase64 = fileStorageService.convertImageToBase64(Constantes.CENTREPARTENAIREIMAGESUBPATH1+elements[0]);
             String image = "data:image/"+elements[1]+";base64,"+imageBase64;
             centrePartenaireDTO.setPhoto(image);
-        }catch (Exception ex){}
+        }catch (Exception ex){
+            centrePartenaireDTO.setPhoto(null);
+        }
         return centrePartenaireDTO;
     }
 
     @Override
+    @Transactional
     public CentrePartenaireDTO save(MultipartFile file, CentrePartenaireDTO centrePartenaireDTO) throws Exception {
         getUser();
         String name = fileStorageService.storeParagraphFileImage(file, Constantes.CENTREPARTENAIREIMAGESUBPATH);
         CentrePartenaire centrePartenaire = mapper.create(centrePartenaireDTO);
         centrePartenaire.setPhoto(name);
-        Utilisateur utilisateur = new Utilisateur(centrePartenaireDTO.getCreateur().getId());
-        if(repository.findCentrePartenaireByCreateur(utilisateur).isPresent())
-            throw new Exception("Cet utilisateur est deja gestionnaire de l'USRAJ");
         if(repository.findCentrePartenaireByTelephone(centrePartenaireDTO.getTelephone().trim()).isPresent())
             throw new Exception("Ce numero de telephone est deja utilise par une USRAJ");
         if(repository.findCentrePartenaireByNom(centrePartenaireDTO.getNom().trim()).isPresent())
@@ -131,6 +130,7 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
     }
 
     @Override
+    @Transactional
     public CentrePartenaireDTO update(CentrePartenaireDTO centrePartenaireDTO, Long id) throws Exception {
         CentrePartenaire centrePartenaire = repository.findById(id).orElse(null);
         if(centrePartenaire == null){
@@ -142,16 +142,30 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
     }
 
     @Override
-    public void delete(Long id) throws Exception {
-        repository.deleteById(id);
+    public void updateUser(Long userId, Long idCP) throws Exception {
+        UtilisateurDTO utilisateurDTO = utilisateur.findById(userId);
+        CentrePartenaire centrePartenaire = repository.findById(idCP).orElseThrow(()->new Exception("USRAJ non trouver"));
+        centrePartenaire.setCreateur(utilisateurMapper.create(utilisateurDTO));
+        repository.save(centrePartenaire);
     }
 
     @Override
-    public CentrePartenaireDTO findByUserId(Long id) throws Exception {
+    @Transactional
+    public void delete(Long id) throws Exception {
+        CentrePartenaire centrePartenaire = repository.findById(id).orElseThrow(()->new Exception("not found"));
+        centrePartenaire.setStatus(Status.INACTIVE);
+        repository.save(centrePartenaire);
+    }
+
+    @Override
+    public List<CentrePartenaireDTO> findByUserId(Long id) throws Exception {/*
         UtilisateurDTO userDTO = utilisateur.findById(id);
         if(userDTO == null)
-            throw new Exception("user with ID = "+id+" is null");
-        return mapper.toDTO(repository.findCentrePartenaireByCreateur(new Utilisateur(id)).orElse(null));
+            throw new Exception("user with ID = "+id+" is null");*/
+        Optional<List<CentrePartenaire>> optionalCentrePartenaires = repository.findCentrePartenaireByCreateur(new Utilisateur(id));
+        if(optionalCentrePartenaires.isEmpty())
+            return new ArrayList<>(0);
+        return optionalCentrePartenaires.get().stream().map(this::findWithFile).toList();
     }
 
     @Override

@@ -42,7 +42,7 @@ public class ArticlesController {
     }
 
     @PostMapping
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public ArticlesDTO create(@RequestParam(name = "file",required = false) MultipartFile file,
                               @RequestParam( "jsonData") String jsonData)throws Exception{
         ArticlesDTO articlesDTO = new ObjectMapper().readValue(jsonData, ArticlesDTO.class);
@@ -56,13 +56,13 @@ public class ArticlesController {
     }
 
     @DeleteMapping("/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
     public void delete(@PathVariable Long id){
         service.delete(id);
     }
 
     @GetMapping("find-by-id/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public ArticlesDTO findById(@PathVariable Long id) throws Exception {
         return service.findById(id);
     }
@@ -72,13 +72,13 @@ public class ArticlesController {
     }
 
     @PutMapping("/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public void update(@PathVariable Long id, @RequestBody ArticlesDTO valeursDTO) throws Exception {
         service.update(valeursDTO, id);
     }
 
     @PutMapping("active/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
     public void active(@PathVariable Long id) throws Exception {
         service.active( id, TypeDonne.ARTICLE);
     }

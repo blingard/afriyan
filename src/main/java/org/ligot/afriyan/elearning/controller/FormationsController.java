@@ -24,9 +24,14 @@ public class FormationsController {
     }
 
     @GetMapping("admin/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public ResponseEntity<FormationsDTO> findFormationsAdmin(@PathVariable("id") Long id)throws Exception{
         return new ResponseEntity<>(services.findByIdAdmin(id), HttpStatus.OK);
+    }
+    @GetMapping("admin/detail/{id}")
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    public ResponseEntity<FormationsDTO> findFormationsWithDetail(@PathVariable("id") Long id)throws Exception{
+        return new ResponseEntity<>(services.findByIdAdminWithDetail(id), HttpStatus.OK);
     }
     @GetMapping("{id}")
     public ResponseEntity<FormationsDTO> findFormations(@PathVariable("id") Long id)throws Exception{
@@ -50,14 +55,14 @@ public class FormationsController {
     }
 
     @GetMapping
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public ResponseEntity<Page<FormationsDTO>> findAllFormations(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "5") int size)throws Exception{
         return new ResponseEntity<>(services.findAll(page, size), HttpStatus.OK);
     }
     @GetMapping("all")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public ResponseEntity<List<FormationsDTO>> findAllFormations()throws Exception{
         return new ResponseEntity<>(services.findAll(), HttpStatus.OK);
     }
@@ -67,35 +72,35 @@ public class FormationsController {
     }
 
     @PutMapping("enable/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
     public ResponseEntity<?> enable(@PathVariable("id")Long id) throws Exception{
         services.enable(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("add_quizz/{idFormation}/{idQuizz}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public ResponseEntity<?> addQuizz(@PathVariable("idFormation")Long idFormation, @PathVariable("idQuizz")Long idQuizz) throws Exception{
         services.addQuizz(idFormation, idQuizz);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("disable/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
     public ResponseEntity<?> disable(@PathVariable("id")Long id) throws Exception{
         services.disable(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public ResponseEntity<?> create(@RequestBody FormationsDTO formationsDTO) throws Exception{
         services.create(formationsDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public ResponseEntity<?> update(@PathVariable("id")Long id, @RequestBody FormationsDTO formationsDTO) throws Exception{
         services.update(id, formationsDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -105,5 +110,18 @@ public class FormationsController {
     @PutMapping("finish/{idUser}/{idFormation}")
     public void finish(@PathVariable("idUser")Long idUser, @PathVariable("idFormation")Long idFormation) throws Exception{
         services.finishFormation(idUser, idFormation);
+    }
+
+
+    @GetMapping("certificate/{idFormation}")
+    public void certificate(@PathVariable("idFormation")Long idFormation) throws Exception{
+        services.certificate(idFormation);
+    }
+
+
+    @GetMapping("certificate/{idUser}/{idFormation}")
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    public void certificateAdmin(@PathVariable("idUser")Long idUser, @PathVariable("idFormation")Long idFormation) throws Exception{
+        services.certificateAdmin(idUser, idFormation);
     }
 }

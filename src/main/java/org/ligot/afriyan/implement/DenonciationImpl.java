@@ -2,13 +2,12 @@ package org.ligot.afriyan.implement;
 
 import jakarta.transaction.Transactional;
 import org.ligot.afriyan.Dto.DenonciationDTO;
+import org.ligot.afriyan.Dto.PageDTO;
 import org.ligot.afriyan.entities.Denonciation;
 import org.ligot.afriyan.mapper.DenonciationMapper;
 import org.ligot.afriyan.repository.IDenonciationRepository;
 import org.ligot.afriyan.service.IDenonciation;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -66,7 +65,15 @@ public class DenonciationImpl implements IDenonciation {
     }
 
     @Override
-    public List<DenonciationDTO> get() {
-        return repository.findAll().stream().map(mapper::toDTO).toList();
+    public PageDTO<DenonciationDTO> get(int page) {
+        Pageable pageable = PageRequest.of(page, 5, Sort.by("id").descending());
+        Page<Denonciation> denonciationPage = repository.findAll(pageable);
+        return new PageDTO<>(
+                new PageImpl<>(
+                        denonciationPage.getContent().stream().map(mapper::toDTO).toList(),
+                        pageable,
+                        denonciationPage.getTotalElements()
+                )
+        );
     }
 }

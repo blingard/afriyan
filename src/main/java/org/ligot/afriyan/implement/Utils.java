@@ -19,12 +19,29 @@ public class Utils {
         return sb.toString();
     }
 
-    protected static String genCode(){
+    public static String genCode(){
         StringBuilder sb = new StringBuilder();
         String set = ALPHA; // characters to choose from
         int low = 0;
         int high = set.length();
         for (int i= 0; i < 16; i++) {
+            Random r = new Random();
+            int result = r.nextInt(high-low) + low;
+            sb.append(set.charAt(result));
+        }
+        return sb.toString();
+    }
+
+    public static String genDefaultCode(){
+        return "123456789";
+    }
+
+    public static String genCodeNum(){
+        StringBuilder sb = new StringBuilder();
+        String set = NUM; // characters to choose from
+        int low = 0;
+        int high = set.length();
+        for (int i= 0; i < 8; i++) {
             Random r = new Random();
             int result = r.nextInt(high-low) + low;
             sb.append(set.charAt(result));

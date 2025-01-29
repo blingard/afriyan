@@ -3,6 +3,8 @@ package org.ligot.afriyan.sondage.repo;
 import org.ligot.afriyan.sondage.entities.Sondage;
 import org.ligot.afriyan.sondage.enumerations.EtatSondage;
 import org.ligot.afriyan.sondage.enumerations.TypeUserSondage;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

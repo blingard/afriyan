@@ -27,13 +27,13 @@ public class ValeursController {
     }
 
     @PostMapping
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public ValeursDTO create(@RequestBody ValeursDTO valeursDTO) throws Exception {
         return service.save(valeursDTO);
     }
 
     @GetMapping("/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public Page<ValeursDTO> listAll(@PathVariable int id) throws Exception {
         return service.getPage(id);
     }
@@ -45,13 +45,13 @@ public class ValeursController {
     }
 
     @GetMapping("find-by-id/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public ValeursDTO findById(@PathVariable Long id) throws Exception {
         return service.findById(id);
     }
 
     @PutMapping("/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public void update(@PathVariable Long id, @RequestBody ValeursDTO valeursDTO) throws Exception {
         service.update(valeursDTO, id);
     }

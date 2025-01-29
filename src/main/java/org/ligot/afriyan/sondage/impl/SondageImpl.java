@@ -1,27 +1,26 @@
 package org.ligot.afriyan.sondage.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.ligot.afriyan.Dto.PageDTO;
 import org.ligot.afriyan.elearning.entities.Formations;
 import org.ligot.afriyan.elearning.repo.FormationsRepo;
+import org.ligot.afriyan.implement.UtilsService;
 import org.ligot.afriyan.sondage.dto.*;
-import org.ligot.afriyan.sondage.entities.ModelResponse;
-import org.ligot.afriyan.sondage.entities.QuestionResponse;
-import org.ligot.afriyan.sondage.entities.Questions;
-import org.ligot.afriyan.sondage.entities.Sondage;
+import org.ligot.afriyan.sondage.entities.*;
 import org.ligot.afriyan.sondage.enumerations.EtatSondage;
 import org.ligot.afriyan.sondage.enumerations.TypeUserSondage;
 import org.ligot.afriyan.sondage.mapper.CategorieEntitieMapper;
 import org.ligot.afriyan.sondage.mapper.QuestionsMapper;
 import org.ligot.afriyan.sondage.mapper.SondageMapper;
-import org.ligot.afriyan.sondage.repo.CategorieEntitiesRepo;
-import org.ligot.afriyan.sondage.repo.QuestionResponseRepo;
-import org.ligot.afriyan.sondage.repo.SondageRepo;
+import org.ligot.afriyan.sondage.repo.*;
 import org.ligot.afriyan.sondage.service.AnswerService;
 import org.ligot.afriyan.sondage.service.QuestionsService;
 import org.ligot.afriyan.sondage.service.SchedulerService;
 import org.ligot.afriyan.sondage.service.SondageService;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -30,6 +29,7 @@ import java.util.*;
 public class SondageImpl implements SondageService {
 
     private final SondageRepo repo;
+    private final UtilsService utilsService;
     private final QuestionResponseRepo questionResponseRepo;
     private final SondageMapper mapper;
     private final QuestionsService questionsService;
@@ -38,10 +38,14 @@ public class SondageImpl implements SondageService {
     private final CategorieEntitiesRepo categorieEntitiesRepo;
     private final CategorieEntitieMapper categorieEntitieMapper;
     private final QuestionsMapper questionsMapper;
+    private final QuestionsRepo questionsRepo;
     private final FormationsRepo formationsRepo;
+    private final ModelResponseRepo modelResponseRepo;
+    private final ResultatsRepo resultatsRepo;
 
-    public SondageImpl(SondageRepo repo, QuestionResponseRepo questionResponseRepo, SondageMapper mapper, QuestionsService questionsService, SchedulerService schedulerService, AnswerService answerService, CategorieEntitiesRepo categorieEntitiesRepo, CategorieEntitieMapper categorieEntitieMapper, QuestionsMapper questionsMapper, FormationsRepo formationsRepo) {
+    public SondageImpl(SondageRepo repo, UtilsService utilsService, QuestionResponseRepo questionResponseRepo, SondageMapper mapper, QuestionsService questionsService, SchedulerService schedulerService, AnswerService answerService, CategorieEntitiesRepo categorieEntitiesRepo, CategorieEntitieMapper categorieEntitieMapper, QuestionsMapper questionsMapper, QuestionsRepo questionsRepo, FormationsRepo formationsRepo, ModelResponseRepo modelResponseRepo, ResultatsRepo resultatsRepo) {
         this.repo = repo;
+        this.utilsService = utilsService;
         this.questionResponseRepo = questionResponseRepo;
         this.mapper = mapper;
         this.questionsService = questionsService;
@@ -50,7 +54,10 @@ public class SondageImpl implements SondageService {
         this.categorieEntitiesRepo = categorieEntitiesRepo;
         this.categorieEntitieMapper = categorieEntitieMapper;
         this.questionsMapper = questionsMapper;
+        this.questionsRepo = questionsRepo;
         this.formationsRepo = formationsRepo;
+        this.modelResponseRepo = modelResponseRepo;
+        this.resultatsRepo = resultatsRepo;
     }
 
 
@@ -82,7 +89,7 @@ public class SondageImpl implements SondageService {
             questionsDTO.getModelResponses().clear();
             Set<ModelResponseDTO> modelResponseDTOS = new HashSet<>(0);
             for (ModelResponse modelResponse : question.getModelResponses()){
-                modelResponseDTOS.add(new ModelResponseDTO(modelResponse.getId(), modelResponse.getValue()));
+                modelResponseDTOS.add(new ModelResponseDTO(modelResponse.getId(), modelResponse.getValue(), modelResponse.getScore()));
             }
             questionsDTO.setModelResponses(modelResponseDTOS);
             sondageDTO.getQuestions().add(questionsDTO);
@@ -139,6 +146,21 @@ public class SondageImpl implements SondageService {
     }
 
     @Override
+    public void assignResponseToQuestion(QuestionResponseMap body) throws Exception {
+        Questions questions = questionsService.findByIdEntity(body.questionId());
+        questions.setScore(body.score());
+        questions.getModelResponses().forEach(modelResponse -> {
+            if(modelResponse.getId().equals(body.responseId())){
+                modelResponse.setScore(body.score());
+            }else {
+                modelResponse.setScore(0);
+            }
+            modelResponseRepo.save(modelResponse);
+        });
+        questionsRepo.save(questions);
+    }
+
+    @Override
     public void update(Long id, SondageDTO sondageDTO) throws Exception {
         Sondage sondage = repo.findById(id).orElseThrow(()->new Exception("Sondage not found"));
         if(!Objects.equals(sondage.getId(), sondageDTO.getId()))
@@ -158,7 +180,7 @@ public class SondageImpl implements SondageService {
             questionsDTO.getModelResponses().clear();
             Set<ModelResponseDTO> modelResponseDTOS = new HashSet<>(0);
             for (ModelResponse modelResponse : question.getModelResponses()){
-                modelResponseDTOS.add(new ModelResponseDTO(modelResponse.getId(), modelResponse.getValue()));
+                modelResponseDTOS.add(new ModelResponseDTO(modelResponse.getId(), modelResponse.getValue(), modelResponse.getScore()));
             }
             questionsDTO.setModelResponses(modelResponseDTOS);
             sondageDTO.getQuestions().add(questionsDTO);
@@ -166,26 +188,24 @@ public class SondageImpl implements SondageService {
         return sondageDTO;
     }
 
+
+
     @Override
     public List<SondageDTO> findAllSondage() {
-        List<Sondage> sondageList = repo.findAll();
-        List<SondageDTO> sondageDTOS = new ArrayList<>(0);
-        for (Sondage sondage : sondageList){
-            SondageDTO sondageDTO = mapper.toDTO(sondage);
-            sondageDTO.getQuestions().clear();
-            for (Questions question : sondage.getQuestions()){
-                QuestionsDTO questionsDTO = questionsMapper.toDTO(question);
-                questionsDTO.getModelResponses().clear();
-                Set<ModelResponseDTO> modelResponseDTOS = new HashSet<>(0);
-                for (ModelResponse modelResponse : question.getModelResponses()){
-                    modelResponseDTOS.add(new ModelResponseDTO(modelResponse.getId(), modelResponse.getValue()));
-                }
-                questionsDTO.setModelResponses(modelResponseDTOS);
-                sondageDTO.getQuestions().add(questionsDTO);
-            }
-            sondageDTOS.add(sondageDTO);
-        }
-        return sondageDTOS;
+        return map(repo.findAll());
+    }
+
+    @Override
+    public PageDTO<SondageDTO> findAllSondage(int page) {
+        Pageable pageable = PageRequest.of(page, 5, Sort.by("id").descending());
+        Page<Sondage> sondagePage = repo.findAll(pageable);
+        return new PageDTO<>(
+                new PageImpl<>(
+                        map(sondagePage.stream().toList()),
+                        pageable,
+                        sondagePage.getTotalElements()
+                )
+        );
     }
 
     @Override
@@ -201,7 +221,7 @@ public class SondageImpl implements SondageService {
                 questionsDTO.getModelResponses().clear();
                 Set<ModelResponseDTO> modelResponseDTOS = new HashSet<>(0);
                 for (ModelResponse modelResponse : question.getModelResponses()){
-                    modelResponseDTOS.add(new ModelResponseDTO(modelResponse.getId(), modelResponse.getValue()));
+                    modelResponseDTOS.add(new ModelResponseDTO(modelResponse.getId(), modelResponse.getValue(), modelResponse.getScore()));
                 }
                 questionsDTO.setModelResponses(modelResponseDTOS);
                 sondageDTO.getQuestions().add(questionsDTO);
@@ -223,7 +243,7 @@ public class SondageImpl implements SondageService {
                 questionsDTO.getModelResponses().clear();
                 Set<ModelResponseDTO> modelResponseDTOS = new HashSet<>(0);
                 for (ModelResponse modelResponse : question.getModelResponses()){
-                    modelResponseDTOS.add(new ModelResponseDTO(modelResponse.getId(), modelResponse.getValue()));
+                    modelResponseDTOS.add(new ModelResponseDTO(modelResponse.getId(), modelResponse.getValue(), modelResponse.getScore()));
                 }
                 questionsDTO.setModelResponses(modelResponseDTOS);
                 sondageDTO.getQuestions().add(questionsDTO);
@@ -257,20 +277,67 @@ public class SondageImpl implements SondageService {
         Sondage sondage = repo.findById(answerDTOSet.stream().toList().get(0).getSondageId()).orElseThrow(()->new Exception("Sondage not found"));
         if(sondage.getState() != EtatSondage.ACTIVE)
             throw new Exception("You can't pass this sondage because he status is :"+sondage.getState());
-        answerDTOSet.forEach(
-            answerDTO -> {
-              try {
+        for(AnswerDTO answerDTO : answerDTOSet){
+            try {
                 Questions questions = questionsService.findByIdEntity(answerDTO.getQuestionId());
                 for (ModelResponse modelResponses : questions.getModelResponses()) {
-                  if (Objects.equals(modelResponses.getId(), answerDTO.getValues().get(0).getId())) {
-                      answerService.save(answerDTO);
-                  }
+                    if (Objects.equals(modelResponses.getId(), answerDTO.getValues().get(0).getId())) {
+                        answerService.save(answerDTO);
+                    }
                 }
-              } catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-              }
             }
-        );
+        }
+    }
+
+    @Override
+    public Map<String, Object> elearningExam(Set<AnswerDTO> answerDTOSet) throws Exception {
+        Sondage sondage = repo.findById(answerDTOSet.stream().toList().get(0).getSondageId()).orElseThrow(()->new Exception("Sondage not found"));
+        Formations formations = formationsRepo.findFormationsByQuizz_Id(sondage.getId()).orElseThrow(()->new Exception("Ce sondange ne correspond a aucune formation"));
+        int score=0;
+        int scoreTotal = 0;
+        if(sondage.getState() != EtatSondage.ACTIVE)
+            throw new Exception("You can't pass this sondage because he status is :"+sondage.getState());
+        long count = resultatsRepo.countByUtilisateurAndFormationAndStatusTrue(utilsService.getUser(), formations);
+        if(count>0)
+            throw new Exception("Vous avez deja Reussi ce test");
+        for(AnswerDTO answerDTO : answerDTOSet){
+            try {
+                Questions questions = questionsService.findByIdEntity(answerDTO.getQuestionId());
+                scoreTotal = scoreTotal + questions.getScore();
+                for (ModelResponse modelResponses : questions.getModelResponses()) {
+                    if (Objects.equals(modelResponses.getId(), answerDTO.getValues().get(0).getId())) {
+                        score = score + modelResponses.getScore();
+                        answerService.save(answerDTO);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if(scoreTotal == 0){
+            throw new Exception("Examen non valid");
+        }else {
+            float result = (score/scoreTotal)*100;
+            boolean status = (result>=sondage.getScoreTotal()) ? true : false;
+            Resultats resultats = new Resultats(
+                    null,
+                    Float.valueOf(scoreTotal).floatValue(),
+                    score,
+                    formations,
+                    utilsService.getUser(),
+                    Date.from(Instant.now()),
+                    status
+            );
+            resultatsRepo.save(resultats);
+            Map<String, Object> map = new HashMap<>(0);
+            map.put("status",status);
+            map.put("score",result);
+            map.put("formations",formations);
+            map.put("user",utilsService.getUser());
+            return map;
+        }
     }
 
     @Override
@@ -314,5 +381,25 @@ public class SondageImpl implements SondageService {
             if(sondage.getState() == state)
                 throw new Exception("This sondage status is :"+sondage.getState());
         return sondage;
+    }
+
+    List<SondageDTO> map(List<Sondage> sondages){
+        List<SondageDTO> sondageDTOS = new ArrayList<>(0);
+        for (Sondage sondage : sondages){
+            SondageDTO sondageDTO = mapper.toDTO(sondage);
+            sondageDTO.getQuestions().clear();
+            for (Questions question : sondage.getQuestions()){
+                QuestionsDTO questionsDTO = questionsMapper.toDTO(question);
+                questionsDTO.getModelResponses().clear();
+                Set<ModelResponseDTO> modelResponseDTOS = new HashSet<>(0);
+                for (ModelResponse modelResponse : question.getModelResponses()){
+                    modelResponseDTOS.add(new ModelResponseDTO(modelResponse.getId(), modelResponse.getValue(), modelResponse.getScore()));
+                }
+                questionsDTO.setModelResponses(modelResponseDTOS);
+                sondageDTO.getQuestions().add(questionsDTO);
+            }
+            sondageDTOS.add(sondageDTO);
+        }
+        return sondageDTOS;
     }
 }

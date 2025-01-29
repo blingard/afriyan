@@ -1,7 +1,9 @@
 package org.ligot.afriyan.config.securities;
 
+import org.ligot.afriyan.Dto.ForgetPasswordRequest;
 import org.ligot.afriyan.Dto.LoginRequest;
 import org.ligot.afriyan.Dto.UtilisateurDTO;
+import org.ligot.afriyan.entities.Utilisateur;
 import org.ligot.afriyan.service.IUtilisateur;
 import org.ligot.afriyan.service.UserDetailsServiceImpl;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -40,5 +42,9 @@ public class AuthService {
 
     public UtilisateurDTO getUtilisateurByLogin(String login) throws Exception {
         return repository.login(login);
+    }
+
+    public Utilisateur getUtilisateurByLoginForgetPwd(String login) throws Exception {
+        return repository.loginForgetPwd(login);
     }
 }

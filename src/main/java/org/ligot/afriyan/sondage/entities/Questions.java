@@ -22,6 +22,8 @@ public class Questions {
     private Set<ModelResponse> modelResponses = new HashSet<>(0);
     private String libelle;
     private int position;
+    @Column(columnDefinition = "int default 0")
+    private int score;
 
     public Questions() {
 
@@ -31,17 +33,13 @@ public class Questions {
         this.id = id;
     }
 
-    public Questions(
-            Long id,
-            TypeResponse typeResponse,
-            Set<ModelResponse> modelResponses,
-            String libelle,
-            int position) {
+    public Questions(Long id, TypeResponse typeResponse, Set<ModelResponse> modelResponses, String libelle, int position, int score) {
         this.id = id;
         this.typeResponse = typeResponse;
         this.modelResponses = modelResponses;
         this.libelle = libelle;
         this.position = position;
+        this.score = score;
     }
 
     public Long getId() {
@@ -82,6 +80,14 @@ public class Questions {
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 
     @Override

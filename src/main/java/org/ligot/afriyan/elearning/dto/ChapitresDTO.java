@@ -3,7 +3,7 @@ package org.ligot.afriyan.elearning.dto;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ChapitresDTO {
+public class ChapitresDTO  implements Comparable<ChapitresDTO> {
     private Long id;
 
     String title;
@@ -84,5 +84,10 @@ public class ChapitresDTO {
                 ", paragraphes=" + paragraphes +
                 ", comments=" + comments +
                 '}';
+    }
+
+    @Override
+    public int compareTo(ChapitresDTO o) {
+        return this.id.compareTo(o.id);
     }
 }

@@ -25,7 +25,6 @@ public class ThemeTraiterController {
         return service.getListActive();
     }
     @GetMapping("admin")
-    @RolesAllowed(value = {"SUPERADMIN"})
     public List<ThemeTraiterDTO> findAll(){
         return service.getList();
     }
@@ -38,13 +37,13 @@ public class ThemeTraiterController {
         service.active(id);
     }
     @PostMapping
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public void create(@RequestBody ThemeTraiterDTO themeTraiterDTO){
         service.save(themeTraiterDTO);
     }
 
     @DeleteMapping("/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
     public void delete(@PathVariable Long id){
         service.delete(id);
     }

@@ -1,5 +1,6 @@
 package org.ligot.afriyan.config.securities;
 
+        import lombok.extern.slf4j.Slf4j;
         import org.ligot.afriyan.service.UserDetailsServiceImpl;
         import org.springframework.beans.factory.annotation.Qualifier;
         import org.springframework.context.annotation.Bean;
@@ -23,7 +24,7 @@ package org.ligot.afriyan.config.securities;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-
+@Slf4j
 public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtAuthenticationFilter jwtAuthFilter;
@@ -43,6 +44,7 @@ public class SecurityConfig {
                             auth
                                     .requestMatchers(
                                             "/test/**",
+                                            "/api/sliders/to_use",
                                             "/service",
                                             "/service/list-by-cp-id/**",
                                             "/api/article/active",
@@ -73,7 +75,7 @@ public class SecurityConfig {
                                             "/rapport/getById/**",
                                             "/rapport/list/**",
                                             "/api/valeur/find-active",
-                                            "/api/auth/login",
+                                            "/api/auth/**",
                                             "/api/parametres/get/**",
                                             "/api/temoignage/active",
                                             "/api/mediatech/active",
@@ -96,9 +98,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-
-
-
     @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -117,7 +116,6 @@ public class SecurityConfig {
         provider.setPasswordEncoder(passwordEncoder);
         return provider;
     }
-
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception{
         return config.getAuthenticationManager();

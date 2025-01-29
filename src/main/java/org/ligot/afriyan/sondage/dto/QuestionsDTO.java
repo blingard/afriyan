@@ -10,6 +10,7 @@ public class QuestionsDTO {
     private Set<ModelResponseDTO> modelResponses = new HashSet<>(0);
     private String libelle;
     private int position;
+    private int score;
 
     public QuestionsDTO() {
     }
@@ -18,12 +19,13 @@ public class QuestionsDTO {
         this.id = id;
     }
 
-    public QuestionsDTO(Long id, TypeResponse typeResponse, Set<ModelResponseDTO> modelResponses, String libelle, int position) {
+    public QuestionsDTO(Long id, TypeResponse typeResponse, Set<ModelResponseDTO> modelResponses, String libelle, int position, int score) {
         this.id = id;
         this.typeResponse = typeResponse;
         this.modelResponses = modelResponses;
         this.libelle = libelle;
         this.position = position;
+        this.score = score;
     }
 
     public Long getId() {
@@ -64,5 +66,13 @@ public class QuestionsDTO {
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 }

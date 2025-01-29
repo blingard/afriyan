@@ -6,5 +6,6 @@ public interface IAPropos {
     void save(AProposDTO aProposDTO)throws Exception;
     void update(Long id, AProposDTO aProposDTO)throws Exception;
     AProposDTO get();
+    AProposDTO get(Long id)throws Exception;
 
 }

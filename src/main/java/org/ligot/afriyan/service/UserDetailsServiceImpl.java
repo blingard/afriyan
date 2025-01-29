@@ -26,11 +26,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        username = username.trim();
         Optional<Utilisateur> user = repository.findByEmail(username);
         if (user.isEmpty()) {
             user = repository.findByCode(username);
-            if(user.isEmpty())
+            if(user.isEmpty()){
+                user = repository.findByTelephone(username);
                 new UsernameNotFoundException("User with username " + username + " don't exist");
+            }
+
         }
         if(user.get().getStatus().equals(Status.INACTIVE))
            throw new UsernameNotFoundException("User with username "+username+" is disable please contact administrator");

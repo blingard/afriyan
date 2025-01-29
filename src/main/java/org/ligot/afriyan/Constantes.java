@@ -5,6 +5,8 @@ public class Constantes {
     public final static String PARAGRAPHIMAGESUBPATH1="paragraph/image/";
     public final static String CENTREPARTENAIREIMAGESUBPATH="/cp/image";
     public final static String CENTREPARTENAIREIMAGESUBPATH1="cp/image/";
+    public final static String SLIDERIMAGESUBPATH="/cp/slider";
+    public final static String SLIDERIMAGESUBPATH1="cp/slider/";
     public final static String ARTICLEIMAGESUBPATH="/article/image";
     public final static String ARTICLEIMAGESUBPATH1="article/image/";
     public final static String SLIDEIMAGESUBPATH="/slide/image";

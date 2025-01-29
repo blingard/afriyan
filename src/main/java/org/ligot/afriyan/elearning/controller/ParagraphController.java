@@ -31,34 +31,34 @@ public class ParagraphController {
     }
 
     @GetMapping("admin/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public ResponseEntity<ParagraphsDTO> getParagrapheAdmin(@PathVariable("id") Long id)throws Exception{
         return new ResponseEntity<>(services.getByIdAdmin(id), HttpStatus.OK);
     }
 
     @PutMapping("enable/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
     public ResponseEntity<?> enable(@PathVariable("id")Long id) throws Exception{
         services.enable(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("disable/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
     public ResponseEntity<?> disable(@PathVariable("id")Long id) throws Exception{
         services.disable(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("update/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public ResponseEntity<?> update(@PathVariable("id")Long id, @RequestBody ParagraphsDTO paragraphsDTO) throws Exception{
         services.update(id, paragraphsDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(value = "{idChapter}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public ResponseEntity<?> create(
             @PathVariable("idChapter") Long idChapter,
             @RequestParam(name = "file",required = false) MultipartFile file,

@@ -24,6 +24,7 @@ public interface FormationsMapper {
     @Mapping(source = "status", target = "status", ignore = true)
     @Mapping(source = "chapitres", target = "chapitres", ignore = true)
     @Mapping(source = "quizz", target = "quizz", ignore = true)
+    @Mapping(source = "description", target = "description", ignore = true)
     void update(FormationsDTO formationsDTO, @MappingTarget Formations formations);
 
     /*

@@ -12,6 +12,9 @@ public class ModelResponse {
 
     private String value;
 
+    @Column(columnDefinition = "int default 0")
+    private int score;
+
     public ModelResponse() {
     }
 
@@ -19,9 +22,10 @@ public class ModelResponse {
         this.id = id;
     }
 
-    public ModelResponse(Long id, String value) {
+    public ModelResponse(Long id, String value, int score) {
         this.id = id;
         this.value = value;
+        this.score = score;
     }
 
     public Long getId() {
@@ -38,6 +42,14 @@ public class ModelResponse {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package org.ligot.afriyan.sondage.service;
 
+import org.ligot.afriyan.Dto.PageDTO;
 import org.ligot.afriyan.sondage.dto.*;
 import org.ligot.afriyan.sondage.entities.Sondage;
 import org.ligot.afriyan.sondage.enumerations.EtatSondage;
@@ -14,14 +15,17 @@ public interface SondageService {
     void schedule(Long idSondage, SchedulerDTO schedulerDTO) throws Exception;
     void archive(Long idSondage) throws Exception;
     void assignResponseToQuestion(QuestionResponseDTO body) throws Exception;
+    void assignResponseToQuestion(QuestionResponseMap body) throws Exception;
     void update(Long id, SondageDTO sondageDTO) throws Exception;
     SondageDTO findById(Long id) throws Exception;
     List<SondageDTO> findAllSondage();
+    PageDTO<SondageDTO> findAllSondage(int page);
     List<SondageDTO> findAllSondageDTO(String etat) throws Exception ;
     List<SondageDTO> findAllSondageByTypeUserAndState(TypeUserSondage typeUserSondage, EtatSondage state) throws Exception ;
     List<SondageDTO> findAllSondageFormationAvaillable() throws Exception ;
     List<Sondage> findAllSondage(EtatSondage state);
     void doSondage(Set<AnswerDTO> answerDTOSet) throws Exception;
+    Map<String, Object> elearningExam(Set<AnswerDTO> answerDTOSet) throws Exception;
     void setStatus(Long id, String etatSondage) throws Exception;
     Map<String, String> sondageStat(Long id) throws Exception;
     Map<String, String> sondageStat() throws Exception;

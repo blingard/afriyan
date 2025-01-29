@@ -12,4 +12,6 @@ import java.util.Optional;
 public interface FormationsRepo extends JpaRepository<Formations, Long> {
     List<Formations> findFormationsByQuizzIsNotNull();
     Optional<Formations> findFormationsByQuizz(Sondage sondage);
+
+    Optional<Formations> findFormationsByQuizz_Id(Long id);
 }

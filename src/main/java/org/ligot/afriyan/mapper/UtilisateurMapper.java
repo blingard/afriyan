@@ -5,13 +5,20 @@ import org.ligot.afriyan.entities.Utilisateur;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring")
 public interface UtilisateurMapper {
     Utilisateur create (UtilisateurDTO dto);
 
-    @Mapping(source = "pwd", target = "pwd", ignore = true)
+    @Mapping(source = "pwd", target = "pwd", qualifiedByName = "password")
     UtilisateurDTO toDTO (Utilisateur entity);
+
+    @Named("password")
+    default String setPWD(String pwd){
+        return "null";
+    }
+
     @Mapping(source = "id", target = "id", ignore = true)
     @Mapping(source = "code", target = "code", ignore = true)
     @Mapping(source = "email", target = "email", ignore = true)

@@ -14,6 +14,7 @@ import org.mapstruct.MappingTarget;
 public interface CentrePartenaireMapper {
 
     CentrePartenaire create (CentrePartenaireDTO dto);
+    @Mapping(source = "createur.pwd", target = "createur.pwd", ignore = true)
     CentrePartenaireDTO toDTO (CentrePartenaire entity);
 
     @Mapping(source = "id", target = "id", ignore = true)

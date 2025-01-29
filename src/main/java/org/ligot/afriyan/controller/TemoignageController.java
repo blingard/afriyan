@@ -29,25 +29,23 @@ public class TemoignageController {
     }
 
     @PostMapping
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public ArticlesDTO create(@RequestBody ArticlesDTO valeursDTO) throws Exception {
         return service.save(valeursDTO);
     }
 
     @GetMapping("/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
     public Page<ArticlesDTO> listAll(@PathVariable int id){
         return service.getPage(id, TypeDonne.TEMOIGNAGE);
     }
 
     @DeleteMapping("/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
     public void delete(@PathVariable Long id){
         service.delete(id);
     }
 
     @GetMapping("find-by-id/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
     public ArticlesDTO findById(@PathVariable Long id) throws Exception {
         return service.findById(id);
     }
@@ -64,7 +62,7 @@ public class TemoignageController {
 
 
     @PutMapping("/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public void update(@PathVariable Long id, @RequestBody ArticlesDTO valeursDTO) throws Exception {
         service.update(valeursDTO, id);
     }
@@ -75,7 +73,7 @@ public class TemoignageController {
     }
 
     @PutMapping("active/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
     public void active(@PathVariable Long id) throws Exception {
         service.active( id, TypeDonne.TEMOIGNAGE);
     }

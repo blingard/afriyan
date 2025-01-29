@@ -42,8 +42,8 @@ public class UserDetailsImpl  implements UserDetails {
                 .collect(Collectors.toList());
         return new UserDetailsImpl(
                 user.getId(),
-                user.getEmail(),
-                user.getEmail(),
+                user.getEmail()==null ? user.getNumero_telephone() : user.getEmail(),
+                user.getEmail()==null ? user.getNumero_telephone() : user.getEmail(),
                 user.getPwd(),
                 authorities);
     }

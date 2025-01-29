@@ -80,6 +80,9 @@ public class ArticlesImpl implements IArticles {
             String imageBase64 = fileStorageService.convertImageToBase64(Constantes.ARTICLEIMAGESUBPATH1+elements[0]);
             String image = "data:image/"+elements[1]+";base64,"+imageBase64;
             articlesDTO.setPhote(image);
+            if(image.contains(";base64,null")){
+                articlesDTO.setPhote(null);
+            }
         }catch (Exception ex){
 
         }

@@ -49,6 +49,7 @@ public class TwilioService {
 
             Map<String, String> mapStatus = new HashMap(0);
             final String countryCode = "237";
+            toNumber = toNumber.trim();
             if(toNumber.length()==9 & toNumber.startsWith("6")){
                 Message sms = Message.creator(
                                 new PhoneNumber(countryCode+toNumber.trim()),
@@ -61,6 +62,28 @@ public class TwilioService {
 
         }catch (Exception ex){
             ex.printStackTrace();
+        }
+    }
+
+    public void sendOneSm(String toNumber, String message) throws Exception {
+        try {
+
+            Map<String, String> mapStatus = new HashMap(0);
+            final String countryCode = "237";
+            toNumber = toNumber.trim();
+            if(toNumber.length()==9 & toNumber.startsWith("6")){
+                Message sms = Message.creator(
+                                new PhoneNumber(countryCode+toNumber.trim()),
+                                new PhoneNumber(twilioConfiguration.getPhoneNumber().trim()),
+                                message)
+                        .create();
+                mapStatus.put(toNumber, sms.getStatus().name());
+            }else
+                throw new Exception("Le numero de telephone 237"+toNumber.trim()+" n'est pas valide");
+
+        }catch (Exception ex){
+            ex.printStackTrace();
+            throw new Exception("Service de SMS momentanement indisponible. Veillez reessaye plus tard");
         }
     }
 }

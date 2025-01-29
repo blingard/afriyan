@@ -28,7 +28,7 @@ public class AProposController {
 
 
     @PostMapping("save")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public ResponseEntity<?> saveCentre(
             @RequestBody @Valid AProposDTO aProposDTO) throws Exception {
         service.save(aProposDTO);
@@ -36,9 +36,14 @@ public class AProposController {
     }
 
     @PutMapping(value = "/update/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     void updateCentre(@RequestBody @Valid AProposDTO aProposDTO, @PathVariable Long id) throws Exception {
         service.update(id, aProposDTO);
+    }
+
+    @GetMapping(value = "{id}")
+    AProposDTO updateCentre(@PathVariable Long id) throws Exception {
+        return service.get(id);
     }
 
     @GetMapping(value = "/list")

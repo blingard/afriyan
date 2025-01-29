@@ -9,5 +9,6 @@ public interface ChapterService {
     void enable(Long id)throws Exception;
     void disable(Long id)throws Exception;
     ChapitresDTO getById(Long id)throws Exception;
+    ChapitresDTO getActiveById(Long id)throws Exception;
     ChapitresDTO getByIdAdmin(Long id)throws Exception;
 }

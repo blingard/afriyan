@@ -2,6 +2,7 @@ package org.ligot.afriyan.implement;
 
 import jakarta.transaction.Transactional;
 import org.ligot.afriyan.Dto.GroupesDTO;
+import org.ligot.afriyan.Dto.PageDTO;
 import org.ligot.afriyan.Dto.RolesDTO;
 import org.ligot.afriyan.Dto.UtilisateurDTO;
 import org.ligot.afriyan.entities.Groupes;
@@ -13,9 +14,7 @@ import org.ligot.afriyan.repository.IGroupesRepository;
 import org.ligot.afriyan.repository.IRolesRepository;
 import org.ligot.afriyan.repository.IUtilisateurRepository;
 import org.ligot.afriyan.service.IGroupes;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -51,11 +50,27 @@ public class GroupesImpl implements IGroupes {
 
     @Override
     public GroupesDTO findByName(String name) throws Exception {
+
+        System.err.println("1111");
+        Groupes groupes = repository.findByName(name).orElse(null);
+
+        System.err.println("ok");
+        if(groupes == null){
+            System.err.println("nullllllll");
+            throw new Exception("Group with name "+name+" don't exist");
+        }
+
+        System.err.println("end 1");
+        return mapper.toDTO(groupes);
+    }
+
+    @Override
+    public Groupes findByNameEntiti(String name) throws Exception {
         Groupes groupes = repository.findByName(name).orElse(null);
         if(groupes == null){
             throw new Exception("Group with name "+name+" don't exist");
         }
-        return mapper.toDTO(groupes);
+        return groupes;
     }
 
     @Override
@@ -64,9 +79,16 @@ public class GroupesImpl implements IGroupes {
     }
 
     @Override
-    public Page<GroupesDTO> list(int page) throws Exception {
-        Page<Groupes> pages = repository.findAll(PageRequest.of(page,PAGE_SIZE));
-        return new PageImpl<>(pages.map(mapper::toDTO).toList(),PageRequest.of(page,PAGE_SIZE),pages.getTotalElements());
+    public PageDTO<GroupesDTO> list(int page) throws Exception {
+        Pageable pageable = PageRequest.of(page,5, Sort.by("id").descending());
+        Page<Groupes> pages = this.repository.findAll(pageable);
+        return new PageDTO<>(
+                new PageImpl<>(
+                     pages.getContent().stream().map(mapper::toDTO).toList(),
+                     pageable,
+                        pages.getTotalElements()
+                )
+        );
     }
 
     @Override

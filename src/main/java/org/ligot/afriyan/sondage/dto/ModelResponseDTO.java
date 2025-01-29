@@ -5,6 +5,8 @@ public class ModelResponseDTO {
 
     private String value;
 
+    private int score;
+
     public ModelResponseDTO() {
     }
 
@@ -12,9 +14,10 @@ public class ModelResponseDTO {
         this.id = id;
     }
 
-    public ModelResponseDTO(Long id, String value) {
+    public ModelResponseDTO(Long id, String value, int score) {
         this.id = id;
         this.value = value;
+        this.score = score;
     }
 
     public Long getId() {
@@ -31,6 +34,14 @@ public class ModelResponseDTO {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 
     @Override

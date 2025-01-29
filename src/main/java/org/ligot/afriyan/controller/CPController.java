@@ -26,7 +26,7 @@ public class CPController {
     }
 
     @PostMapping("save")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public ResponseEntity<?> saveCentre(
             @RequestParam(name = "file",required = false) MultipartFile file,
             @RequestParam( "jsonData") String jsonData) throws Exception {
@@ -36,8 +36,15 @@ public class CPController {
     }
 
     @PutMapping(value = "/update/{id}")
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     CentrePartenaireDTO updateCentre(@RequestBody @Valid CentrePartenaireDTO centrePartenaireDto, @PathVariable Long id) throws Exception {
         return centrePartenaire.update(centrePartenaireDto, id);
+    }
+
+    @PutMapping(value = "/update/{id}/{idUser}")
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    void updateCentre(@PathVariable("idUser") Long idUser, @PathVariable("id") Long id) throws Exception {
+        centrePartenaire.updateUser(idUser, id);
     }
 
     @GetMapping(value = "/list/{page}")
@@ -58,13 +65,14 @@ public class CPController {
     }
 
     @DeleteMapping(value = "/delete/{id}")
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     void deleteCentre (@PathVariable Long id) throws Exception{
         centrePartenaire.delete(id);
     }
 
     @GetMapping("/proches/{latitude}/{longitude}")
     public List<CentrePartenaireDTO> getCentrePartenaireProches(@PathVariable double latitude, @PathVariable double longitude) {
-        double rayon = 50.0D; // rayon de 50 km
+        double rayon = 100.0D; // rayon de 100 km
         return centrePartenaire.trouverCPProches(latitude, longitude, rayon);
     }
 
@@ -73,12 +81,13 @@ public class CPController {
         return centrePartenaire.findById(id);
     }
     @GetMapping(value = "/getByIdUser/{id}")
-    CentrePartenaireDTO getById(@PathVariable Long id) throws Exception {
+    @RolesAllowed(value = {"SUPERADMIN","ROOT","GESTIONNAIRECENTRE"})
+    List<CentrePartenaireDTO> getById(@PathVariable Long id) throws Exception {
         return centrePartenaire.findByUserId(id);
     }
 
     @PutMapping("active/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
     public void active(@PathVariable Long id) throws Exception {
         centrePartenaire.active(id);
     }

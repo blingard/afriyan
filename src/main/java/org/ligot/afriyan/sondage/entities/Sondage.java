@@ -37,6 +37,8 @@ public class Sondage {
     @Column(name = "type_user")
     private TypeUserSondage typeUser;
 
+    private float scoreTotal;
+
     public Sondage() {
     }
 
@@ -114,6 +116,14 @@ public class Sondage {
 
     public void setTypeUser(TypeUserSondage typeUser) {
         this.typeUser = typeUser;
+    }
+
+    public float getScoreTotal() {
+        return scoreTotal;
+    }
+
+    public void setScoreTotal(float scoreTotal) {
+        this.scoreTotal = scoreTotal;
     }
 
     @Override

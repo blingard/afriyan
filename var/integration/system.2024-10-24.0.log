@@ -1,0 +1,245 @@
+2024-10-24 00:55:54.375 [] INFO  - org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-10-24 00:55:54.407 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2024-10-24 00:55:54.418 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2024-10-24 00:56:22.315 [] INFO  - org.ligot.afriyan.OngafriyanApplication - Starting OngafriyanApplication using Java 17.0.1 with PID 17752 (C:\Users\GLC\Documents\Project\Java\Formation\bizz\ongafriyan\target\classes started by GLC in C:\Users\GLC\Documents\Project\Java\Formation\bizz\ongafriyan)
+2024-10-24 00:56:22.318 [] INFO  - org.ligot.afriyan.OngafriyanApplication - The following 1 profile is active: "dev"
+2024-10-24 00:56:22.411 [] INFO  - org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-10-24 00:56:22.412 [] INFO  - org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-10-24 00:56:24.555 [] INFO  - org.springframework.data.repository.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-10-24 00:56:24.974 [] INFO  - org.springframework.data.repository.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 409 ms. Found 36 JPA repository interfaces.
+2024-10-24 00:56:26.122 [] INFO  - org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8087 (http)
+2024-10-24 00:56:26.136 [] INFO  - org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2024-10-24 00:56:26.136 [] INFO  - org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.10]
+2024-10-24 00:56:26.245 [] INFO  - org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-10-24 00:56:26.246 [] INFO  - org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 3831 ms
+2024-10-24 00:56:26.656 [] INFO  - org.hibernate.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-10-24 00:56:26.814 [] INFO  - org.hibernate.Version - HHH000412: Hibernate ORM core version 6.2.5.Final
+2024-10-24 00:56:26.818 [] INFO  - org.hibernate.cfg.Environment - HHH000406: Using bytecode reflection optimizer
+2024-10-24 00:56:27.053 [] INFO  - org.hibernate.bytecode.internal.BytecodeProviderInitiator - HHH000021: Bytecode provider name : bytebuddy
+2024-10-24 00:56:27.306 [] INFO  - org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-10-24 00:56:27.335 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2024-10-24 00:56:27.696 [] INFO  - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1209b456
+2024-10-24 00:56:27.705 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2024-10-24 00:56:28.346 [] INFO  - org.hibernate.bytecode.internal.BytecodeProviderInitiator - HHH000021: Bytecode provider name : bytebuddy
+2024-10-24 00:56:29.446 [] INFO  - org.hibernate.metamodel.internal.EntityInstantiatorPojoStandard - HHH000182: No default (no-argument) constructor for class: org.ligot.afriyan.entities.UserConnect (class must be instantiated by Interceptor)
+2024-10-24 00:56:31.556 [] INFO  - org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2024-10-24 00:56:32.292 [] INFO  - org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-10-24 00:56:33.822 [] INFO  - org.springframework.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-10-24 00:56:38.103 [] INFO  - org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2024-10-24 00:56:38.188 [] INFO  - org.springframework.security.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@30186f3e, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@7f42ef87, org.springframework.security.web.context.SecurityContextHolderFilter@462db1f7, org.springframework.security.web.header.HeaderWriterFilter@1c2c8788, org.springframework.security.web.authentication.logout.LogoutFilter@2488f95, org.ligot.afriyan.config.securities.JwtAuthenticationFilter@5cb25e10, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@16b69f3c, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@3860a7a2, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@7921f5a8, org.springframework.security.web.session.SessionManagementFilter@67f9eed5, org.springframework.security.web.access.ExceptionTranslationFilter@7251f30c, org.springframework.security.web.access.intercept.AuthorizationFilter@29ccdb29]
+2024-10-24 00:56:38.778 [] INFO  - org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2024-10-24 00:56:38.881 [] INFO  - org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port(s): 8087 (http) with context path ''
+2024-10-24 00:56:38.902 [] INFO  - org.ligot.afriyan.OngafriyanApplication - Started OngafriyanApplication in 17.093 seconds (process running for 18.531)
+2024-10-24 00:56:39.171 [] INFO  - org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-24 00:56:39.172 [] INFO  - org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2024-10-24 00:56:39.176 [] INFO  - org.springframework.web.servlet.DispatcherServlet - Completed initialization in 3 ms
+2024-10-24 01:04:07.241 [] INFO  - org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-10-24 01:04:07.246 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2024-10-24 01:04:07.252 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2024-10-24 01:04:14.951 [] INFO  - org.ligot.afriyan.OngafriyanApplication - Starting OngafriyanApplication using Java 17.0.1 with PID 4984 (C:\Users\GLC\Documents\Project\Java\Formation\bizz\ongafriyan\target\classes started by GLC in C:\Users\GLC\Documents\Project\Java\Formation\bizz\ongafriyan)
+2024-10-24 01:04:14.954 [] INFO  - org.ligot.afriyan.OngafriyanApplication - The following 1 profile is active: "dev"
+2024-10-24 01:04:15.037 [] INFO  - org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-10-24 01:04:15.037 [] INFO  - org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-10-24 01:04:16.789 [] INFO  - org.springframework.data.repository.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-10-24 01:04:17.133 [] INFO  - org.springframework.data.repository.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 334 ms. Found 36 JPA repository interfaces.
+2024-10-24 01:04:18.023 [] INFO  - org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8087 (http)
+2024-10-24 01:04:18.034 [] INFO  - org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2024-10-24 01:04:18.034 [] INFO  - org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.10]
+2024-10-24 01:04:18.117 [] INFO  - org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-10-24 01:04:18.118 [] INFO  - org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 3080 ms
+2024-10-24 01:04:18.440 [] INFO  - org.hibernate.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-10-24 01:04:18.526 [] INFO  - org.hibernate.Version - HHH000412: Hibernate ORM core version 6.2.5.Final
+2024-10-24 01:04:18.532 [] INFO  - org.hibernate.cfg.Environment - HHH000406: Using bytecode reflection optimizer
+2024-10-24 01:04:18.709 [] INFO  - org.hibernate.bytecode.internal.BytecodeProviderInitiator - HHH000021: Bytecode provider name : bytebuddy
+2024-10-24 01:04:18.885 [] INFO  - org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-10-24 01:04:18.904 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2024-10-24 01:04:19.120 [] INFO  - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@9d24546
+2024-10-24 01:04:19.122 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2024-10-24 01:04:19.737 [] INFO  - org.hibernate.bytecode.internal.BytecodeProviderInitiator - HHH000021: Bytecode provider name : bytebuddy
+2024-10-24 01:04:20.694 [] INFO  - org.hibernate.metamodel.internal.EntityInstantiatorPojoStandard - HHH000182: No default (no-argument) constructor for class: org.ligot.afriyan.entities.UserConnect (class must be instantiated by Interceptor)
+2024-10-24 01:04:21.204 [] INFO  - org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2024-10-24 01:04:21.788 [] INFO  - org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-10-24 01:04:22.170 [] INFO  - org.springframework.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-10-24 01:04:24.857 [] INFO  - org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2024-10-24 01:04:24.935 [] INFO  - org.springframework.security.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@496288dc, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@53e3ebd5, org.springframework.security.web.context.SecurityContextHolderFilter@2e4989c1, org.springframework.security.web.header.HeaderWriterFilter@33bad2ab, org.springframework.security.web.authentication.logout.LogoutFilter@62e17fd9, org.ligot.afriyan.config.securities.JwtAuthenticationFilter@527de60b, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@44c17344, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@18a4136d, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@77d67e1f, org.springframework.security.web.session.SessionManagementFilter@5ba46ad1, org.springframework.security.web.access.ExceptionTranslationFilter@4d43812c, org.springframework.security.web.access.intercept.AuthorizationFilter@1491d154]
+2024-10-24 01:04:25.457 [] INFO  - org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2024-10-24 01:04:25.568 [] INFO  - org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port(s): 8087 (http) with context path ''
+2024-10-24 01:04:25.588 [] INFO  - org.ligot.afriyan.OngafriyanApplication - Started OngafriyanApplication in 11.095 seconds (process running for 12.276)
+2024-10-24 01:04:26.203 [] INFO  - org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-24 01:04:26.204 [] INFO  - org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2024-10-24 01:04:26.206 [] INFO  - org.springframework.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2024-10-24 01:31:35.907 [] INFO  - org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-10-24 01:31:35.912 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2024-10-24 01:31:35.918 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2024-10-24 01:32:00.334 [] INFO  - org.ligot.afriyan.OngafriyanApplication - Starting OngafriyanApplication using Java 17.0.1 with PID 20592 (C:\Users\GLC\Documents\Project\Java\Formation\bizz\ongafriyan\target\classes started by GLC in C:\Users\GLC\Documents\Project\Java\Formation\bizz\ongafriyan)
+2024-10-24 01:32:00.338 [] INFO  - org.ligot.afriyan.OngafriyanApplication - The following 1 profile is active: "dev"
+2024-10-24 01:32:00.433 [] INFO  - org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-10-24 01:32:00.434 [] INFO  - org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-10-24 01:32:02.680 [] INFO  - org.springframework.data.repository.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-10-24 01:32:03.008 [] INFO  - org.springframework.data.repository.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 318 ms. Found 37 JPA repository interfaces.
+2024-10-24 01:32:03.935 [] INFO  - org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8087 (http)
+2024-10-24 01:32:03.945 [] INFO  - org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2024-10-24 01:32:03.945 [] INFO  - org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.10]
+2024-10-24 01:32:04.035 [] INFO  - org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-10-24 01:32:04.035 [] INFO  - org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 3600 ms
+2024-10-24 01:32:04.360 [] INFO  - org.hibernate.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-10-24 01:32:04.434 [] INFO  - org.hibernate.Version - HHH000412: Hibernate ORM core version 6.2.5.Final
+2024-10-24 01:32:04.438 [] INFO  - org.hibernate.cfg.Environment - HHH000406: Using bytecode reflection optimizer
+2024-10-24 01:32:04.622 [] INFO  - org.hibernate.bytecode.internal.BytecodeProviderInitiator - HHH000021: Bytecode provider name : bytebuddy
+2024-10-24 01:32:04.797 [] INFO  - org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-10-24 01:32:04.822 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2024-10-24 01:32:05.051 [] INFO  - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@6cb36509
+2024-10-24 01:32:05.053 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2024-10-24 01:32:05.664 [] INFO  - org.hibernate.bytecode.internal.BytecodeProviderInitiator - HHH000021: Bytecode provider name : bytebuddy
+2024-10-24 01:32:06.669 [] INFO  - org.hibernate.metamodel.internal.EntityInstantiatorPojoStandard - HHH000182: No default (no-argument) constructor for class: org.ligot.afriyan.entities.UserConnect (class must be instantiated by Interceptor)
+2024-10-24 01:32:07.256 [] INFO  - org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2024-10-24 01:32:07.894 [] INFO  - org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-10-24 01:32:08.339 [] INFO  - org.springframework.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-10-24 01:32:11.335 [] INFO  - org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2024-10-24 01:32:11.420 [] INFO  - org.springframework.security.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@2ed95104, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@318a1fe7, org.springframework.security.web.context.SecurityContextHolderFilter@76c42c24, org.springframework.security.web.header.HeaderWriterFilter@18bdf83e, org.springframework.security.web.authentication.logout.LogoutFilter@6f832d15, org.ligot.afriyan.config.securities.JwtAuthenticationFilter@ebb7276, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3037dd2c, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@6e5f0c75, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@756c19a4, org.springframework.security.web.session.SessionManagementFilter@2eaba605, org.springframework.security.web.access.ExceptionTranslationFilter@707ea7f4, org.springframework.security.web.access.intercept.AuthorizationFilter@34356f2f]
+2024-10-24 01:32:12.022 [] INFO  - org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2024-10-24 01:32:12.130 [] INFO  - org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port(s): 8087 (http) with context path ''
+2024-10-24 01:32:12.150 [] INFO  - org.ligot.afriyan.OngafriyanApplication - Started OngafriyanApplication in 12.321 seconds (process running for 25.062)
+2024-10-24 01:32:12.591 [] INFO  - org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-24 01:32:12.591 [] INFO  - org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2024-10-24 01:32:12.594 [] INFO  - org.springframework.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2024-10-24 09:20:09.986 [] INFO  - org.ligot.afriyan.OngafriyanApplication - Starting OngafriyanApplication using Java 17.0.1 with PID 8000 (C:\Users\GLC\Documents\Project\Java\Formation\bizz\ongafriyan\target\classes started by GLC in C:\Users\GLC\Documents\Project\Java\Formation\bizz\ongafriyan)
+2024-10-24 09:20:09.997 [] INFO  - org.ligot.afriyan.OngafriyanApplication - The following 1 profile is active: "dev"
+2024-10-24 09:20:10.247 [] INFO  - org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-10-24 09:20:10.247 [] INFO  - org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-10-24 09:20:13.644 [] INFO  - org.springframework.data.repository.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-10-24 09:20:14.780 [] INFO  - org.springframework.data.repository.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 1116 ms. Found 37 JPA repository interfaces.
+2024-10-24 09:20:16.618 [] INFO  - org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8087 (http)
+2024-10-24 09:20:16.637 [] INFO  - org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2024-10-24 09:20:16.639 [] INFO  - org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.10]
+2024-10-24 09:20:16.843 [] INFO  - org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-10-24 09:20:16.844 [] INFO  - org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 6594 ms
+2024-10-24 09:20:17.384 [] INFO  - org.hibernate.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-10-24 09:20:17.578 [] INFO  - org.hibernate.Version - HHH000412: Hibernate ORM core version 6.2.5.Final
+2024-10-24 09:20:17.584 [] INFO  - org.hibernate.cfg.Environment - HHH000406: Using bytecode reflection optimizer
+2024-10-24 09:20:17.952 [] INFO  - org.hibernate.bytecode.internal.BytecodeProviderInitiator - HHH000021: Bytecode provider name : bytebuddy
+2024-10-24 09:20:18.231 [] INFO  - org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-10-24 09:20:18.263 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2024-10-24 09:20:18.611 [] INFO  - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@22e50a04
+2024-10-24 09:20:18.614 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2024-10-24 09:20:19.854 [] INFO  - org.hibernate.bytecode.internal.BytecodeProviderInitiator - HHH000021: Bytecode provider name : bytebuddy
+2024-10-24 09:20:21.732 [] INFO  - org.hibernate.metamodel.internal.EntityInstantiatorPojoStandard - HHH000182: No default (no-argument) constructor for class: org.ligot.afriyan.entities.UserConnect (class must be instantiated by Interceptor)
+2024-10-24 09:20:22.691 [] INFO  - org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2024-10-24 09:20:23.708 [] INFO  - org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-10-24 09:20:25.141 [] INFO  - org.springframework.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-10-24 09:20:33.573 [] INFO  - org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2024-10-24 09:20:33.807 [] INFO  - org.springframework.security.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@28d25d8f, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@7c4622bb, org.springframework.security.web.context.SecurityContextHolderFilter@3bf405d1, org.springframework.security.web.header.HeaderWriterFilter@791e1539, org.springframework.security.web.authentication.logout.LogoutFilter@6d703083, org.ligot.afriyan.config.securities.JwtAuthenticationFilter@7367b982, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@47ef2a63, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@513bd88, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@69fc8826, org.springframework.security.web.session.SessionManagementFilter@39d1f47e, org.springframework.security.web.access.ExceptionTranslationFilter@efb931e, org.springframework.security.web.access.intercept.AuthorizationFilter@50909a14]
+2024-10-24 09:20:34.835 [] INFO  - org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2024-10-24 09:20:35.013 [] INFO  - org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port(s): 8087 (http) with context path ''
+2024-10-24 09:20:35.047 [] INFO  - org.ligot.afriyan.OngafriyanApplication - Started OngafriyanApplication in 26.136 seconds (process running for 28.851)
+2024-10-24 09:20:35.861 [] INFO  - org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-24 09:20:35.862 [] INFO  - org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2024-10-24 09:20:35.866 [] INFO  - org.springframework.web.servlet.DispatcherServlet - Completed initialization in 3 ms
+2024-10-24 10:25:40.821 [] INFO  - org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-10-24 10:25:40.937 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2024-10-24 10:25:41.168 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2024-10-24 10:25:52.880 [] INFO  - org.ligot.afriyan.OngafriyanApplication - Starting OngafriyanApplication using Java 17.0.1 with PID 8176 (C:\Users\GLC\Documents\Project\Java\Formation\bizz\ongafriyan\target\classes started by GLC in C:\Users\GLC\Documents\Project\Java\Formation\bizz\ongafriyan)
+2024-10-24 10:25:52.886 [] INFO  - org.ligot.afriyan.OngafriyanApplication - The following 1 profile is active: "dev"
+2024-10-24 10:25:53.021 [] INFO  - org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-10-24 10:25:53.023 [] INFO  - org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-10-24 10:25:55.685 [] INFO  - org.springframework.data.repository.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-10-24 10:25:56.119 [] INFO  - org.springframework.data.repository.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 420 ms. Found 37 JPA repository interfaces.
+2024-10-24 10:25:57.290 [] INFO  - org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8087 (http)
+2024-10-24 10:25:57.306 [] INFO  - org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2024-10-24 10:25:57.307 [] INFO  - org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.10]
+2024-10-24 10:25:57.422 [] INFO  - org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-10-24 10:25:57.423 [] INFO  - org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 4399 ms
+2024-10-24 10:25:57.846 [] INFO  - org.hibernate.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-10-24 10:25:57.942 [] INFO  - org.hibernate.Version - HHH000412: Hibernate ORM core version 6.2.5.Final
+2024-10-24 10:25:57.946 [] INFO  - org.hibernate.cfg.Environment - HHH000406: Using bytecode reflection optimizer
+2024-10-24 10:25:58.187 [] INFO  - org.hibernate.bytecode.internal.BytecodeProviderInitiator - HHH000021: Bytecode provider name : bytebuddy
+2024-10-24 10:25:58.417 [] INFO  - org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-10-24 10:25:58.445 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2024-10-24 10:25:58.722 [] INFO  - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@294a34c9
+2024-10-24 10:25:58.725 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2024-10-24 10:25:59.532 [] INFO  - org.hibernate.bytecode.internal.BytecodeProviderInitiator - HHH000021: Bytecode provider name : bytebuddy
+2024-10-24 10:26:00.864 [] INFO  - org.hibernate.metamodel.internal.EntityInstantiatorPojoStandard - HHH000182: No default (no-argument) constructor for class: org.ligot.afriyan.entities.UserConnect (class must be instantiated by Interceptor)
+2024-10-24 10:26:01.568 [] INFO  - org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2024-10-24 10:26:02.406 [] INFO  - org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-10-24 10:26:02.908 [] INFO  - org.springframework.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-10-24 10:26:06.804 [] INFO  - org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2024-10-24 10:26:06.920 [] INFO  - org.springframework.security.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@726aac2e, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@3942daaf, org.springframework.security.web.context.SecurityContextHolderFilter@7fac9464, org.springframework.security.web.header.HeaderWriterFilter@1a59cecb, org.springframework.security.web.authentication.logout.LogoutFilter@7b7881aa, org.ligot.afriyan.config.securities.JwtAuthenticationFilter@5bfaeb76, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@17c0bace, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@2736764e, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@4bf6569a, org.springframework.security.web.session.SessionManagementFilter@111934fb, org.springframework.security.web.access.ExceptionTranslationFilter@7366803a, org.springframework.security.web.access.intercept.AuthorizationFilter@679b347]
+2024-10-24 10:26:07.643 [] INFO  - org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2024-10-24 10:26:07.776 [] INFO  - org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port(s): 8087 (http) with context path ''
+2024-10-24 10:26:07.805 [] INFO  - org.ligot.afriyan.OngafriyanApplication - Started OngafriyanApplication in 15.545 seconds (process running for 17.235)
+2024-10-24 10:26:08.314 [] INFO  - org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-24 10:26:08.315 [] INFO  - org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2024-10-24 10:26:08.319 [] INFO  - org.springframework.web.servlet.DispatcherServlet - Completed initialization in 3 ms
+2024-10-24 10:28:56.573 [] INFO  - org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-10-24 10:28:56.579 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2024-10-24 10:28:56.603 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2024-10-24 10:29:12.476 [] INFO  - org.ligot.afriyan.OngafriyanApplication - Starting OngafriyanApplication using Java 17.0.1 with PID 16116 (C:\Users\GLC\Documents\Project\Java\Formation\bizz\ongafriyan\target\classes started by GLC in C:\Users\GLC\Documents\Project\Java\Formation\bizz\ongafriyan)
+2024-10-24 10:29:12.480 [] INFO  - org.ligot.afriyan.OngafriyanApplication - The following 1 profile is active: "dev"
+2024-10-24 10:29:12.615 [] INFO  - org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-10-24 10:29:12.618 [] INFO  - org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-10-24 10:29:15.416 [] INFO  - org.springframework.data.repository.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-10-24 10:29:15.874 [] INFO  - org.springframework.data.repository.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 445 ms. Found 37 JPA repository interfaces.
+2024-10-24 10:29:17.371 [] INFO  - org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8087 (http)
+2024-10-24 10:29:17.385 [] INFO  - org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2024-10-24 10:29:17.386 [] INFO  - org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.10]
+2024-10-24 10:29:17.497 [] INFO  - org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-10-24 10:29:17.498 [] INFO  - org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 4879 ms
+2024-10-24 10:29:17.967 [] INFO  - org.hibernate.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-10-24 10:29:18.063 [] INFO  - org.hibernate.Version - HHH000412: Hibernate ORM core version 6.2.5.Final
+2024-10-24 10:29:18.067 [] INFO  - org.hibernate.cfg.Environment - HHH000406: Using bytecode reflection optimizer
+2024-10-24 10:29:18.339 [] INFO  - org.hibernate.bytecode.internal.BytecodeProviderInitiator - HHH000021: Bytecode provider name : bytebuddy
+2024-10-24 10:29:18.566 [] INFO  - org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-10-24 10:29:18.593 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2024-10-24 10:29:18.902 [] INFO  - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@2a10d7d4
+2024-10-24 10:29:18.905 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2024-10-24 10:29:19.960 [] INFO  - org.hibernate.bytecode.internal.BytecodeProviderInitiator - HHH000021: Bytecode provider name : bytebuddy
+2024-10-24 10:29:21.441 [] INFO  - org.hibernate.metamodel.internal.EntityInstantiatorPojoStandard - HHH000182: No default (no-argument) constructor for class: org.ligot.afriyan.entities.UserConnect (class must be instantiated by Interceptor)
+2024-10-24 10:29:22.172 [] INFO  - org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2024-10-24 10:29:23.067 [] INFO  - org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-10-24 10:29:23.622 [] INFO  - org.springframework.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-10-24 10:29:27.890 [] INFO  - org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2024-10-24 10:29:28.018 [] INFO  - org.springframework.security.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@5bea943e, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@4f345790, org.springframework.security.web.context.SecurityContextHolderFilter@ce2c836, org.springframework.security.web.header.HeaderWriterFilter@10c78d71, org.springframework.security.web.authentication.logout.LogoutFilter@7b27a0ca, org.ligot.afriyan.config.securities.JwtAuthenticationFilter@6dd14122, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@6c3260d0, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@56a3aaa5, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@70778aea, org.springframework.security.web.session.SessionManagementFilter@334d5cb1, org.springframework.security.web.access.ExceptionTranslationFilter@3af77de1, org.springframework.security.web.access.intercept.AuthorizationFilter@741c1ac1]
+2024-10-24 10:29:28.875 [] INFO  - org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2024-10-24 10:29:29.131 [] INFO  - org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port(s): 8087 (http) with context path ''
+2024-10-24 10:29:29.164 [] INFO  - org.ligot.afriyan.OngafriyanApplication - Started OngafriyanApplication in 17.414 seconds (process running for 19.194)
+2024-10-24 10:29:50.274 [] INFO  - org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-24 10:29:50.275 [] INFO  - org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2024-10-24 10:29:50.281 [] INFO  - org.springframework.web.servlet.DispatcherServlet - Completed initialization in 4 ms
+2024-10-24 10:30:26.046 [] INFO  - org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-10-24 10:30:26.051 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2024-10-24 10:30:26.084 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2024-10-24 10:30:34.038 [] INFO  - org.ligot.afriyan.OngafriyanApplication - Starting OngafriyanApplication using Java 17.0.1 with PID 8940 (C:\Users\GLC\Documents\Project\Java\Formation\bizz\ongafriyan\target\classes started by GLC in C:\Users\GLC\Documents\Project\Java\Formation\bizz\ongafriyan)
+2024-10-24 10:30:34.042 [] INFO  - org.ligot.afriyan.OngafriyanApplication - The following 1 profile is active: "dev"
+2024-10-24 10:30:34.179 [] INFO  - org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-10-24 10:30:34.179 [] INFO  - org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-10-24 10:30:37.534 [] INFO  - org.springframework.data.repository.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-10-24 10:30:38.217 [] INFO  - org.springframework.data.repository.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 669 ms. Found 37 JPA repository interfaces.
+2024-10-24 10:30:39.812 [] INFO  - org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8087 (http)
+2024-10-24 10:30:39.828 [] INFO  - org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2024-10-24 10:30:39.830 [] INFO  - org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.10]
+2024-10-24 10:30:40.042 [] INFO  - org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-10-24 10:30:40.043 [] INFO  - org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 5862 ms
+2024-10-24 10:30:40.536 [] INFO  - org.hibernate.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-10-24 10:30:40.633 [] INFO  - org.hibernate.Version - HHH000412: Hibernate ORM core version 6.2.5.Final
+2024-10-24 10:30:40.638 [] INFO  - org.hibernate.cfg.Environment - HHH000406: Using bytecode reflection optimizer
+2024-10-24 10:30:40.955 [] INFO  - org.hibernate.bytecode.internal.BytecodeProviderInitiator - HHH000021: Bytecode provider name : bytebuddy
+2024-10-24 10:30:41.228 [] INFO  - org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-10-24 10:30:41.261 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2024-10-24 10:30:41.613 [] INFO  - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@6eb0226c
+2024-10-24 10:30:41.616 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2024-10-24 10:30:42.586 [] INFO  - org.hibernate.bytecode.internal.BytecodeProviderInitiator - HHH000021: Bytecode provider name : bytebuddy
+2024-10-24 10:30:44.522 [] INFO  - org.hibernate.metamodel.internal.EntityInstantiatorPojoStandard - HHH000182: No default (no-argument) constructor for class: org.ligot.afriyan.entities.UserConnect (class must be instantiated by Interceptor)
+2024-10-24 10:30:45.606 [] INFO  - org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2024-10-24 10:30:46.520 [] INFO  - org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-10-24 10:30:47.092 [] INFO  - org.springframework.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-10-24 10:30:51.547 [] INFO  - org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2024-10-24 10:30:51.716 [] INFO  - org.springframework.security.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@5e6dc29d, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@1a47034a, org.springframework.security.web.context.SecurityContextHolderFilter@d580595, org.springframework.security.web.header.HeaderWriterFilter@778a05b7, org.springframework.security.web.authentication.logout.LogoutFilter@6095be90, org.ligot.afriyan.config.securities.JwtAuthenticationFilter@7ef4da60, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@79d6f78e, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@62f38b51, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@2c181135, org.springframework.security.web.session.SessionManagementFilter@4bf36c02, org.springframework.security.web.access.ExceptionTranslationFilter@572370ef, org.springframework.security.web.access.intercept.AuthorizationFilter@1ecb54be]
+2024-10-24 10:30:52.774 [] INFO  - org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2024-10-24 10:30:53.012 [] INFO  - org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port(s): 8087 (http) with context path ''
+2024-10-24 10:30:53.042 [] INFO  - org.ligot.afriyan.OngafriyanApplication - Started OngafriyanApplication in 19.646 seconds (process running for 21.706)
+2024-10-24 10:30:53.859 [] INFO  - org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-24 10:30:53.861 [] INFO  - org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2024-10-24 10:30:53.864 [] INFO  - org.springframework.web.servlet.DispatcherServlet - Completed initialization in 3 ms
+2024-10-24 15:36:19.587 [] INFO  - org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-10-24 15:36:19.669 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2024-10-24 15:36:19.710 [] INFO  - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

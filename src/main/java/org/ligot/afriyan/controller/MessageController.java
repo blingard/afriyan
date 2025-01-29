@@ -2,6 +2,7 @@ package org.ligot.afriyan.controller;
 
 import java.util.Map;
 
+import jakarta.annotation.security.RolesAllowed;
 import org.ligot.afriyan.Dto.MessageDTO;
 import org.ligot.afriyan.Dto.SendOneSMSDTO;
 import org.ligot.afriyan.service.IMessage;
@@ -23,11 +24,13 @@ public class    MessageController {
     @PostMapping(value = "save") Map<String, String> saveMessage(@RequestBody MessageDTO messageDto) throws Exception {
         return message.save(messageDto);
     }
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT","GESTIONNAIRECENTRE"})
     @PostMapping(value = "sendsms") void sendOneSMS(@RequestBody SendOneSMSDTO messageDto) throws Exception {
         message.sendOne(messageDto);
     }
 
     @GetMapping(value = "/list/{page}")
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     Page<MessageDTO> listMessage(@PathVariable  int page) throws Exception {
         return message.list(page);
     }

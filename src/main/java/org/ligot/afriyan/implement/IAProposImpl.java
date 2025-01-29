@@ -44,4 +44,9 @@ public class IAProposImpl implements IAPropos {
             return null;
         return mapper.toDTO(repository.findAll().get(0));
     }
+
+    @Override
+    public AProposDTO get(Long id) throws Exception {
+        return mapper.toDTO(repository.findById(id).orElseThrow(()->new RuntimeException("not exist")));
+    }
 }

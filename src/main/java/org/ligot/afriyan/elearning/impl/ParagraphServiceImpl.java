@@ -36,11 +36,11 @@ public class ParagraphServiceImpl implements ParagraphService {
         Chapitres chapitres = chapterRepo.findById(idChapter).orElseThrow(()->new Exception("Chapter not found"));
         Paragraphs paragraphs = switch (paragraphsDTO.getType()){
             case TEXT -> repo.save(mapper.toEntity(paragraphsDTO));
-            case IMAGE -> {
-                String name = fileStorageService.storeParagraphFileImage(file, Constantes.PARAGRAPHIMAGESUBPATH);
-                paragraphsDTO.setContent(name);
+            case IMAGE, BOTH -> {
+                paragraphsDTO.setImage(fileStorageService.storeParagraphFileImage(file, Constantes.PARAGRAPHIMAGESUBPATH));
                 yield repo.save(mapper.toEntity(paragraphsDTO));
             }
+
         };
         chapitres.getParagraphes().add(paragraphs);
        if(chapitres.getOrderParagraph()==null){

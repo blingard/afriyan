@@ -1,6 +1,7 @@
 package org.ligot.afriyan.service;
 
 import org.ligot.afriyan.Dto.DenonciationDTO;
+import org.ligot.afriyan.Dto.PageDTO;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -12,5 +13,5 @@ public interface IDenonciation {
     DenonciationDTO update(DenonciationDTO denonciationDTO, Long id) throws Exception;
     void delete(Long id) throws Exception;
 
-    List<DenonciationDTO> get();
+    PageDTO<DenonciationDTO> get(int page);
 }

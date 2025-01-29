@@ -27,37 +27,36 @@ public class OurWorksController {
     }
 
     @PostMapping
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public OurWorksDTO create(@RequestBody OurWorksDTO valeursDTO){
         return service.save(valeursDTO);
     }
 
     @GetMapping("/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public Page<OurWorksDTO> listAll(@PathVariable int id){
         return service.getPage(id);
     }
 
     @DeleteMapping("/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
     public void delete(@PathVariable Long id){
         service.delete(id);
     }
 
     @GetMapping("find-by-id/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
     public OurWorksDTO findById(@PathVariable Long id) throws Exception {
         return service.findById(id);
     }
 
     @PutMapping("/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public void update(@PathVariable Long id, @RequestBody OurWorksDTO valeursDTO) throws Exception {
         service.update(valeursDTO, id);
     }
 
     @PutMapping("active/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
     public void active(@PathVariable Long id) throws Exception {
         service.active(id);
     }

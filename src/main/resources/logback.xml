@@ -15,7 +15,7 @@
             <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 
 
-                <fileNamePattern>var/integration/system.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <fileNamePattern>logs/system.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
 
                 <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                     <maxFileSize>500MB</maxFileSize>
@@ -40,7 +40,7 @@
 
             <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 
-                <fileNamePattern>var/integration/business.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <fileNamePattern>logs/business.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
 
                 <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                     <maxFileSize>500MB</maxFileSize>

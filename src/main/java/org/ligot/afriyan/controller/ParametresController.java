@@ -1,8 +1,12 @@
 package org.ligot.afriyan.controller;
 
+import jakarta.annotation.security.RolesAllowed;
+import org.ligot.afriyan.Dto.PageDTO;
 import org.ligot.afriyan.Dto.ParametresDto;
 import org.ligot.afriyan.entities.ParamTypeEnum;
 import org.ligot.afriyan.service.IParametres;
+import org.ligot.afriyan.sondage.dto.SondageDTO;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,8 +26,8 @@ public class ParametresController {
     }
 
     @GetMapping
-    public List<ParametresDto> findAll(){
-        return service.findAll();
+    public ResponseEntity<PageDTO<ParametresDto>> listByPage(@RequestParam(name = "page", defaultValue = "0")int page) throws Exception{
+        return ResponseEntity.ok(service.findAllByPage(page));
     }
 
     @GetMapping("find-by-id/{id}")
@@ -31,9 +35,9 @@ public class ParametresController {
         return service.findById(id);
     }
     @GetMapping("/{param}")
-    public List<ParametresDto> find(@PathVariable String param){
+    public ResponseEntity<PageDTO<ParametresDto>> find(@PathVariable String param, @RequestParam(name = "page", defaultValue = "0")int page){
         ParamTypeEnum paramTypeEnum = ParamTypeEnum.valueOf(param);
-        return service.find(paramTypeEnum);
+        return ResponseEntity.ok(service.find(paramTypeEnum, page));
     }
 
     @GetMapping("get/call")
@@ -77,6 +81,7 @@ public class ParametresController {
     }
 
     @PostMapping
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public void save(@RequestBody ParametresDto parametresDto) throws Exception {
         service.save(parametresDto);
     }
@@ -87,6 +92,7 @@ public class ParametresController {
     }
 
     @PutMapping("active/{id}")
+    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
     public void activeOrDesable(@PathVariable Long id) throws Exception {
         service.desable(id);
     }

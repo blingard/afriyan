@@ -15,17 +15,19 @@ public class Paragraphs {
 
     @Column(length = -1)
     private String content;
+    private String image;
 
     private boolean status;
 
     public Paragraphs() {
     }
 
-    public Paragraphs(Long id, TypeParagraph type, String description, String content, boolean status) {
+    public Paragraphs(Long id, TypeParagraph type, String description, String content, String image, boolean status) {
         this.id = id;
         this.type = type;
         this.description = description;
         this.content = content;
+        this.image = image;
         this.status = status;
     }
 
@@ -67,6 +69,14 @@ public class Paragraphs {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     @Override

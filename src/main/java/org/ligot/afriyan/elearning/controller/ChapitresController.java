@@ -30,28 +30,28 @@ public class ChapitresController {
     }
 
     @PutMapping("enable/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
     public ResponseEntity<?> enable(@PathVariable("id")Long id) throws Exception{
         services.enable(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("disable/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
     public ResponseEntity<?> disable(@PathVariable("id")Long id) throws Exception{
         services.disable(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(value = "{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public ResponseEntity<?> create(@PathVariable("id")Long id, @RequestBody ChapitresDTO chapitresDTO) throws Exception{
         services.save(id, chapitresDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public ResponseEntity<?> update(@PathVariable("id")Long id, @RequestBody ChapitresDTO chapitresDTO) throws Exception{
         services.update(id, chapitresDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);

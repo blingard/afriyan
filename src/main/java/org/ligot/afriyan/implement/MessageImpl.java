@@ -51,9 +51,10 @@ public class MessageImpl implements IMessage {
 
     @Override
     public void sendOne(SendOneSMSDTO messageDto) throws Exception {
-        executorService.execute(()->{
+        twilioService.sendOneSms(messageDto.getPhone(),messageDto.getMessage());
+        /*executorService.execute(()->{
             twilioService.sendOneSms(messageDto.getPhone(),messageDto.getMessage());
-        });
+        });*/
     }
 
     @Override

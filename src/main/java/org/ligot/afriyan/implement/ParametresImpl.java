@@ -1,6 +1,7 @@
 package org.ligot.afriyan.implement;
 
 import jakarta.transaction.Transactional;
+import org.ligot.afriyan.Dto.PageDTO;
 import org.ligot.afriyan.Dto.ParametresDto;
 import org.ligot.afriyan.entities.ParamTypeEnum;
 import org.ligot.afriyan.entities.Parametres;
@@ -9,6 +10,8 @@ import org.ligot.afriyan.mapper.ParametresMapper;
 import org.ligot.afriyan.repository.IParametresRepository;
 import org.ligot.afriyan.repository.IUserConnect;
 import org.ligot.afriyan.service.IParametres;
+import org.springframework.data.domain.*;
+import org.springframework.security.access.method.P;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -142,8 +145,16 @@ public class ParametresImpl implements IParametres {
     }
 
     @Override
-    public List<ParametresDto> find(ParamTypeEnum paramTypeEnum) {
-        return repository.findAllByParamTypeEnum(paramTypeEnum).stream().map(mapper::toDTO).toList();
+    public PageDTO<ParametresDto> find(ParamTypeEnum paramTypeEnum, int page) {
+        Pageable pageable = PageRequest.of(page, 5, Sort.by("id").descending());
+        Page<Parametres> parametresPage = repository.findAllByParamTypeEnum(paramTypeEnum, pageable);
+        return new PageDTO<>(
+                new PageImpl<>(
+                        parametresPage.getContent().stream().map(mapper::toDTO).toList(),
+                        pageable,
+                        parametresPage.getTotalElements()
+                )
+        );
     }
 
     @Override
@@ -155,5 +166,18 @@ public class ParametresImpl implements IParametres {
     @Override
     public Long visiteurs() throws Exception {
         return iUserConnect.count();
+    }
+
+    @Override
+    public PageDTO<ParametresDto> findAllByPage(int page) {
+        Pageable pageable = PageRequest.of(page, 5, Sort.by("id").descending());
+        Page<Parametres> parametresPage = this.repository.findAll(pageable);
+        return new PageDTO<>(
+                new PageImpl<>(
+                        parametresPage.getContent().stream().map(mapper::toDTO).toList(),
+                        pageable,
+                        parametresPage.getTotalElements()
+                )
+        );
     }
 }
