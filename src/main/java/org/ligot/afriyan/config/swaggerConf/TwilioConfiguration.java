@@ -1,18 +1,18 @@
 package org.ligot.afriyan.config.swaggerConf;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TwilioConfiguration {
-    @Value("${twilio.accountSid}")
+    @Value("${lmt.accountSid}")
     private String accountSid;
-    @Value("${twilio.authToken}")
+    @Value("${lmt.authToken}")
     private String authToken;
-    @Value("${twilio.phoneNumber}")
-    private String phoneNumber;   
+    @Value("${lmt.sender}")
+    private String phoneNumber;
+    @Value("${lmt.url}")
+    private String url;
 
     public String getAccountSid() {
         return accountSid;
@@ -36,5 +36,13 @@ public class TwilioConfiguration {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }
