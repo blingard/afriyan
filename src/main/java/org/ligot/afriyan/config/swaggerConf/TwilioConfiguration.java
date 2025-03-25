@@ -14,6 +14,9 @@ public class TwilioConfiguration {
     @Value("${lmt.url}")
     private String url;
 
+    @Value("${lmt.sender}")
+    private String sender;
+
     public String getAccountSid() {
         return accountSid;
     }
@@ -45,4 +48,13 @@ public class TwilioConfiguration {
     public void setUrl(String url) {
         this.url = url;
     }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
 }

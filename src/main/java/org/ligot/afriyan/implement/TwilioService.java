@@ -39,7 +39,7 @@ public class TwilioService {
                     String fullNumber = countryCode + phone.trim();
 
                     String jsonBody = "{\n" +
-                            "    \"senderId\": \"" + twilioConfiguration.getAccountSid() + "\",\n" +
+                            "    \"senderId\": \"" + twilioConfiguration.getSender() + "\",\n" +
                             "    \"message\": \"" + message + "\",\n" +
                             "    \"msisdn\": [\"" + fullNumber + "\"],\n" +
                             "    \"flag\": \"UCS2\",\n" +
@@ -111,7 +111,7 @@ public class TwilioService {
             toNumber = toNumber.trim();
             if (toNumber.length() == 9 & toNumber.startsWith("6")) {
                 String jsonBody = "{\n" +
-                        "    \"senderId\": \"" + twilioConfiguration.getAccountSid() + "\",\n" +
+                        "    \"senderId\": \"" + twilioConfiguration.getSender() + "\",\n" +
                         "    \"message\": \"" + message + "\",\n" +
                         "    \"msisdn\": [\"" + toNumber + "\"],\n" +
                         "    \"flag\": \"UCS2\",\n" +
@@ -153,18 +153,39 @@ public class TwilioService {
             final String countryCode = "237";
             toNumber = toNumber.trim();
             if (toNumber.length() == 9 & toNumber.startsWith("6")) {
-                Message sms = Message.creator(
-                        new PhoneNumber(countryCode + toNumber.trim()),
-                        new PhoneNumber(twilioConfiguration.getPhoneNumber().trim()),
-                        message)
-                        .create();
-                mapStatus.put(toNumber, sms.getStatus().name());
-            } else
+                String jsonBody = "{\n" +
+                        "    \"senderId\": \"" + twilioConfiguration.getSender() + "\",\n" +
+                        "    \"message\": \"" + message + "\",\n" +
+                        "    \"msisdn\": [\"" + toNumber + "\"],\n" +
+                        "    \"flag\": \"UCS2\",\n" +
+                        "    \"maskedMsisdn\": false\n" +
+                        "}";
+
+                MediaType mediaType = MediaType.parse("application/json");
+                RequestBody body = RequestBody.create(mediaType, jsonBody);
+
+                Request request = new Request.Builder()
+                        .url(twilioConfiguration.getUrl())
+                        .method("POST", body)
+                        .addHeader("X-Api-Key", twilioConfiguration.getAccountSid()) // À remplacer par la vraie clé
+                        .addHeader("X-Secret", twilioConfiguration.getAuthToken()) // À remplacer par le vrai secret
+                        .addHeader("Content-Type", "application/json")
+                        .build();
+
+                Response response = client.newCall(request).execute();
+
+                if (response.isSuccessful()) {
+                    mapStatus.put(toNumber, "SENT");
+                } else {
+                    mapStatus.put(toNumber, "FAILED");
+                    System.err.println("Echec de l'envoi vers " + toNumber + ": " + response.body().string());
+                }
+            } else {
                 throw new Exception("Le numero de telephone 237" + toNumber.trim() + " n'est pas valide");
+            }
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw new Exception("Service de SMS momentanement indisponible. Veillez reessaye plus tard");
         }
     }
 }
