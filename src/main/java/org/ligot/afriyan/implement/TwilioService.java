@@ -52,8 +52,8 @@ public class TwilioService {
                     Request request = new Request.Builder()
                             .url(twilioConfiguration.getUrl())
                             .method("POST", body)
-                            .addHeader("X-Api-Key", twilioConfiguration.getAccountSid()) // À remplacer par la vraie clé
-                            .addHeader("X-Secret", twilioConfiguration.getAuthToken()) // À remplacer par le vrai secret
+                            .addHeader("X-Api-Key", twilioConfiguration.getAccountSid())
+                            .addHeader("X-Secret", twilioConfiguration.getAuthToken())
                             .addHeader("Content-Type", "application/json")
                             .build();
 
@@ -110,10 +110,11 @@ public class TwilioService {
             final String countryCode = "237";
             toNumber = toNumber.trim();
             if (toNumber.length() == 9 & toNumber.startsWith("6")) {
+                String fullNumber = countryCode + toNumber.trim();
                 String jsonBody = "{\n" +
                         "    \"senderId\": \"" + twilioConfiguration.getSender() + "\",\n" +
                         "    \"message\": \"" + message + "\",\n" +
-                        "    \"msisdn\": [\"" + toNumber + "\"],\n" +
+                        "    \"msisdn\": [\"" + fullNumber + "\"],\n" +
                         "    \"flag\": \"UCS2\",\n" +
                         "    \"maskedMsisdn\": false\n" +
                         "}";
@@ -124,8 +125,8 @@ public class TwilioService {
                 Request request = new Request.Builder()
                         .url(twilioConfiguration.getUrl())
                         .method("POST", body)
-                        .addHeader("X-Api-Key", twilioConfiguration.getAccountSid()) // À remplacer par la vraie clé
-                        .addHeader("X-Secret", twilioConfiguration.getAuthToken()) // À remplacer par le vrai secret
+                        .addHeader("X-Api-Key", twilioConfiguration.getAccountSid())
+                        .addHeader("X-Secret", twilioConfiguration.getAuthToken())
                         .addHeader("Content-Type", "application/json")
                         .build();
 
@@ -135,7 +136,7 @@ public class TwilioService {
                     mapStatus.put(toNumber, "SENT");
                 } else {
                     mapStatus.put(toNumber, "FAILED");
-                    System.err.println("Echec de l'envoi vers " + toNumber + ": " + response.body().string());
+                    System.err.println("Echec de l'envoi vers " + fullNumber + ": " + response.body().string());
                 }
             } else {
                 throw new Exception("Le numero de telephone 237" + toNumber.trim() + " n'est pas valide");
@@ -153,10 +154,11 @@ public class TwilioService {
             final String countryCode = "237";
             toNumber = toNumber.trim();
             if (toNumber.length() == 9 & toNumber.startsWith("6")) {
+                String fullNumber = countryCode + toNumber.trim();
                 String jsonBody = "{\n" +
                         "    \"senderId\": \"" + twilioConfiguration.getSender() + "\",\n" +
                         "    \"message\": \"" + message + "\",\n" +
-                        "    \"msisdn\": [\"" + toNumber + "\"],\n" +
+                        "    \"msisdn\": [\"" + fullNumber + "\"],\n" +
                         "    \"flag\": \"UCS2\",\n" +
                         "    \"maskedMsisdn\": false\n" +
                         "}";
@@ -167,8 +169,8 @@ public class TwilioService {
                 Request request = new Request.Builder()
                         .url(twilioConfiguration.getUrl())
                         .method("POST", body)
-                        .addHeader("X-Api-Key", twilioConfiguration.getAccountSid()) // À remplacer par la vraie clé
-                        .addHeader("X-Secret", twilioConfiguration.getAuthToken()) // À remplacer par le vrai secret
+                        .addHeader("X-Api-Key", twilioConfiguration.getAccountSid())
+                        .addHeader("X-Secret", twilioConfiguration.getAuthToken())
                         .addHeader("Content-Type", "application/json")
                         .build();
 
@@ -178,7 +180,7 @@ public class TwilioService {
                     mapStatus.put(toNumber, "SENT");
                 } else {
                     mapStatus.put(toNumber, "FAILED");
-                    System.err.println("Echec de l'envoi vers " + toNumber + ": " + response.body().string());
+                    System.err.println("Echec de l'envoi vers " + fullNumber + ": " + response.body().string());
                 }
             } else {
                 throw new Exception("Le numero de telephone 237" + toNumber.trim() + " n'est pas valide");
