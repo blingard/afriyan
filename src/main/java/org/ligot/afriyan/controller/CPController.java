@@ -72,7 +72,7 @@ public class CPController {
 
     @GetMapping("/proches/{latitude}/{longitude}")
     public List<CentrePartenaireDTO> getCentrePartenaireProches(@PathVariable double latitude, @PathVariable double longitude) {
-        double rayon = 100.0D; // rayon de 100 km
+        double rayon = 10000.0D; // rayon de 100 km
         return centrePartenaire.trouverCPProches(latitude, longitude, rayon);
     }
 
