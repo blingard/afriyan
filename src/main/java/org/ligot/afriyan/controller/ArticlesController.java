@@ -3,8 +3,6 @@ package org.ligot.afriyan.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.security.RolesAllowed;
 import org.ligot.afriyan.Dto.ArticlesDTO;
-import org.ligot.afriyan.Dto.CentrePartenaireDTO;
-import org.ligot.afriyan.entities.Categorie;
 import org.ligot.afriyan.entities.TypeDonne;
 import org.ligot.afriyan.service.IArticles;
 import org.springframework.data.domain.Page;
@@ -14,34 +12,37 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/article")
 public class ArticlesController {
     private final IArticles service;
 
     public ArticlesController(IArticles service) {
         this.service = service;
     }
-    @GetMapping
+    @GetMapping("api/article")
     public List<ArticlesDTO> findAll(){
         return service.getList(TypeDonne.ARTICLE);
     }
 
-    @GetMapping("get-by-categorie/{categorie}")
-    public List<ArticlesDTO> findAllArticleByCategorie(@PathVariable String categorie){
-        Categorie category = Categorie.valueOf(categorie);
-        return service.getList(TypeDonne.ARTICLE, category);
+    @GetMapping("public/api/article/get-by-categorie/{menusId}")
+    public List<ArticlesDTO> findAllArticleByCategorie(@PathVariable String menusId){
+        return service.getList(TypeDonne.ARTICLE, menusId);
     }
 
-    @GetMapping("active")
+    @GetMapping("api/article/get-by-categorie/{categoriesId}")
+    public List<ArticlesDTO> findAllArticleByCategorieAdmin(@PathVariable String categoriesId){
+        return service.getListAdmin(TypeDonne.ARTICLE, categoriesId);
+    }
+
+    @GetMapping("api/article/active")
     public List<ArticlesDTO> findAllActive(){
         return service.getListActive(TypeDonne.ARTICLE);
     }
-    @GetMapping("active/home")
+    @GetMapping("public/api/article/active/home")
     public List<ArticlesDTO> find06Active(){
         return service.get6TopDesc(TypeDonne.ARTICLE);
     }
 
-    @PostMapping
+    @PostMapping("api/article")
     @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public ArticlesDTO create(@RequestParam(name = "file",required = false) MultipartFile file,
                               @RequestParam( "jsonData") String jsonData)throws Exception{
@@ -49,35 +50,35 @@ public class ArticlesController {
         return service.save(file, articlesDTO);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/api/article/{id}")
     @RolesAllowed(value = {"SUPERADMIN"})
     public Page<ArticlesDTO> listAll(@PathVariable int id){
         return service.getPage(id, TypeDonne.ARTICLE);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/api/article/{id}")
     @RolesAllowed(value = {"SUPERADMIN","ROOT"})
     public void delete(@PathVariable Long id){
         service.delete(id);
     }
 
-    @GetMapping("find-by-id/{id}")
+    @GetMapping("api/article/find-by-id/{id}")
     @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public ArticlesDTO findById(@PathVariable Long id) throws Exception {
         return service.findById(id);
     }
-    @GetMapping("get/{id}")
+    @GetMapping("public/api/article/get/{id}")
     public ArticlesDTO findId(@PathVariable Long id) throws Exception {
         return service.findByIdActive(id);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("api/article/{id}")
     @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public void update(@PathVariable Long id, @RequestBody ArticlesDTO valeursDTO) throws Exception {
         service.update(valeursDTO, id);
     }
 
-    @PutMapping("active/{id}")
+    @PutMapping("api/article/active/{id}")
     @RolesAllowed(value = {"SUPERADMIN","ROOT"})
     public void active(@PathVariable Long id) throws Exception {
         service.active( id, TypeDonne.ARTICLE);

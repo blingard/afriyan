@@ -1,7 +1,6 @@
 package org.ligot.afriyan.service;
 
 import org.ligot.afriyan.Dto.ArticlesDTO;
-import org.ligot.afriyan.entities.Categorie;
 import org.ligot.afriyan.entities.TypeDonne;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,7 +11,8 @@ public interface IArticles {
     ArticlesDTO save(MultipartFile file, ArticlesDTO articlesDTO) throws Exception;
     ArticlesDTO save(ArticlesDTO articlesDTO) throws Exception;
     List<ArticlesDTO> getList(TypeDonne typeDonne);
-    List<ArticlesDTO> getList(TypeDonne typeDonne, Categorie categorie);
+    List<ArticlesDTO> getList(TypeDonne typeDonne, String menuId);
+    List<ArticlesDTO> getListAdmin(TypeDonne typeDonne, String categorieId);
     List<ArticlesDTO> getListActive(TypeDonne typeDonne);
     ArticlesDTO findById(Long id) throws Exception;
     ArticlesDTO findByIdActive(Long id) throws Exception;

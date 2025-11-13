@@ -14,19 +14,19 @@ public class UtilsService {
     }
 
 
-    public Utilisateur getUser() throws Exception {
+    public Utilisateur getUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Utilisateur utilisateur = repository.findByEmail(username).orElse(null);
         if(utilisateur == null)
-            throw new Exception("User with id = "+username+" don't exist");
+            throw new RuntimeException("User with id = "+username+" don't exist");
         return utilisateur;
     }
 
 
-    public Utilisateur getUserById(Long id) throws Exception {
+    public Utilisateur getUserById(Long id) {
         Utilisateur utilisateur = repository.findById(id).orElse(null);
         if(utilisateur == null)
-            throw new Exception("User with id = "+id+" don't exist");
+            throw new RuntimeException("User with id = "+id+" don't exist");
         return utilisateur;
     }
 }

@@ -1,7 +1,10 @@
 package org.ligot.afriyan.elearning.service;
 
 import org.ligot.afriyan.elearning.dto.ChapitresDTO;
+import org.ligot.afriyan.elearning.dto.ParagraphsDTO;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public interface ChapterService {
     void save(Long idFormation, ChapitresDTO chapitresDTO)throws Exception;
@@ -11,4 +14,5 @@ public interface ChapterService {
     ChapitresDTO getById(Long id)throws Exception;
     ChapitresDTO getActiveById(Long id)throws Exception;
     ChapitresDTO getByIdAdmin(Long id)throws Exception;
+    List<ParagraphsDTO> getByIdAdminP(Long id)throws Exception;
 }

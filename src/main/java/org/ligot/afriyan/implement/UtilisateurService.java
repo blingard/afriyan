@@ -5,7 +5,16 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.ligot.afriyan.Constantes;
 import org.ligot.afriyan.Dto.*;
-import org.ligot.afriyan.controller.Person;
+import org.ligot.afriyan.echo.dto.CommuneComityDTO;
+import org.ligot.afriyan.echo.dto.CrppDTO;
+import org.ligot.afriyan.echo.dto.MaireDTO;
+import org.ligot.afriyan.echo.dto.PrefetDTO;
+import org.ligot.afriyan.echo.entities.*;
+import org.ligot.afriyan.echo.mapper.CommunityComityMapper;
+import org.ligot.afriyan.echo.mapper.CrppMapper;
+import org.ligot.afriyan.echo.mapper.MaireMapper;
+import org.ligot.afriyan.echo.mapper.PrefetMapper;
+import org.ligot.afriyan.echo.repo.*;
 import org.ligot.afriyan.entities.*;
 import org.ligot.afriyan.init.RolesName;
 import org.ligot.afriyan.init.SaveListUtils;
@@ -44,8 +53,19 @@ public class UtilisateurService implements IUtilisateur {
     private final TwilioService twilioService;
     private final ExecutorService executorService;
     private final FileStorageService fileStorageService;
+    private final DepartementsRepo departementsRepo;
+    private final PrefetRepo prefetRepo;
+    private final PrefetMapper prefetMapper;
+    private final CommuneRepo communeRepo;
+    private final MaireRepo maireRepo;
+    private final MaireMapper maireMapper;
+    private final LocalityRepo localityRepo;
+    private final CrppRepository crppRepository;
+    private final CrppMapper crppMapper;
+    private final CommunityComityRepo communityComityRepo;
+    private final CommunityComityMapper communityComityMapper;
 
-    public UtilisateurService(IUtilisateurRepository repository, ICentrePartenaireRepository iCentrePartenaireRepository, IArticlesRepository iArticlesRepository, IGroupes groupesService, IDenonciationRepository iDenonciationRepository, @Qualifier("passwordEncoder") PasswordEncoder passwordEncoder, IForgetPasswordRepository iForgetPasswordRepository, UtilisateurMapper mapper, TwilioService twilioService, ExecutorService executorService, FileStorageService fileStorageService) {
+    public UtilisateurService(IUtilisateurRepository repository, ICentrePartenaireRepository iCentrePartenaireRepository, IArticlesRepository iArticlesRepository, IGroupes groupesService, IDenonciationRepository iDenonciationRepository, @Qualifier("passwordEncoder") PasswordEncoder passwordEncoder, IForgetPasswordRepository iForgetPasswordRepository, UtilisateurMapper mapper, TwilioService twilioService, ExecutorService executorService, FileStorageService fileStorageService, DepartementsRepo departementsRepo, PrefetRepo prefetRepo, PrefetMapper prefetMapper, CommuneRepo communeRepo, MaireRepo maireRepo, MaireMapper maireMapper, LocalityRepo localityRepo, CrppRepository crppRepository, CrppMapper crppMapper, CommunityComityRepo communityComityRepo, CommunityComityMapper communityComityMapper) {
         this.repository = repository;
         this.iCentrePartenaireRepository = iCentrePartenaireRepository;
         this.iArticlesRepository = iArticlesRepository;
@@ -57,6 +77,17 @@ public class UtilisateurService implements IUtilisateur {
         this.twilioService = twilioService;
         this.executorService = executorService;
         this.fileStorageService = fileStorageService;
+        this.departementsRepo = departementsRepo;
+        this.prefetRepo = prefetRepo;
+        this.prefetMapper = prefetMapper;
+        this.communeRepo = communeRepo;
+        this.maireRepo = maireRepo;
+        this.maireMapper = maireMapper;
+        this.localityRepo = localityRepo;
+        this.crppRepository = crppRepository;
+        this.crppMapper = crppMapper;
+        this.communityComityRepo = communityComityRepo;
+        this.communityComityMapper = communityComityMapper;
     }
 
     @Override
@@ -92,7 +123,7 @@ public class UtilisateurService implements IUtilisateur {
                 String message = "Felicitation pour votre Inscription. Login:";
                 message = message+(utilisateur.getEmail()==null ? utilisateur.getCode() : utilisateur.getEmail());
                 message = message+" \n Password:"+pwd;
-                twilioService.sendOneSms(utilisateurDTO.getNumero_telephone(),message);
+                twilioService.sendOneSms(utilisateurDTO.getTelephone(),message);
             });
             return mapper.toDTO(utilisateur);
         }catch (Exception ex){
@@ -141,7 +172,7 @@ public class UtilisateurService implements IUtilisateur {
                         utilisateurDTO.setNom(nom);
                         utilisateurDTO.setPrenom(prenom.equals("/") ? "" : prenom);
                         utilisateurDTO.setLieu(lieu);
-                        utilisateurDTO.setNumero_telephone(phone);
+                        utilisateurDTO.setTelephone(phone);
                         utilisateurDTO.setStatus(Status.ACTIVE);
                         utilisateurDTO.setLocation(lieu);
                         utilisateurDTO.setIsFirstConnexion(Boolean.TRUE);
@@ -162,7 +193,7 @@ public class UtilisateurService implements IUtilisateur {
                             String message = "Felicitation pour votre Inscription. Login:";
                             message = message+(utilisateurDTO.getEmail()==null ? utilisateurDTO.getCode() : utilisateurDTO.getEmail());
                             message = message+" \n Password:"+genDefaultCode();
-                            twilioService.sendOneSms(utilisateurDTO.getNumero_telephone(),message);
+                            twilioService.sendOneSms(utilisateurDTO.getTelephone(),message);
                         });
                         SaveListUtils.setCURRENT(Integer.valueOf(i));
                     }catch (Exception ex){
@@ -244,29 +275,165 @@ public class UtilisateurService implements IUtilisateur {
         }
     }
 
+    @Override
+    @Transactional
+    public PrefetDTO savePrefet(PrefetDTO prefetDTO) throws Exception {
+        String pwd = genDefaultCode();
+        Departement departement = departementsRepo.getReferenceById(prefetDTO.getDepartement().getId());
+        List<Prefet> prefets = prefetRepo.findAllByDepartementAndActive(departement, true);
+        GroupesDTO groupe = groupesService.findById(prefetDTO.getUtilisateur().getGroupe().getId());
+        if(!groupe.getRoles().stream().map(RolesDTO::getNom).toList().contains(RolesName.LOCAL_AUTHORITY.toString()))
+            throw new Exception("L'utilisateur n'est pas une autorite locale");
+        boolean codeIsCreate = false;
+        String code = "";
+        while(!codeIsCreate){
+            code = genCode("PR",8);
+            if(!repository.findByCode(code).isPresent())
+                codeIsCreate = true;
+        }
+        prefetDTO.getUtilisateur().setId(null);
+        prefetDTO.getUtilisateur().setCode(code);
+        prefetDTO.getUtilisateur().setGroupe(groupe);
+        prefetDTO.getUtilisateur().setPwd(passwordEncoder.encode(pwd));
+        Utilisateur utilisateur = mapper.create(prefetDTO.getUtilisateur());
+        utilisateur.setStatus(Status.ACTIVE);
+        utilisateur.setIsFirstConnexion(true);
+        try {
+            utilisateur = saveIt(utilisateur);
+            prefets.forEach(prefet1 -> {
+                prefet1.setActive(false);
+                prefetRepo.save(prefet1);
+            });
+            Prefet prefet = prefetRepo.save(new Prefet(null, departement, utilisateur,true));
+            return prefetMapper.toDTO(prefet);
+        }catch (Exception ex){
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
 
     @Override
-    public List<UtilisateurDTO> getUserCP() throws Exception {
-        List<GroupesDTO> groupesDTOList = groupesService.list();
-        List<GroupesDTO> groupesDTO = new ArrayList<>(0);
-        groupesDTOList.forEach(groupesDTO1 -> {
-            boolean contain = false;
-            for (RolesDTO rolesDTO : groupesDTO1.getRoles()){
-                if(RolesName.valueOf(rolesDTO.getNom().trim()).toString()==RolesName.GESTIONNAIRECENTRE.toString())
-                    contain=true;
-            }
-            if(contain){
-                groupesDTO.add(groupesDTO1);
-            }
-        });
-        List<UtilisateurDTO> utilisateursDtoList = new ArrayList<>(0);
-        groupesDTO.forEach(groupesDTO1 -> {
-            for (Utilisateur utilisateur : repository.findByGroupe(new Groupes(groupesDTO1.getId()))){
-                utilisateursDtoList.add(mapper.toDTO(utilisateur));
-            }
+    @Transactional
+    public MaireDTO saveMaire(MaireDTO maireDTO) throws Exception {
+        String pwd = genDefaultCode();
+        Communes communes = communeRepo.getReferenceById(maireDTO.getCommune().getId());
+        List<Maire> maires = maireRepo.findAllByCommuneAndActive(communes, true);
+        GroupesDTO groupe = groupesService.findById(maireDTO.getUtilisateur().getGroupe().getId());
+        if(!groupe.getRoles().stream().map(RolesDTO::getNom).toList().contains(RolesName.MAIRE.toString()))
+            throw new Exception("L'utilisateur n'est pas un maire");
+        boolean codeIsCreate = false;
+        String code = "";
+        while(!codeIsCreate){
+            code = genCode("MA",8);
+            if(!repository.findByCode(code).isPresent())
+                codeIsCreate = true;
+        }
+        maireDTO.getUtilisateur().setId(null);
+        maireDTO.getUtilisateur().setCode(code);
+        maireDTO.getUtilisateur().setGroupe(groupe);
+        maireDTO.getUtilisateur().setPwd(passwordEncoder.encode(pwd));
+        Utilisateur utilisateur = mapper.create(maireDTO.getUtilisateur());
+        utilisateur.setStatus(Status.ACTIVE);
+        utilisateur.setIsFirstConnexion(true);
+        try {
+            utilisateur = saveIt(utilisateur);
+            maires.forEach(maire1 -> {
+                maire1.setActive(false);
+                maireRepo.save(maire1);
+            });
+            Maire maire = maireRepo.save(new Maire(null, communes, utilisateur,true));
+            return maireMapper.toDTO(maire);
+        }catch (Exception ex){
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
 
-        });
-        return utilisateursDtoList;
+    @Override
+    @Transactional
+    public void saveCrpp(CrppDTO crppDTO) throws Exception {
+        String pwd = genDefaultCode();
+        Communes communes = communeRepo.getReferenceById(crppDTO.getCommune().getId());
+        GroupesDTO groupe = groupesService.findById(crppDTO.getUtilisateur().get(0).getGroupe().getId());
+        if(!groupe.getRoles().stream().map(RolesDTO::getNom).toList().contains(RolesName.CCPR_COMMITTEE.toString()))
+            throw new Exception("L'utilisateur n'est pas un CCPR");
+        boolean codeIsCreate = false;
+        String code = "";
+        while(!codeIsCreate){
+            code = genCode("CCPR",8);
+            if(!repository.findByCode(code).isPresent())
+                codeIsCreate = true;
+        }
+        crppDTO.getUtilisateur().get(0).setId(null);
+        crppDTO.getUtilisateur().get(0).setCode(code);
+        crppDTO.getUtilisateur().get(0).setGroupe(groupe);
+        crppDTO.getUtilisateur().get(0).setPwd(passwordEncoder.encode(pwd));
+        Utilisateur utilisateur = mapper.create(crppDTO.getUtilisateur().get(0));
+        utilisateur.setStatus(Status.ACTIVE);
+        utilisateur.setIsFirstConnexion(true);
+        System.err.println("getId = "+utilisateur.getCommunes().getId());
+        System.err.println("getId = "+crppDTO.getUtilisateur().get(0).getCommunes().getId());
+        System.err.println("getId = "+communes.getName());
+        try {
+            utilisateur = saveIt(utilisateur);
+            Optional<Crpp> crppOptional = crppRepository.findAllByCommune(communes);
+            Crpp crpp = new Crpp();
+            if(crppOptional.isPresent()){
+                crpp = crppOptional.get();
+                crpp.getUtilisateur().add(utilisateur);
+            }else {
+                crpp = new Crpp(null, communes, List.of(utilisateur));
+            }
+            crppRepository.save(crpp);
+        }catch (Exception ex){
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
+
+    @Override
+    @Transactional
+    public void saveCc(CommuneComityDTO communeComityDTO) throws Exception {
+        String pwd = genDefaultCode();
+        Localities localities = localityRepo.getReferenceById(communeComityDTO.getLocality().getId());
+        GroupesDTO groupe = groupesService.findById(communeComityDTO.getUtilisateur().get(0).getGroupe().getId());
+        if(!groupe.getRoles().stream().map(RolesDTO::getNom).toList().contains(RolesName.COMMUNITY_COMMITTEE.toString()))
+            throw new Exception("L'utilisateur n'est pas un CC");
+        boolean codeIsCreate = false;
+        String code = "";
+        while(!codeIsCreate){
+            code = genCode("CC",8);
+            if(!repository.findByCode(code).isPresent())
+                codeIsCreate = true;
+        }
+        communeComityDTO.getUtilisateur().get(0).setId(null);
+        communeComityDTO.getUtilisateur().get(0).setCode(code);
+        communeComityDTO.getUtilisateur().get(0).setGroupe(groupe);
+        communeComityDTO.getUtilisateur().get(0).setPwd(passwordEncoder.encode(pwd));
+        Utilisateur utilisateur = mapper.create(communeComityDTO.getUtilisateur().get(0));
+        utilisateur.setStatus(Status.ACTIVE);
+        utilisateur.setIsFirstConnexion(true);
+        try {
+            utilisateur = saveIt(utilisateur);
+            Optional<CommuneComity> optionalCommuneComity = communityComityRepo.findAllByLocality(localities);
+            CommuneComity communeComity = new CommuneComity();
+            if(optionalCommuneComity.isPresent()){
+                communeComity = optionalCommuneComity.get();
+                communeComity.getUtilisateur().add(utilisateur);
+            }else {
+                communeComity = new CommuneComity(null, localities, List.of(utilisateur));
+            }
+            communityComityRepo.save(communeComity);
+        }catch (Exception ex){
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
+
+    @Override
+    public List<UtilisateurDTO>  getUserCP(String name) throws Exception {
+        return repository.findByGroupe_Roles_NomAndTelephoneStartingWith(RolesName.GESTIONNAIRECENTRE.name(), name)
+                .stream().map(mapper::toDTO).toList();
     }
 
 
@@ -289,7 +456,7 @@ public class UtilisateurService implements IUtilisateur {
     private void checkIfUserExist(Utilisateur utilisateur) throws Exception{
         if(repository.findByEmail(utilisateur.getEmail()).isPresent())
             throw new Exception("Email deja utilise");
-        if(repository.findByNumero_telephone(utilisateur.getNumero_telephone())!=null)
+        if(repository.findByNumero_telephone(utilisateur.getTelephone())!=null)
             throw new Exception("Numero de telephone deja utilise");
     }
 
@@ -313,13 +480,17 @@ public class UtilisateurService implements IUtilisateur {
         Utilisateur utilisateur = mapper.create(utilisateurDTO);
         utilisateur.setStatus(Status.ACTIVE);
         utilisateur.setIsFirstConnexion(false);
+        Communes communes = new Communes();
+        communes.setId(utilisateurDTO.getCommunes().getId());
+        utilisateur.setCommunes(communes);
+        utilisateur.setLocation(utilisateurDTO.getLocation());
         try {
             utilisateur = saveIt(utilisateur);
             executorService.execute(()->{
                 String message = "Felicitation pour votre Inscription. Pour vous connecter, utiliser le login ";
                     message = message+(utilisateurDTO.getEmail()==null ? utilisateurDTO.getCode() : utilisateurDTO.getEmail().trim());
                     message = message+" via le lien client.youthfp.cm";
-                twilioService.sendOneSms(utilisateurDTO.getNumero_telephone().trim(),message);
+                twilioService.sendOneSms(utilisateurDTO.getTelephone().trim(),message);
                 });
                 return mapper.toDTO(utilisateur);
         }catch (Exception ex){
@@ -377,13 +548,117 @@ public class UtilisateurService implements IUtilisateur {
 
     @Override
     @Transactional
+    public void update(UpdateUserDTO updateUserDTO, Long id) throws Exception {
+        Utilisateur utilisateur = repository.findById(id).orElse(null);
+        if(utilisateur == null)
+            throw new Exception("User with id "+id+" don't exist");
+        if(!Objects.equals(updateUserDTO.getUtilisateur().getId(), utilisateur.getId()))
+            throw new Exception("Information non concordante");
+        Groupes previousGroupe = utilisateur.getGroupe();
+        mapper.update(updateUserDTO.getUtilisateur(), utilisateur);
+        if(!Objects.equals(utilisateur.getGroupe().getId(), updateUserDTO.getUtilisateur().getGroupe().getId())) {
+            Groupes groupe = groupesService.findByIdEntiti(updateUserDTO.getUtilisateur().getGroupe().getId());
+            utilisateur.setGroupe(null);
+            utilisateur.setGroupe(groupe);
+        }
+        if(Objects.isNull(updateUserDTO.getDepartement()) && Objects.isNull(updateUserDTO.getCommune()) && Objects.isNull(updateUserDTO.getLocalities())){
+            repository.save(utilisateur);
+        }
+        if(!Objects.isNull(updateUserDTO.getDepartement()) && Objects.isNull(updateUserDTO.getCommune()) && Objects.isNull(updateUserDTO.getLocalities())) {
+            Departement departement = departementsRepo.getReferenceById(updateUserDTO.getDepartement().getId());
+            List<Prefet> prefets = prefetRepo.findAllByDepartementAndActive(departement, true);
+            Groupes groupe = groupesService.findByIdEntiti(updateUserDTO.getUtilisateur().getGroupe().getId());
+            if(!groupe.getRoles().stream().map(Roles::getNom).toList().contains(RolesName.LOCAL_AUTHORITY.toString()))
+                throw new Exception("L'utilisateur n'est pas une autorite locale");
+            prefets.forEach(prefet1 -> {
+                prefet1.setActive(false);
+                prefetRepo.save(prefet1);
+            });
+            setPreviousGroup(previousGroupe, groupe);
+            prefetRepo.save(new Prefet(null, departement, repository.save(utilisateur),true));
+        }
+        if(Objects.isNull(updateUserDTO.getDepartement()) && Objects.isNull(updateUserDTO.getCommune()) && !Objects.isNull(updateUserDTO.getLocalities())) {
+            Localities localities = localityRepo.getReferenceById(updateUserDTO.getLocalities().getId());
+            GroupesDTO groupe = groupesService.findById(updateUserDTO.getUtilisateur().getGroupe().getId());
+            if(!groupe.getRoles().stream().map(RolesDTO::getNom).toList().contains(RolesName.COMMUNITY_COMMITTEE.toString()))
+                throw new Exception("L'utilisateur n'est pas un CC");
+            try {
+                Optional<CommuneComity> optionalCommuneComity = communityComityRepo.findAllByLocality(localities);
+                CommuneComity communeComity = new CommuneComity();
+                if(optionalCommuneComity.isPresent()){
+                    communeComity = optionalCommuneComity.get();
+                    communeComity.getUtilisateur().add(repository.save(utilisateur));
+                }else {
+                    communeComity = new CommuneComity(null, localities, List.of(repository.save(utilisateur)));
+                }
+                communityComityRepo.save(communeComity);
+            }catch (Exception ex){
+                ex.printStackTrace();
+                throw ex;
+            }
+        }
+        if(Objects.isNull(updateUserDTO.getDepartement()) && !Objects.isNull(updateUserDTO.getCommune()) && Objects.isNull(updateUserDTO.getLocalities())) {
+            if(previousGroupe.getRoles().stream().map(Roles::getNom).toList().contains(RolesName.MAIRE.toString())){
+                Communes communes = communeRepo.getReferenceById(updateUserDTO.getCommune().getId());
+                List<Maire> maires = maireRepo.findAllByCommuneAndActive(communes, true);
+                GroupesDTO groupe = groupesService.findById(updateUserDTO.getUtilisateur().getGroupe().getId());
+                if(!groupe.getRoles().stream().map(RolesDTO::getNom).toList().contains(RolesName.MAIRE.toString()))
+                    throw new Exception("L'utilisateur n'est pas un maire");
+                try {
+                    maires.forEach(maire1 -> {
+                        maire1.setActive(false);
+                        maireRepo.save(maire1);
+                    });
+                    maireRepo.save(new Maire(null, communes, repository.save(utilisateur),true));
+                }catch (Exception ex){
+                    ex.printStackTrace();
+                    throw ex;
+                }
+            }
+            if(previousGroupe.getRoles().stream().map(Roles::getNom).toList().contains(RolesName.CCPR_COMMITTEE.toString())){
+                Communes communes = communeRepo.getReferenceById(updateUserDTO.getCommune().getId());
+                GroupesDTO groupe = groupesService.findById(updateUserDTO.getUtilisateur().getGroupe().getId());
+                if(!groupe.getRoles().stream().map(RolesDTO::getNom).toList().contains(RolesName.CCPR_COMMITTEE.toString()))
+                    throw new Exception("L'utilisateur n'est pas un CCPR");
+                try {
+                    Optional<Crpp> crppOptional = crppRepository.findAllByCommune(communes);
+                    Crpp crpp = new Crpp();
+                    if(crppOptional.isPresent()){
+                        crpp = crppOptional.get();
+                        crpp.getUtilisateur().add(repository.save(utilisateur));
+                    }else {
+                        crpp = new Crpp(null, communes, List.of(repository.save(utilisateur)));
+                    }
+                    crppRepository.save(crpp);
+                }catch (Exception ex){
+                    ex.printStackTrace();
+                    throw ex;
+                }
+            }
+        }
+    }
+
+    private void setPreviousGroup(Groupes previous,Groupes current){
+        if(previous.getId()==current.getId()) return;
+        if(previous.getRoles().stream().map(Roles::getNom).toList().contains(RolesName.COMMUNITY_COMMITTEE.toString())){
+
+        }
+    }
+
+    @Override
+    @Transactional
     public UtilisateurDTO update(UtilisateurDTO utilisateurDTO, Long id) throws Exception {
         Utilisateur utilisateur = repository.findById(id).orElse(null);
         if(utilisateur == null)
             throw new Exception("User with id "+id+" don't exist");
-        if(utilisateurDTO.getId()!=utilisateur.getId())
+        if(!Objects.equals(utilisateurDTO.getId(), utilisateur.getId()))
             throw new Exception("Information non concordante");
-        mapper.update(utilisateurDTO, utilisateur);
+            mapper.update(utilisateurDTO, utilisateur);
+        if(!Objects.equals(utilisateur.getGroupe().getId(), utilisateurDTO.getGroupe().getId())) {
+            Groupes groupe = groupesService.findByIdEntiti(utilisateurDTO.getGroupe().getId());
+            utilisateur.setGroupe(null);
+            utilisateur.setGroupe(groupe);
+        }
         repository.save(utilisateur);
         return findWithFile(utilisateur);
     }
@@ -395,7 +670,8 @@ public class UtilisateurService implements IUtilisateur {
             String imageBase64 = fileStorageService.convertImageToBase64(Constantes.USERIMAGESUBPATH1+elements[0]);
             String image = "data:image/"+elements[1]+";base64,"+imageBase64;
             utilisateurDTO.setPhoto(image);
-        }catch (Exception ex){}
+        }catch (Exception ex){
+        }
         return utilisateurDTO;
     }
 
@@ -542,7 +818,7 @@ public class UtilisateurService implements IUtilisateur {
             executorService.execute(()->{
                 String message = "Votre mot de passe a ete reinitialiser par l'administrateur. Votre nouveau mot de passe est:";
                 message = message+pwd;
-                twilioService.sendOneSms(utilisateur.getNumero_telephone().trim(),message);
+                twilioService.sendOneSms(utilisateur.getTelephone().trim(),message);
             });
         }catch (Exception ex){}
     }
@@ -551,7 +827,7 @@ public class UtilisateurService implements IUtilisateur {
     public void forgetPassword(ForgetPasswordRequest forgetPasswordRequest) throws Exception {
         Utilisateur utilisateurDTO = loginForgetPwd(forgetPasswordRequest.getLogin().trim());
         Optional<List<ForgetPassword>> forgetPasswordOptional = Optional.ofNullable(iForgetPasswordRepository
-                .findByPhoneAndActiveIsTrue(utilisateurDTO.getNumero_telephone().trim())
+                .findByPhoneAndActiveIsTrue(utilisateurDTO.getTelephone().trim())
                 .orElseThrow(() -> new Exception("Data not found")));
         List<ForgetPassword> forgetPasswords = forgetPasswordOptional.get();
         if(forgetPasswords.isEmpty()){

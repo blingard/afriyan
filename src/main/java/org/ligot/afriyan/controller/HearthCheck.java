@@ -2,42 +2,70 @@ package org.ligot.afriyan.controller;
 
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
-import jakarta.validation.constraints.Email;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.ligot.afriyan.Dto.GroupesDTO;
-import org.ligot.afriyan.Dto.UtilisateurDTO;
-import org.ligot.afriyan.entities.Sexe;
-import org.ligot.afriyan.entities.Status;
-import org.ligot.afriyan.implement.UtilisateurService;
-import org.ligot.afriyan.service.IUtilisateur;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+
+import java.io.IOException;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController
 public class HearthCheck {
 
-    private final ApplicationContext context;
 
-    public HearthCheck(ApplicationContext context) {
-        this.context = context;
+    public class Donnees{
+        String original;
+        String thumbnail;
+        String thumbnailHeight;
+        String thumbnailWidth;
+
+        public Donnees(String original, String thumbnail, String thumbnailHeight, String thumbnailWidth) {
+            this.original = original;
+            this.thumbnail = thumbnail;
+            this.thumbnailHeight = thumbnailHeight;
+            this.thumbnailWidth = thumbnailWidth;
+        }
+
+        public String getOriginal() {
+            return original;
+        }
+
+        public String getThumbnail() {
+            return thumbnail;
+        }
+
+        public String getThumbnailHeight() {
+            return thumbnailHeight;
+        }
+
+        public String getThumbnailWidth() {
+            return thumbnailWidth;
+        }
     }
 
-    @GetMapping("/test/healthckeck")
-    public Object healthCheck() throws Exception {
-        IUtilisateur iUtilisateur = context.getBean(UtilisateurService.class);
+    @GetMapping("/public/healthckeck")
+    public Object healthCheck() throws IOException {
+        /*PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 
-        return iUtilisateur.statusListSave();
-        //return "HealtChecck";
+        List<Donnees> donnees = new ArrayList<>();
+        // Lire tous les fichiers dans resources/static/
+        Resource[] resources = resolver.getResources("classpath:/static/*");
+
+        for (Resource resource : resources) {
+            donnees.add(new Donnees("/img/"+resource.getFilename(), "/img/"+resource.getFilename(),
+                    "100px", "100px"));
+            System.err.println("/img/"+resource.getFilename());
+        }*/
+        //database.getAll(id);
+        //return donnees;
+        return "HealtChecck";
     }
 
 

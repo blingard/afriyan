@@ -1,8 +1,7 @@
 package org.ligot.afriyan.elearning.dto;
 
-import org.ligot.afriyan.entities.Categorie;
+import org.ligot.afriyan.Dto.CategoriesDTO;
 import org.ligot.afriyan.sondage.dto.SondageDTO;
-import org.ligot.afriyan.sondage.entities.Sondage;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,7 +13,7 @@ public class FormationsDTO {
 
     private String description;
 
-    private Categorie categorie;
+    private CategoriesDTO categories;
 
     private Set<ChapitresDTO> chapitres = new HashSet<>(0);
 
@@ -30,11 +29,11 @@ public class FormationsDTO {
     }
 
 
-    public FormationsDTO(Long id, String libelle, String description, Categorie categorie, Set<ChapitresDTO> chapitres, SondageDTO quizz, String orderChapter, boolean status, boolean configure, String author) {
+    public FormationsDTO(Long id, String libelle, String description, CategoriesDTO categories, Set<ChapitresDTO> chapitres, SondageDTO quizz, String orderChapter, boolean status, boolean configure, String author) {
         this.id = id;
         this.libelle = libelle;
         this.description = description;
-        this.categorie = categorie;
+        this.categories = categories;
         this.chapitres = chapitres;
         this.quizz = quizz;
         this.orderChapter = orderChapter;
@@ -67,12 +66,12 @@ public class FormationsDTO {
         this.description = description;
     }
 
-    public Categorie getCategorie() {
-        return categorie;
+    public CategoriesDTO getCategories() {
+        return categories;
     }
 
-    public void setCategorie(Categorie categorie) {
-        this.categorie = categorie;
+    public void setCategories(CategoriesDTO categories) {
+        this.categories = categories;
     }
 
     public Set<ChapitresDTO> getChapitres() {

@@ -2,6 +2,7 @@ package org.ligot.afriyan.repository;
 
 import org.ligot.afriyan.entities.Groupes;
 import org.ligot.afriyan.entities.Sexe;
+import org.ligot.afriyan.entities.Status;
 import org.ligot.afriyan.entities.Utilisateur;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface IUtilisateurRepository extends JpaRepository<Utilisateur, Long> {
@@ -22,12 +24,12 @@ public interface IUtilisateurRepository extends JpaRepository<Utilisateur, Long>
     @Query("SELECT DISTINCT EXTRACT(YEAR FROM u.dCreation) FROM Utilisateur u WHERE u.dCreation IS NOT NULL ORDER BY EXTRACT(YEAR FROM u.dCreation) ASC")
     List<Integer> findDistinctYears();
 
-    @Query("SELECT u FROM Utilisateur u WHERE u.numero_telephone = ?1")
+    @Query("SELECT u FROM Utilisateur u WHERE u.telephone = ?1")
     Utilisateur findByNumero_telephone(String phone);
-    @Query("SELECT u FROM Utilisateur u WHERE u.numero_telephone = ?1")
+    @Query("SELECT u FROM Utilisateur u WHERE u.telephone = ?1")
     Optional<Utilisateur> findByTelephone(String phone);
 
-    @Query("SELECT u FROM Utilisateur u WHERE u.numero_telephone LIKE ?1%")
+    @Query("SELECT u FROM Utilisateur u WHERE u.telephone LIKE ?1%")
     Page<Utilisateur> findUsersByPhoneNumberStartingWith(String numero, Pageable pageable);
 
 /*    @Query("SELECT EXTRACT(YEAR FROM u.dCreation) AS year, " +
@@ -52,8 +54,13 @@ public interface IUtilisateurRepository extends JpaRepository<Utilisateur, Long>
         "ORDER BY month")
     List<Object[]> getMonthlyUserCreationStatistics(int year);
     List<Utilisateur> findByGroupe(Groupes groupes);
+
+    List<Utilisateur> findByGroupe_Roles_NomAndNomStartingWith(String roleName, String name);
+    List<Utilisateur> findByGroupe_Roles_NomAndTelephoneStartingWith(String roleName, String name);
     Page<Utilisateur> findByGroupe(Groupes groupes, Pageable pageable);
      Utilisateur findByNom(String nom);
 
      long countUtilisateursBySexe(Sexe sexe);
+
+     Page<Utilisateur> findAllByCommunes_IdAndStatus(UUID communesId, Status status, Pageable pageable);
 }

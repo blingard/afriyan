@@ -15,4 +15,5 @@ public interface IParametresRepository extends JpaRepository<Parametres, Long> {
     List<Parametres> findAllByParamTypeEnum(ParamTypeEnum paramTypeEnum);
     Page<Parametres> findAllByParamTypeEnum(ParamTypeEnum paramTypeEnum, Pageable pageable);
     Optional<Parametres> findByStatusTrueAndParamTypeEnum(ParamTypeEnum paramTypeEnum);
+    Optional<Parametres> findByParamTypeEnum(ParamTypeEnum paramTypeEnum);
 }

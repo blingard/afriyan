@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/test/api/comments")
 @Tag(name = "Comments", description = "Gestion des Commentaires")
 public class CommentsController {
     private final CommentsServices services;
@@ -19,12 +18,12 @@ public class CommentsController {
         this.services = services;
     }
 
-    @GetMapping("{id}")
+    @GetMapping("api/comments/{id}")
     public ResponseEntity<List<CommentsDTO>> listAllFromFormation(@PathVariable("id") Long id)throws Exception{
         return new ResponseEntity<>(services.ListAllCommentOfFormation(id), HttpStatus.OK);
     }
 
-    @PostMapping("{id}")
+    @PostMapping("api/comments/{id}")
     public ResponseEntity<?> create(@PathVariable("id")Long id, @RequestBody CommentsDTO commentsDTO) throws Exception{
         services.save(id, commentsDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/missions")
 public class MissionsController {
     private final IMissions service;
 
@@ -18,52 +17,52 @@ public class MissionsController {
         this.service = service;
     }
 
-    @GetMapping
+    @GetMapping("public/api/missions")
     public List<MissionsDTO> findAllActive(){
         return service.getListActive();
     }
-    @GetMapping("all")
+    @GetMapping("api/missions/all")
     public List<MissionsDTO> findAll(){
         return service.getList();
     }
 
-    @PostMapping
+    @PostMapping("api/missions")
     @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public MissionsDTO create(@RequestBody MissionsDTO missionsDTO){
         return service.saveM(missionsDTO);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/api/missions/{id}")
     @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public Page<MissionsDTO> listAll(@PathVariable int id){
         return service.getPage(id);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/api/missions/{id}")
     @RolesAllowed(value = {"SUPERADMIN","ROOT"})
     public void delete(@PathVariable Long id){
         service.delete(id);
     }
 
-    @GetMapping("find-by-id/{id}")
+    @GetMapping("api/missions/find-by-id/{id}")
     public MissionsDTO findById(@PathVariable Long id) throws Exception {
         return service.findById(id);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("api/missions/{id}")
     @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public void update(@PathVariable Long id, @RequestBody MissionsDTO missionsDTO) throws Exception {
         service.update(missionsDTO, id);
     }
 
-    @PutMapping("active/{id}")
+    @PutMapping("api/missions/active/{id}")
     @RolesAllowed(value = {"SUPERADMIN","ROOT"})
     /*@RolesAllowed(value = {"SUPERADMIN"})*/
     public void active(@PathVariable Long id) throws Exception {
         service.active(id);
     }
 
-    @GetMapping("active/home")
+    @GetMapping("api/missions/active/home")
     public List<MissionsDTO> find06Active(){
         return service.getList4Active();
     }

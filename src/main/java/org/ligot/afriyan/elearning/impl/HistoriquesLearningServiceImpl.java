@@ -62,12 +62,18 @@ public class HistoriquesLearningServiceImpl implements HistoriquesLearningServic
                         )
                 );
             }
-            if(chapitres.getId().equals(historiquesLearningDTO.getChapitreId())){
-                if(repo.findByUserIdAndFormationIdAndChapitreId(historiquesLearningDTO.getUserId(), historiquesLearningDTO.getFormationId(), historiquesLearningDTO.getChapitreId()).isEmpty())
+            System.err.println("Formation = "+historiquesLearningDTO.getFormationId());
+            System.err.println("Module = "+historiquesLearningDTO.getModuleId());
+            System.err.println("Chap = "+historiquesLearningDTO.getChapitreId());
+            if(chapitres.getId().equals(historiquesLearningDTO.getModuleId())){
+                System.err.println("chapitres = "+chapitres.getId());
+                if(repo.findByUserIdAndFormationIdAndModuleIdAndChapitreId(historiquesLearningDTO.getUserId(), historiquesLearningDTO.getFormationId(), historiquesLearningDTO.getModuleId(), historiquesLearningDTO.getChapitreId()).isEmpty()) {
                     repo.save(mapper.toEntity(historiquesLearningDTO));
+                    System.err.println("SAVE");
+                }
             }
         });
-
+        System.err.println("DONE");
     }
 
     @Override

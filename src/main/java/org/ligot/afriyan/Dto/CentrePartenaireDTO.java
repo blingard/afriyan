@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.ligot.afriyan.echo.dto.LocalitiesDTO;
 import org.ligot.afriyan.entities.Status;
 
 import java.util.List;
@@ -39,6 +40,7 @@ public class CentrePartenaireDTO {
     private int category;
     private boolean morgue;
     private String region;
+    private LocalitiesDTO locality;
 
 
 
@@ -224,5 +226,13 @@ public class CentrePartenaireDTO {
 
     public void setRegion(String region) {
         this.region = region;
+    }
+
+    public LocalitiesDTO getLocality() {
+        return locality;
+    }
+
+    public void setLocality(LocalitiesDTO locality) {
+        this.locality = locality;
     }
 }

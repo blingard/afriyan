@@ -33,17 +33,11 @@ public class ParametresImpl implements IParametres {
         this.iUserConnect = iUserConnect;
     }
 
-    @Override
-    public void save(ParametresDto parametresDto) throws Exception {
-        if(parametresDto.getParamTypeEnum().equals(ParamTypeEnum.STATISTICS)){
-            repository.save(mapper.create(parametresDto));
-        }else{
-            Optional<Parametres> parametres = repository.findByStatusTrueAndParamTypeEnum(parametresDto.getParamTypeEnum());
-            if(parametres.isPresent())
-                throw new Exception("Item type "+parametres.get().getParamTypeEnum()+" already exist");
-            repository.save(mapper.create(parametresDto));
-        }
-
+    private void save(ParametresDto parametresDto) {
+        Optional<Parametres> parametres = repository.findByParamTypeEnum(parametresDto.getParamTypeEnum());
+        if(parametres.isPresent())
+            throw new RuntimeException("Item type "+parametres.get().getParamTypeEnum()+" already exist");
+        repository.save(mapper.create(parametresDto));
     }
 
     @Override
@@ -66,6 +60,18 @@ public class ParametresImpl implements IParametres {
         Parametres parametresTS = parametres.get();
         parametresTS.setStatus(!parametresTS.isStatus());
         repository.save(parametresTS);
+    }
+
+    @Override
+    @Transactional(Transactional.TxType.NEVER)
+    public void init() throws Exception {
+        for (ParamTypeEnum paramTypeEnum: ParamTypeEnum.values()){
+            try {
+                save(new ParametresDto(null, paramTypeEnum.toString(), "", "", true, paramTypeEnum));
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -112,6 +118,13 @@ public class ParametresImpl implements IParametres {
     }
 
     @Override
+    public ParametresDto findColor(ParamTypeEnum paramTypeEnum) {
+        if(paramTypeEnum.toString().contains("COLOR"))
+            return mapper.toDTO(repository.findByStatusTrueAndParamTypeEnum(paramTypeEnum).orElse(null));
+        return null;
+    }
+
+    @Override
     public ParametresDto findWhatsapp() {
         return mapper.toDTO(repository.findByStatusTrueAndParamTypeEnum(ParamTypeEnum.WHATSAPP).orElse(null));
     }
@@ -141,6 +154,12 @@ public class ParametresImpl implements IParametres {
         data.put("call", this.findCall());
         data.put("sms", this.findSms());
         data.put("location", this.findLocation());
+        for(ParamTypeEnum paramTypeEnum : ParamTypeEnum.values()){
+            if(paramTypeEnum.toString().contains("COLOR")){
+                data.put(paramTypeEnum.toString(), this.findColor(paramTypeEnum));
+            }
+
+        }
         return data;
     }
 

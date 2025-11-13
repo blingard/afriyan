@@ -7,6 +7,7 @@ import org.ligot.afriyan.Dto.PageDTO;
 import org.ligot.afriyan.Dto.ServiceDTO;
 import org.ligot.afriyan.Dto.SlidersDTO;
 import org.ligot.afriyan.entities.CentrePartenaire;
+import org.ligot.afriyan.entities.FrontType;
 import org.ligot.afriyan.entities.Sliders;
 import org.ligot.afriyan.mapper.SlidersMapper;
 import org.ligot.afriyan.repository.ISlidersRepository;
@@ -49,7 +50,7 @@ public class SlidersImpl implements ISliders {
             String image = "data:image/"+elements[1]+";base64,"+imageBase64;
             centrePartenaireDTO.setPhoto(image);
         }catch (Exception ex){
-            centrePartenaireDTO.setPhoto(null);
+            centrePartenaireDTO.setPhoto("data:image/;base64,null");
         }
         return centrePartenaireDTO;
     }
@@ -74,13 +75,21 @@ public class SlidersImpl implements ISliders {
 
     @Override
     public SlidersDTO findById(Long id) throws Exception {
-        Sliders certificates = repository.findById(id).orElseThrow(()->new Exception("Slider not found"));
-        return mapper.toDTO(certificates);
+        Sliders slide = repository.findById(id).orElseThrow(()->new Exception("Slider not found"));
+        return findWithFile(slide);
     }
 
     @Override
     public List<SlidersDTO> findToUse() throws Exception {
         List<Sliders> sliders = repository.findSlidersByStatusIsTrue();
+        if(sliders.isEmpty())
+            throw new Exception("Sliders not found");
+        return sliders.stream().map(this::findWithFile).toList();
+    }
+
+    @Override
+    public List<SlidersDTO> findToUse(FrontType frontType) throws Exception {
+        List<Sliders> sliders = repository.findSlidersByStatusIsTrueAndFrontType(frontType);
         if(sliders.isEmpty())
             throw new Exception("Sliders not found");
         return sliders.stream().map(this::findWithFile).toList();

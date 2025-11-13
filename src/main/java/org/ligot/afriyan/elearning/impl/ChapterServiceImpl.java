@@ -42,8 +42,6 @@ public class ChapterServiceImpl implements ChapterService {
     @Override
     public void save(Long idFormation, ChapitresDTO chapitresDTO) throws Exception {
         Formations formations = formationsRepo.findById(idFormation).orElseThrow(()->new Exception("Formation not found"));
-        if(!formations.isStatus())
-            throw new Exception("Formation is not active");
         if(formations.getChapitres()==null)
             formations.setChapitres(new HashSet<>(0));
         Chapitres chapitres = mapper.toEntity(chapitresDTO);
@@ -129,6 +127,19 @@ public class ChapterServiceImpl implements ChapterService {
         Collections.sort(paragraphsDTOS);
         chapitresDTO = constructOrder(chapitresDTO, paragraphsDTOS);
         return chapitresDTO;
+    }
+
+    @Override
+    public List<ParagraphsDTO> getByIdAdminP(Long id) throws Exception {
+        ChapitresDTO chapitresDTO = getByIdAdmin(id);
+        if(chapitresDTO.getParagraphes()==null)
+            throw new RuntimeException("Pas de Chapitres disponible");
+        if(chapitresDTO.getParagraphes().isEmpty())
+            throw new RuntimeException("Pas de Chapitres disponible");
+        return getByIdAdmin(id).getParagraphes().stream().map(paragraphsDTO -> {
+            paragraphsDTO.setContent(null);
+            return paragraphsDTO;
+        }).toList();
     }
 
     private Chapitres findById(Long id)throws Exception{

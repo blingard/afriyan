@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
+import org.ligot.afriyan.entities.Categories;
 import org.ligot.afriyan.sondage.enumerations.EtatSondage;
 import org.ligot.afriyan.sondage.enumerations.TypeUserSondage;
 
@@ -22,6 +23,7 @@ public class Sondage {
     private LocalDateTime createDate;
     @OneToOne
     private Scheduler scheduler;
+
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Questions> questions = new HashSet<>(0);
 
@@ -31,7 +33,7 @@ public class Sondage {
 
     @Column(name = "domain")
     @ManyToMany(fetch = FetchType.EAGER)
-    private Set<CategorieEntities> domain = new HashSet<>(0);
+    private Set<Categories> domain = new HashSet<>(0);
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type_user")
@@ -102,11 +104,11 @@ public class Sondage {
         this.state = state;
     }
 
-    public Set<CategorieEntities> getDomain() {
+    public Set<Categories> getDomain() {
         return domain;
     }
 
-    public void setDomain(Set<CategorieEntities> domain) {
+    public void setDomain(Set<Categories> domain) {
         this.domain = domain;
     }
 

@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface ICentrePartenaireRepository extends JpaRepository<CentrePartenaire, Long> {
     List<CentrePartenaire> findCentrePartenaireByStatus(Status status);
-    Optional<List<CentrePartenaire>> findCentrePartenaireByCreateur(Utilisateur utilisateur);
+    Optional<CentrePartenaire> findCentrePartenaireByCreateur(Utilisateur utilisateur);
     Optional<CentrePartenaire> findCentrePartenaireByTelephone(String telephone);
     Optional<CentrePartenaire> findCentrePartenaireByNom(String nom);
 }

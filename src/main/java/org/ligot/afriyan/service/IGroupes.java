@@ -17,6 +17,7 @@ public interface IGroupes {
     GroupesDTO findById(Long id) throws Exception;
     GroupesDTO findByName(String name) throws Exception;
     Groupes findByNameEntiti(String name) throws Exception;
+    Groupes findByIdEntiti(Long id) throws Exception;
     GroupesDTO save(GroupesDTO groupesDto) throws Exception;
     PageDTO<GroupesDTO> list(int page) throws Exception;
     List<GroupesDTO> list() throws Exception;

@@ -75,4 +75,16 @@ public class QuestionsDTO {
     public void setScore(int score) {
         this.score = score;
     }
+
+    @Override
+    public String toString() {
+        return "QuestionsDTO{" +
+                "id=" + id +
+                ", typeResponse=" + typeResponse +
+                ", modelResponses=" + modelResponses +
+                ", libelle='" + libelle + '\'' +
+                ", position=" + position +
+                ", score=" + score +
+                '}';
+    }
 }

@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping(value ={"api/apropos"})
 public class AProposController {
 
     private final IAPropos service;
@@ -27,7 +26,7 @@ public class AProposController {
     }
 
 
-    @PostMapping("save")
+    @PostMapping("api/apropos/save")
     @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public ResponseEntity<?> saveCentre(
             @RequestBody @Valid AProposDTO aProposDTO) throws Exception {
@@ -35,18 +34,18 @@ public class AProposController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/update/{id}")
+    @PutMapping(value = "api/apropos/update/{id}")
     @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     void updateCentre(@RequestBody @Valid AProposDTO aProposDTO, @PathVariable Long id) throws Exception {
         service.update(id, aProposDTO);
     }
 
-    @GetMapping(value = "{id}")
+    @GetMapping(value = "api/apropos/{id}")
     AProposDTO updateCentre(@PathVariable Long id) throws Exception {
         return service.get(id);
     }
 
-    @GetMapping(value = "/list")
+    @GetMapping(value = "public/api/apropos/list")
     AProposDTO listCentre() throws Exception {
         return service.get();
     }

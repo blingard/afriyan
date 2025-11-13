@@ -32,7 +32,7 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
     private UtilisateurMapper utilisateurMapper;
     private final IUtilisateur utilisateur;
     private final IServiceEntity iServiceEntity;
-    private final int PAGE_SIZE = 15;
+    private final int PAGE_SIZE = 5;
 
     public CentrePartenaireImpl(CentrePartenaireMapper mapper, ICentrePartenaireRepository repository, FileStorageService fileStorageService, UtilisateurMapper utilisateurMapper, IUtilisateur utilisateur, IServiceEntity iServiceEntity) {
         this.mapper = mapper;
@@ -78,8 +78,11 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
     @Transactional
     public CentrePartenaireDTO save(MultipartFile file, CentrePartenaireDTO centrePartenaireDTO) throws Exception {
         getUser();
-        String name = fileStorageService.storeParagraphFileImage(file, Constantes.CENTREPARTENAIREIMAGESUBPATH);
         CentrePartenaire centrePartenaire = mapper.create(centrePartenaireDTO);
+        if(repository.findCentrePartenaireByCreateur(centrePartenaire.getCreateur()).isPresent())
+            throw new RuntimeException("L'utilisateur est deja administrateur d'une USRAJ");
+
+        String name = fileStorageService.storeParagraphFileImage(file, Constantes.CENTREPARTENAIREIMAGESUBPATH);
         centrePartenaire.setPhoto(name);
         if(repository.findCentrePartenaireByTelephone(centrePartenaireDTO.getTelephone().trim()).isPresent())
             throw new Exception("Ce numero de telephone est deja utilise par une USRAJ");
@@ -116,12 +119,27 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
     }
 
     @Override
-    public List<CentrePartenaireDTO> trouverCPProches(double userLat, double userLon, double rayon) {
+    public List<CentrePartenaireDTO> trouverCPProches(double userLat, double userLon) {
+        boolean isTrue = true;
+        double rayon = 10.0D;
+        List<CentrePartenaireDTO> centrePartenaireDTOS = new ArrayList<>();
         List<CentrePartenaire> centrePartenaires = repository.findAll();
-        return centrePartenaires.stream()
-                .filter(h -> calculerDistance(userLat, userLon, Double.valueOf(h.getLatittude()), Double.valueOf(h.getLongitude())) <= rayon)
-                .map(this::findWithFile)
-                .toList();
+        while(isTrue){
+            final double r = rayon;
+            centrePartenaireDTOS = centrePartenaires.stream()
+                    .filter(h -> calculerDistance(userLat, userLon, Double.valueOf(h.getLatittude()), Double.valueOf(h.getLongitude())) <= r)
+                    .map(this::findWithFile)
+                    .toList();
+            if(!centrePartenaireDTOS.isEmpty()){
+                isTrue = false;
+            }
+            if(rayon>200000D){
+                isTrue = false;
+            }
+            rayon *=2;
+        }
+
+        return centrePartenaireDTOS;
     }
 
     @Override
@@ -158,14 +176,14 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
     }
 
     @Override
-    public List<CentrePartenaireDTO> findByUserId(Long id) throws Exception {/*
+    public CentrePartenaireDTO findByUserId(Long id) throws Exception {/*
         UtilisateurDTO userDTO = utilisateur.findById(id);
         if(userDTO == null)
             throw new Exception("user with ID = "+id+" is null");*/
-        Optional<List<CentrePartenaire>> optionalCentrePartenaires = repository.findCentrePartenaireByCreateur(new Utilisateur(id));
+        Optional<CentrePartenaire> optionalCentrePartenaires = repository.findCentrePartenaireByCreateur(new Utilisateur(id));
         if(optionalCentrePartenaires.isEmpty())
-            return new ArrayList<>(0);
-        return optionalCentrePartenaires.get().stream().map(this::findWithFile).toList();
+            throw new RuntimeException("Pas d' USRAJ pour cet utilisateur");
+        return findWithFile(optionalCentrePartenaires.get());
     }
 
     @Override

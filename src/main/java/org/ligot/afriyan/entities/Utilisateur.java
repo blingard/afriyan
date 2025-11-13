@@ -7,11 +7,14 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.CurrentTimestamp;
+import org.ligot.afriyan.echo.entities.Communes;
+import org.ligot.afriyan.echo.entities.Localities;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -43,8 +46,16 @@ public class Utilisateur implements Serializable, Comparable<Utilisateur> {
     @Column(name = "LIEU_NAISSANCE")
     protected String lieu;
 
-    @Column(name = "NUMERO_TELEPHONE", unique = true)
-    protected String numero_telephone;
+    @Column(name = "telephone", unique = true)
+    protected String telephone;
+
+    @ElementCollection
+    @CollectionTable(
+            name = "user_phone_numbers",
+            joinColumns = @JoinColumn(name = "user_id")
+    )
+    @Column(name = "phone_number")
+    private List<String> phoneNumbers;
 
     @Column(name = "PHOTO")
     protected String photo;
@@ -64,8 +75,6 @@ public class Utilisateur implements Serializable, Comparable<Utilisateur> {
     protected Status status = Status.ACTIVE;
 
     @Column(name = "EMAIL")
-    //@Email(message = "Veuillez saisir une adresse mail")
-    //@NotBlank
     @Size(max = 50)
     protected String email;
 
@@ -81,6 +90,10 @@ public class Utilisateur implements Serializable, Comparable<Utilisateur> {
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Groupes groupe;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Communes communes;
+
 
     public Utilisateur(Long id) {
         this.id = id;
@@ -150,12 +163,12 @@ public class Utilisateur implements Serializable, Comparable<Utilisateur> {
         this.lieu = lieu;
     }
 
-    public String getNumero_telephone() {
-        return numero_telephone;
+    public String getTelephone() {
+        return telephone;
     }
 
-    public void setNumero_telephone(String numero_telephone) {
-        this.numero_telephone = numero_telephone;
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
     }
 
     public String getPhoto() {
@@ -230,6 +243,22 @@ public class Utilisateur implements Serializable, Comparable<Utilisateur> {
         isFirstConnexion = firstConnexion;
     }
 
+    public List<String> getPhoneNumbers() {
+        return phoneNumbers;
+    }
+
+    public void setPhoneNumbers(List<String> phoneNumbers) {
+        this.phoneNumbers = phoneNumbers;
+    }
+
+    public Communes getCommunes() {
+        return communes;
+    }
+
+    public void setCommunes(Communes communes) {
+        this.communes = communes;
+    }
+
     @Override
     public String toString() {
         return "Utilisateur{" +
@@ -239,7 +268,7 @@ public class Utilisateur implements Serializable, Comparable<Utilisateur> {
                 ", prenom='" + prenom + '\'' +
                 ", ddn=" + ddn +
                 ", lieu='" + lieu + '\'' +
-                ", numero_telephone='" + numero_telephone + '\'' +
+                ", telephone='" + telephone + '\'' +
                 ", photo='" + photo + '\'' +
                 ", location='" + location + '\'' +
                 ", anonymat='" + anonymat + '\'' +

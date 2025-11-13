@@ -1,11 +1,9 @@
 package org.ligot.afriyan.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CurrentTimestamp;
 
-import java.util.*;
+import java.util.Date;
 
 @Entity
 public class Articles {
@@ -23,11 +21,27 @@ public class Articles {
     private String phote;
     private boolean status;
 
-    private Categorie categorie;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Categories categories;
     @CurrentTimestamp
     private Date date;
     private TypeDonne typeDonne;
     private int lue;
+
+    public Articles(Long id, String title, String author, String contenu, String resumer, String phote, boolean status, Categories categories, Date date, TypeDonne typeDonne, int lue, Publications publication) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.contenu = contenu;
+        this.resumer = resumer;
+        this.phote = phote;
+        this.status = status;
+        this.categories = categories;
+        this.date = date;
+        this.typeDonne = typeDonne;
+        this.lue = lue;
+        this.publication = publication;
+    }
 
     public int getLue() {
         return lue;
@@ -56,15 +70,7 @@ public class Articles {
     public Articles(Long id) {
         this.id = id;
     }
-    public Articles(Long id, String title, String author, String contenu, String resumer, boolean status, Date date) {
-        this.id = id;
-        this.title = title;
-        this.author = author;
-        this.contenu = contenu;
-        this.resumer = resumer;
-        this.status = status;
-        this.date = date;
-    }
+
     public Long getId() {
         return id;
     }
@@ -128,11 +134,11 @@ public class Articles {
     public void setPublications(Publications publication) {
         this.publication = publication;
     }
-    public Categorie getCategorie() {
-        return categorie;
+    public Categories getCategories() {
+        return categories;
     }
-    public void setCategorie(Categorie categorie) {
-        this.categorie = categorie;
+    public void setCategories(Categories categories) {
+        this.categories = categories;
     }
 
 }

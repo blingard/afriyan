@@ -1,14 +1,13 @@
 package org.ligot.afriyan.sondage.dto;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import org.ligot.afriyan.Dto.CategoriesDTO;
+import org.ligot.afriyan.sondage.enumerations.EtatSondage;
+import org.ligot.afriyan.sondage.enumerations.TypeUserSondage;
+
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
-import org.ligot.afriyan.entities.Categorie;
-import org.ligot.afriyan.sondage.entities.CategorieEntities;
-import org.ligot.afriyan.sondage.enumerations.EtatSondage;
-import org.ligot.afriyan.sondage.enumerations.TypeUserSondage;
 
 public class SondageDTO {
     private Long id;
@@ -21,7 +20,7 @@ public class SondageDTO {
     @NotNull
     private EtatSondage state;
     @NotNull
-    private Set<CategorieEntitiesDTO> domain = new HashSet<>(0);
+    private Set<CategoriesDTO> domain = new HashSet<>(0);
     @NotNull
     private TypeUserSondage typeUser;
 
@@ -34,7 +33,7 @@ public class SondageDTO {
         this.id = id;
     }
 
-    public SondageDTO(Long id, @NotNull String name, String createUser, LocalDateTime createDate, SchedulerDTO scheduler, Set<QuestionsDTO> questions, @NotNull EtatSondage state, @NotNull Set<CategorieEntitiesDTO> domain, @NotNull TypeUserSondage typeUser, float scoreTotal) {
+    public SondageDTO(Long id, @NotNull String name, String createUser, LocalDateTime createDate, SchedulerDTO scheduler, Set<QuestionsDTO> questions, @NotNull EtatSondage state, @NotNull Set<CategoriesDTO> domain, @NotNull TypeUserSondage typeUser, float scoreTotal) {
         this.id = id;
         this.name = name;
         this.createUser = createUser;
@@ -103,11 +102,11 @@ public class SondageDTO {
         this.state = state;
     }
 
-    public Set<CategorieEntitiesDTO> getDomain() {
+    public Set<CategoriesDTO> getDomain() {
         return domain;
     }
 
-    public void setDomain(Set<CategorieEntitiesDTO> domain) {
+    public void setDomain(Set<CategoriesDTO> domain) {
         this.domain = domain;
     }
 

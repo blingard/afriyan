@@ -22,5 +22,6 @@ public class UserConnect {
     public UserConnect(Date dateConnection, String user) {
         this.dateConnection = dateConnection;
         this.user = user;
+        this.id = null;
     }
 }

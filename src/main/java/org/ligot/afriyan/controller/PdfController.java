@@ -120,7 +120,7 @@ public class PdfController {
         leaveEmptyLine(paragraph, 1);
         CustomParagraph(table, "Name: ", rendezVousDTO.getUtilisateur().getNom() + " " + rendezVousDTO.getUtilisateur().getPrenom());
         leaveEmptyLine(paragraph, 1);
-        CustomParagraph(table, "Phone: ", rendezVousDTO.getUtilisateur().getNumero_telephone());
+        CustomParagraph(table, "Phone: ", rendezVousDTO.getUtilisateur().getTelephone());
         leaveEmptyLine(paragraph, 1);
         CustomParagraph(table, "Status: ", rendezVousDTO.getRdv().toString());
 
@@ -228,7 +228,7 @@ public class PdfController {
         leaveEmptyLine(paragraph, 1);
         CustomParagraph(table, "Name: ", rendezVousDTO.getUtilisateur().getNom()+" "+rendezVousDTO.getUtilisateur().getPrenom());
         leaveEmptyLine(paragraph, 1);
-        CustomParagraph(table, "Phone: ", rendezVousDTO.getUtilisateur().getNumero_telephone());
+        CustomParagraph(table, "Phone: ", rendezVousDTO.getUtilisateur().getTelephone());
         leaveEmptyLine(paragraph, 1);
         CustomParagraph(table, "Status: ", rendezVousDTO.getStatus().toString());
 

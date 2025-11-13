@@ -13,85 +13,79 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("api/parametres")
 public class ParametresController {
     private final IParametres service;
 
     public ParametresController(IParametres service) {
         this.service = service;
     }
-    @GetMapping("get/active")
+    @GetMapping("api/parametres/get/active")
     public List<ParametresDto> findAllActiveStat(){
         return service.findAllActive();
     }
 
-    @GetMapping
+    @GetMapping("/api/parametres")
     public ResponseEntity<PageDTO<ParametresDto>> listByPage(@RequestParam(name = "page", defaultValue = "0")int page) throws Exception{
         return ResponseEntity.ok(service.findAllByPage(page));
     }
 
-    @GetMapping("find-by-id/{id}")
+    @GetMapping("api/parametres/find-by-id/{id}")
     public ParametresDto findById(@PathVariable Long id) throws Exception {
         return service.findById(id);
     }
-    @GetMapping("/{param}")
+    @GetMapping("api/parametres/{param}")
     public ResponseEntity<PageDTO<ParametresDto>> find(@PathVariable String param, @RequestParam(name = "page", defaultValue = "0")int page){
         ParamTypeEnum paramTypeEnum = ParamTypeEnum.valueOf(param);
         return ResponseEntity.ok(service.find(paramTypeEnum, page));
     }
 
-    @GetMapping("get/call")
+    @GetMapping("api/parametres/get/call")
     public ParametresDto findCall(){
         return service.findCall();
     }
 
-    @GetMapping("get/whatsapp")
+    @GetMapping("api/parametres/get/whatsapp")
     public ParametresDto findWhatsapp(){
         return service.findWhatsapp();
     }
 
-    @GetMapping("get/sms")
+    @GetMapping("api/parametres/get/sms")
     public ParametresDto findSms(){
         return service.findSms();
     }
 
-    @GetMapping("get/youtube")
+    @GetMapping("api/parametres/get/youtube")
     public ParametresDto findYoutube(){
         return service.findYoutube();
     }
 
-    @GetMapping("get/facebook")
+    @GetMapping("api/parametres/get/facebook")
     public ParametresDto findFacebook(){
         return service.findFacebook();
     }
 
-    @GetMapping("get/tweeter")
+    @GetMapping("api/parametres/get/tweeter")
     public ParametresDto findTweeter(){
         return service.findTweeter();
     }
 
 
-    @GetMapping("get/connect")
+    @GetMapping("api/parametres/get/connect")
     public Long findConnect() throws Exception {
         return service.visiteurs();
     }
-    @GetMapping("get/links")
+    @GetMapping("public/api/parametres/get/links")
     public Map<String, ParametresDto> findAllLinks(){
         return service.findAllLinks();
     }
 
-    @PostMapping
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
-    public void save(@RequestBody ParametresDto parametresDto) throws Exception {
-        service.save(parametresDto);
-    }
 
-    @PutMapping("/{id}")
+    @PutMapping("api/parametres/{id}")
     public void update(@RequestBody ParametresDto parametresDto, @PathVariable Long id) throws Exception {
         service.update(parametresDto, id);
     }
 
-    @PutMapping("active/{id}")
+    @PutMapping("api/parametres/active/{id}")
     @RolesAllowed(value = {"SUPERADMIN","ROOT"})
     public void activeOrDesable(@PathVariable Long id) throws Exception {
         service.desable(id);

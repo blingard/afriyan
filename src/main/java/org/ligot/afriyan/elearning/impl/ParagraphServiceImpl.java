@@ -33,7 +33,7 @@ public class ParagraphServiceImpl implements ParagraphService {
 
     @Override
     public void save(Long idChapter, ParagraphsDTO paragraphsDTO, MultipartFile file) throws Exception {
-        Chapitres chapitres = chapterRepo.findById(idChapter).orElseThrow(()->new Exception("Chapter not found"));
+        Chapitres chapitres = chapterRepo.findById(idChapter).orElseThrow(()->new Exception("Module not found"));
         Paragraphs paragraphs = switch (paragraphsDTO.getType()){
             case TEXT -> repo.save(mapper.toEntity(paragraphsDTO));
             case IMAGE, BOTH -> {

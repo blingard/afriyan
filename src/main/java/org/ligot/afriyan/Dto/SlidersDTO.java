@@ -1,20 +1,25 @@
 package org.ligot.afriyan.Dto;
 
+import org.ligot.afriyan.entities.FrontType;
+
 public class SlidersDTO {
     private Long id;
     private String message;
     private String photo;
-    private String name;
+    private String title;
+
+    private FrontType frontType;
     private boolean status;
 
     public SlidersDTO() {
     }
 
-    public SlidersDTO(Long id, String message, String photo, String name, boolean status) {
+    public SlidersDTO(Long id, String message, String photo, String title, FrontType frontType, boolean status) {
         this.id = id;
         this.message = message;
         this.photo = photo;
-        this.name = name;
+        this.title = title;
+        this.frontType = frontType;
         this.status = status;
     }
 
@@ -42,12 +47,12 @@ public class SlidersDTO {
         this.photo = photo;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public boolean isStatus() {
@@ -56,5 +61,13 @@ public class SlidersDTO {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public FrontType getFrontType() {
+        return frontType;
+    }
+
+    public void setFrontType(FrontType frontType) {
+        this.frontType = frontType;
     }
 }

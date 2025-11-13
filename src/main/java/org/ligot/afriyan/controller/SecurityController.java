@@ -20,7 +20,6 @@ import java.time.Instant;
 import java.util.*;
 
 @RestController
-@RequestMapping("api/auth")
 public class SecurityController {
     private final AuthService service;
     private final IUtilisateur iUtilisateur;
@@ -34,7 +33,7 @@ public class SecurityController {
         this.twilioService = twilioService;
     }
 
-    @PostMapping("/login")
+    @PostMapping("/public/api/auth/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) throws Exception {
         HttpHeaders  httpHeaders = new HttpHeaders();
         Map<String, Object> data = new HashMap<>();
@@ -48,22 +47,22 @@ public class SecurityController {
         return new ResponseEntity<>(data, httpHeaders, HttpStatus.OK);
     }
 
-    @PostMapping("/forget_password/confirm")
+    @PostMapping("public/api/auth/forget_password/confirm")
     public void forgetPassword(@RequestBody ForgetPasswordRequest forgetPasswordRequest) throws Exception {
         iUtilisateur.forgetPassword(forgetPasswordRequest);
     }
 
-    @GetMapping("/forget_password")
+    @GetMapping("public/api/auth/forget_password")
     public void forgetPasswordGetUser(@RequestParam(name = "login", required = true) String login) throws Exception {
         Utilisateur utilisateurDTO = service.getUtilisateurByLoginForgetPwd(login.trim());
         String pwd = genCodeNum();
         String message = "Mot de passe oublie \n";
         message = message+"";
         message = message+" \n code de reinitialisation:"+pwd;
-        twilioService.sendOneSm(utilisateurDTO.getNumero_telephone().trim(),message);
+        twilioService.sendOneSms(utilisateurDTO.getTelephone().trim(),message);
         ForgetPassword forgetPassword = new ForgetPassword(
                 null,
-                utilisateurDTO.getNumero_telephone().trim(),
+                utilisateurDTO.getTelephone().trim(),
                 true,
                 pwd,
                 Date.from(Instant.now())

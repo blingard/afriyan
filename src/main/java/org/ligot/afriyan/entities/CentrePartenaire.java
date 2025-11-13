@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CurrentTimestamp;
+import org.ligot.afriyan.echo.entities.Localities;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -75,6 +76,9 @@ public class CentrePartenaire {
 
      @Column(columnDefinition = "varchar(255) default 'region'")
      private String region;
+
+     @ManyToOne
+     private Localities locality;
 
 
 
@@ -277,4 +281,12 @@ public class CentrePartenaire {
      public void setRegion(String region) {
           this.region = region;
      }
+
+    public Localities getLocality() {
+        return locality;
+    }
+
+    public void setLocality(Localities locality) {
+        this.locality = locality;
+    }
 }

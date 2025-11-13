@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface ResultatsRepo extends JpaRepository<Resultats, Long> {
 
     List<Resultats> findAllByUtilisateurAndFormation(Utilisateur utilisateur, Formations formations);
+    List<Resultats> findAllByUtilisateurAndStatusTrue(Utilisateur utilisateur);
     Optional<Resultats> findAllByUtilisateurAndFormationAndStatusTrue(Utilisateur utilisateur, Formations formations);
 
     long countByUtilisateurAndFormationAndStatusTrue(Utilisateur utilisateur, Formations formations);

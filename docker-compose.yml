@@ -1,0 +1,102 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: afriyan_postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - afriyan-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Application Spring Boot
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: afriyan_app
+    ports:
+      - "${APP_PORT}:8087"
+    environment:
+      # Database Configuration
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: ${SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT}
+      
+      # Server Configuration
+      SERVER_PORT: ${SERVER_PORT}
+      SPRING_JMX_ENABLED: ${SPRING_JMX_ENABLED}
+      
+      # Swagger Configuration
+      SPRINGDOC_SWAGGER_UI_PATH: ${SPRINGDOC_SWAGGER_UI_PATH}
+      
+      # File Upload Configuration
+      SPRING_WEB_RESOURCES_STATIC_LOCATIONS: ${SPRING_WEB_RESOURCES_STATIC_LOCATIONS}
+      FILE_UPLOAD_DIR: ${FILE_UPLOAD_DIR}
+      SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE: ${SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE}
+      SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE: ${SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE}
+      
+      # SMS Configuration (LMT Group)
+      LMT_ACCOUNTSID: ${LMT_ACCOUNT_SID}
+      LMT_AUTHTOKEN: ${LMT_AUTH_TOKEN}
+      LMT_SENDER: ${LMT_SENDER}
+      LMT_URL: ${LMT_URL}
+      
+      # Email Configuration
+      SPRING_MAIL_HOST: ${SPRING_MAIL_HOST}
+      SPRING_MAIL_PORT: ${SPRING_MAIL_PORT}
+      SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME}
+      SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD}
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: ${SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH}
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: ${SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE}
+      
+      # Images Configuration
+      UNFPAPHOTO: ${UNFPA_PHOTO}
+      YOUNG: ${YOUNG_LOGO}
+      
+      # Weather API Configuration
+      WEATHER_WEBSITE: ${WEATHER_WEBSITE}
+      WEATHER_KEY: ${WEATHER_KEY}
+      WEATHER_URL: ${WEATHER_URL}
+    volumes:
+      # Mapping du dossier config
+      - ./config:/app/config:ro
+      # Mapping du dossier uploads
+      - ./uploads:/app/uploads
+      # Mapping optionnel pour les logs
+      - ./logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - afriyan-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8087/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  afriyan-network:
+    driver: bridge

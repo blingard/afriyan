@@ -8,14 +8,15 @@ import java.util.List;
 import java.util.Map;
 
 public interface IParametres {
-    void save(ParametresDto parametresDto) throws Exception;
     void update(ParametresDto parametresDto, Long id) throws Exception;
     void desable(Long id) throws Exception;
+    void init() throws Exception;
     List<ParametresDto> findAllActive();
     List<ParametresDto> findAll();
     ParametresDto findCall();
     ParametresDto findLocation();
     ParametresDto findSms();
+    ParametresDto findColor(ParamTypeEnum paramTypeEnum);
     ParametresDto findWhatsapp();
     ParametresDto findFacebook();
     ParametresDto findTweeter();

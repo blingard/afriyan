@@ -1,7 +1,7 @@
 package org.ligot.afriyan.elearning.entities;
 
 import jakarta.persistence.*;
-import org.ligot.afriyan.entities.Categorie;
+import org.ligot.afriyan.entities.Categories;
 import org.ligot.afriyan.sondage.entities.Sondage;
 
 import java.util.HashSet;
@@ -20,10 +20,10 @@ public class Formations {
     @Column(nullable = false)
     private String description;
 
-    @Enumerated(EnumType.STRING)
-    private Categorie categorie;
+    @ManyToOne
+    private Categories categories;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.EAGER)
     @OrderBy("id")
     private Set<Chapitres> chapitres = new HashSet<>(0);
 
@@ -43,11 +43,11 @@ public class Formations {
     public Formations() {
     }
 
-    public Formations(Long id, String libelle, String description, Categorie categorie, Set<Chapitres> chapitres, Sondage quizz, String orderChapter, boolean status, boolean configure, String author) {
+    public Formations(Long id, String libelle, String description, Categories categories, Set<Chapitres> chapitres, Sondage quizz, String orderChapter, boolean status, boolean configure, String author) {
         this.id = id;
         this.libelle = libelle;
         this.description = description;
-        this.categorie = categorie;
+        this.categories = categories;
         this.chapitres = chapitres;
         this.quizz = quizz;
         this.orderChapter = orderChapter;
@@ -80,12 +80,12 @@ public class Formations {
         this.description = description;
     }
 
-    public Categorie getCategorie() {
-        return categorie;
+    public Categories getCategories() {
+        return categories;
     }
 
-    public void setCategorie(Categorie categorie) {
-        this.categorie = categorie;
+    public void setCategories(Categories categories) {
+        this.categories = categories;
     }
 
     public Set<Chapitres> getChapitres() {

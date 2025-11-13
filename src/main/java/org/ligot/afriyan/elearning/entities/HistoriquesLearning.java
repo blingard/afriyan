@@ -13,6 +13,7 @@ public class HistoriquesLearning implements Comparable<HistoriquesLearning>{
 
     private Long userId;
     private Long formationId;
+    private Long moduleId;
     private Long chapitreId;
 
     private boolean status;
@@ -20,19 +21,42 @@ public class HistoriquesLearning implements Comparable<HistoriquesLearning>{
 
     private Instant dateLecture;
     private Long nextChapter;
+    private Long nextModule;
+    private Long previousChapter;
+    private Long previousModule;
 
     public HistoriquesLearning() {
     }
 
-    public HistoriquesLearning(Long id, Long userId, Long formationId, Long chapitreId, boolean status, boolean quizzPass, Instant dateLecture, Long nextChapter) {
+    public HistoriquesLearning(Long id, Long userId, Long formationId, Long moduleId, Long chapitreId, boolean status, boolean quizzPass, Instant dateLecture, Long nextChapter, Long nextModule, Long previousChapter, Long previousModule) {
         this.id = id;
         this.userId = userId;
         this.formationId = formationId;
+        this.moduleId = moduleId;
         this.chapitreId = chapitreId;
         this.status = status;
         this.quizzPass = quizzPass;
         this.dateLecture = dateLecture;
         this.nextChapter = nextChapter;
+        this.nextModule = nextModule;
+        this.previousChapter = previousChapter;
+        this.previousModule = previousModule;
+    }
+
+    public Long getPreviousChapter() {
+        return previousChapter;
+    }
+
+    public void setPreviousChapter(Long previousChapter) {
+        this.previousChapter = previousChapter;
+    }
+
+    public Long getPreviousModule() {
+        return previousModule;
+    }
+
+    public void setPreviousModule(Long previousModule) {
+        this.previousModule = previousModule;
     }
 
     public Long getId() {
@@ -97,6 +121,22 @@ public class HistoriquesLearning implements Comparable<HistoriquesLearning>{
 
     public void setNextChapter(Long nextChapter) {
         this.nextChapter = nextChapter;
+    }
+
+    public Long getModuleId() {
+        return moduleId;
+    }
+
+    public void setModuleId(Long moduleId) {
+        this.moduleId = moduleId;
+    }
+
+    public Long getNextModule() {
+        return nextModule;
+    }
+
+    public void setNextModule(Long nextModule) {
+        this.nextModule = nextModule;
     }
 
     @Override

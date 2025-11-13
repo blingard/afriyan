@@ -2,10 +2,12 @@ package org.ligot.afriyan.Dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.Email;
+import org.ligot.afriyan.echo.dto.CommunesDTO;
 import org.ligot.afriyan.entities.Sexe;
 import org.ligot.afriyan.entities.Status;
 
 import java.util.Date;
+import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UtilisateurDTO extends PersonneDTO{
@@ -13,10 +15,12 @@ public class UtilisateurDTO extends PersonneDTO{
 
     @JsonIgnoreProperties({"roles","utilisateurs"})
     private GroupesDTO groupe;
+    private CommunesDTO communes;
 
-    public UtilisateurDTO(Long id, String code, String nom, String prenom, Date ddn, String lieu, String numero_telephone, String photo, String location, String anonymat, Sexe sexe, @Email String email, Status status, String pwd, GroupesDTO groupe) {
-        super(id, code, nom, prenom, ddn, lieu, numero_telephone, photo, location, anonymat, sexe, email, status, pwd);
+    public UtilisateurDTO(Long id, String code, String nom, String prenom, Date ddn, String lieu, String telephone, String photo, String location, String anonymat, Sexe sexe, @Email String email, Status status, String pwd, GroupesDTO groupe, List<String> phoneNumbers, CommunesDTO communes) {
+        super(id, code, nom, prenom, ddn, lieu, telephone, photo, location, anonymat, sexe, email, status, pwd, phoneNumbers);
         this.groupe = groupe;
+        this.communes = communes;
     }
 
     public UtilisateurDTO(GroupesDTO groupe) {
@@ -91,13 +95,13 @@ public class UtilisateurDTO extends PersonneDTO{
     }
 
     @Override
-    public String getNumero_telephone() {
-        return super.getNumero_telephone();
+    public String getTelephone() {
+        return super.getTelephone();
     }
 
     @Override
-    public void setNumero_telephone(String numero_telephone) {
-        super.setNumero_telephone(numero_telephone);
+    public void setTelephone(String telephone) {
+        super.setTelephone(telephone);
     }
 
     @Override
@@ -158,6 +162,14 @@ public class UtilisateurDTO extends PersonneDTO{
         this.groupe = groupe;
     }
 
+    public CommunesDTO getCommunes() {
+        return communes;
+    }
+
+    public void setCommunes(CommunesDTO communes) {
+        this.communes = communes;
+    }
+
     @Override
     public Status getStatus() {
         return super.getStatus();
@@ -186,5 +198,10 @@ public class UtilisateurDTO extends PersonneDTO{
     @Override
     public void setIsFirstConnexion(boolean firstConnexion) {
         super.setIsFirstConnexion(firstConnexion);
+    }
+
+    @Override
+    public void setPhoneNumbers(List<String> phoneNumbers) {
+        super.setPhoneNumbers(phoneNumbers);
     }
 }

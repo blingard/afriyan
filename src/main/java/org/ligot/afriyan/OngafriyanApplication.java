@@ -13,6 +13,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -23,7 +24,7 @@ import java.util.concurrent.Executors;
 @OpenAPIDefinition(
         servers = {
                 @Server(url = "http://localhost:8087/")//
-                //@Server(url = "https://back.youthfp.cm/")//
+               // @Server(url = "https://back.youthfp.cm/")//
         },
                 info = @Info(
                 title = "AfriYan APIs",
@@ -33,6 +34,7 @@ import java.util.concurrent.Executors;
                 license = @License(name = "Licence API")))
 @SecurityScheme(name = "auth", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "bearer")
 @PropertySource(value = "file:./config/application.properties", ignoreResourceNotFound = false)
+@EnableScheduling
 public class OngafriyanApplication {
 
     Logger logger = LoggerFactory.getLogger(OngafriyanApplication.class);

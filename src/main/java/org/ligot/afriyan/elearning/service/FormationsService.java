@@ -1,5 +1,6 @@
 package org.ligot.afriyan.elearning.service;
 
+import org.ligot.afriyan.elearning.dto.ElearningScope;
 import org.ligot.afriyan.elearning.dto.FormationsDTO;
 import org.ligot.afriyan.sondage.entities.Resultats;
 import org.springframework.data.domain.Page;
@@ -11,14 +12,20 @@ public interface FormationsService {
     void update(Long idFormation, FormationsDTO formationsDTO)throws Exception;
     FormationsDTO findById(Long idFormation)throws Exception;
     FormationsDTO findByIdUser(Long idFormation)throws Exception;
+    ElearningScope findByIdUserStatus(Long idFormation)throws Exception;
     List<FormationsDTO>  findAllByIdUser(Long idUser)throws Exception;
     List<FormationsDTO>  findFinishByIdUser(Long idUser)throws Exception;
     List<FormationsDTO>  findNotFinishByIdUser(Long idUser)throws Exception;
     FormationsDTO findByIdAdmin(Long idFormation)throws Exception;
     FormationsDTO findByIdAdminWithDetail(Long idFormation)throws Exception;
     Page<FormationsDTO> findAll(int page, int size)throws Exception;
+    Page<FormationsDTO> findAllFormationOnlyAdmin(int page, int size)throws Exception;
     List<FormationsDTO> findAll()throws Exception;
     List<FormationsDTO> findAllActive()throws Exception;
+    List<FormationsDTO> findAllActiveLite()throws Exception;
+    FormationsDTO findByIdActiveFormationsLite(Long id)throws Exception;
+    List<FormationsDTO> findAllActiveByCategoryLite(String categorieId)throws Exception;
+    List<FormationsDTO> findAllActiveByCategoryLiteByCode(String categorieCode)throws Exception;
     void enable(Long id)throws Exception;
     void finishFormation(Long idUser, Long idFormation)throws Exception;
     void addQuizz(Long idFormation, Long idQuizz )throws Exception;

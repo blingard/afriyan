@@ -1,12 +1,13 @@
 package org.ligot.afriyan.Dto;
 
-import jakarta.validation.constraints.Email;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.ligot.afriyan.entities.Sexe;
 import org.ligot.afriyan.entities.Status;
 
 import java.util.Date;
+import java.util.List;
 
 
 public class PersonneDTO {
@@ -21,10 +22,12 @@ public class PersonneDTO {
 
     protected Date ddn;
     protected String lieu;
+    protected List<String> phoneNumbers;
 
     @NotNull(message = "numero te telephone null")
+    @JsonProperty("numero_telephone")
     @Pattern(regexp = "^6\\d{8}$", message = "Le numéro de téléphone doit contenir 9 chiffres et commencer par 6.")
-    protected String numero_telephone;
+    protected String telephone;
     protected String photo;
     protected String location;
     protected String anonymat;
@@ -35,14 +38,14 @@ public class PersonneDTO {
     protected boolean isFirstConnexion;
     protected  String pwd;
 
-    public PersonneDTO(Long id, String code, String nom, String prenom, Date ddn, String lieu, String numero_telephone, String photo, String location, String anonymat, Sexe sexe, String email, Status status, String pwd) {
+    public PersonneDTO(Long id, String code, String nom, String prenom, Date ddn, String lieu, String telephone, String photo, String location, String anonymat, Sexe sexe, String email, Status status, String pwd, List<String> phoneNumbers) {
         this.id = id;
         this.code = code;
         this.nom = nom;
         this.prenom = prenom;
         this.ddn = ddn;
         this.lieu = lieu;
-        this.numero_telephone = numero_telephone;
+        this.telephone = telephone;
         this.photo = photo;
         this.location = location;
         this.anonymat = anonymat;
@@ -50,6 +53,7 @@ public class PersonneDTO {
         this.email = email;
         this.status = status;
         this.pwd = pwd;
+        this.phoneNumbers = phoneNumbers;
     }
 
     public PersonneDTO() {
@@ -107,12 +111,12 @@ public class PersonneDTO {
         this.lieu = lieu;
     }
 
-    public String getNumero_telephone() {
-        return numero_telephone;
+    public String getTelephone() {
+        return telephone;
     }
 
-    public void setNumero_telephone(String numero_telephone) {
-        this.numero_telephone = numero_telephone;
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
     }
 
     public String getPhoto() {
@@ -177,5 +181,13 @@ public class PersonneDTO {
 
     public void setIsFirstConnexion(boolean firstConnexion) {
         isFirstConnexion = firstConnexion;
+    }
+
+    public List<String> getPhoneNumbers() {
+        return phoneNumbers;
+    }
+
+    public void setPhoneNumbers(List<String> phoneNumbers) {
+        this.phoneNumbers = phoneNumbers;
     }
 }

@@ -1,10 +1,6 @@
 package org.ligot.afriyan.elearning.entities;
 
 import jakarta.persistence.*;
-import org.ligot.afriyan.entities.Categorie;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "formations_user")

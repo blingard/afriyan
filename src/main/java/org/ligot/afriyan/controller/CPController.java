@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping(value ={"api/centrepartenaire"})
 public class CPController {
 
     private final ICentrePartenaire centrePartenaire;
@@ -25,7 +24,7 @@ public class CPController {
         this.centrePartenaire = centrePartenaire;
     }
 
-    @PostMapping("save")
+    @PostMapping("api/centrepartenaire/save")
     @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     public ResponseEntity<?> saveCentre(
             @RequestParam(name = "file",required = false) MultipartFile file,
@@ -35,58 +34,63 @@ public class CPController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/update/{id}")
+    @PutMapping(value = "api/centrepartenaire/update/{id}")
     @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
-    CentrePartenaireDTO updateCentre(@RequestBody @Valid CentrePartenaireDTO centrePartenaireDto, @PathVariable Long id) throws Exception {
+    public CentrePartenaireDTO updateCentre(@RequestBody @Valid CentrePartenaireDTO centrePartenaireDto, @PathVariable Long id) throws Exception {
         return centrePartenaire.update(centrePartenaireDto, id);
     }
 
-    @PutMapping(value = "/update/{id}/{idUser}")
+    @PutMapping(value = "api/centrepartenaire/update/{id}/{idUser}")
     @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
-    void updateCentre(@PathVariable("idUser") Long idUser, @PathVariable("id") Long id) throws Exception {
+    public void updateCentre(@PathVariable("idUser") Long idUser, @PathVariable("id") Long id) throws Exception {
         centrePartenaire.updateUser(idUser, id);
     }
 
-    @GetMapping(value = "/list/{page}")
-    Page<CentrePartenaireDTO> listCentre(@PathVariable  int page) throws Exception {
+    @GetMapping(value = "api/centrepartenaire/list/{page}")
+    public Page<CentrePartenaireDTO> listCentre(@PathVariable  int page) throws Exception {
         return centrePartenaire.list(page);
     }
 
-    @GetMapping
-    List<CentrePartenaireDTO> listAll() throws Exception {
+    @GetMapping("api/centrepartenaire")
+    public List<CentrePartenaireDTO> listAll() throws Exception {
         return centrePartenaire.listAll();
     }
 
 
-    @GetMapping("/localisation")
+    @GetMapping("api/centrepartenaire/localisation")
     @Operation(description = "Localisation des centre partenaire")
-    List<CentrePartenaireDTO> localiserCentre() throws Exception {
+    public List<CentrePartenaireDTO> localiserCentre() throws Exception {
         return centrePartenaire.list();
     }
 
-    @DeleteMapping(value = "/delete/{id}")
+    @DeleteMapping(value = "api/centrepartenaire/delete/{id}")
     @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
-    void deleteCentre (@PathVariable Long id) throws Exception{
+    public void deleteCentre (@PathVariable Long id) throws Exception{
         centrePartenaire.delete(id);
     }
 
-    @GetMapping("/proches/{latitude}/{longitude}")
+    @GetMapping("public/api/centrepartenaire/proches/{latitude}/{longitude}")
     public List<CentrePartenaireDTO> getCentrePartenaireProches(@PathVariable double latitude, @PathVariable double longitude) {
-        double rayon = 10000.0D; // rayon de 100 km
-        return centrePartenaire.trouverCPProches(latitude, longitude, rayon);
+        return centrePartenaire.trouverCPProches(latitude, longitude);
     }
 
-    @GetMapping(value = "/getById/{id}")
-    CentrePartenaireDTO listById(@PathVariable Long id) throws Exception {
+    @GetMapping(value = "public/api/centrepartenaire/getById/{id}")
+    public CentrePartenaireDTO listById(@PathVariable Long id) throws Exception {
         return centrePartenaire.findById(id);
     }
-    @GetMapping(value = "/getByIdUser/{id}")
+
+    @GetMapping(value = "api/centrepartenaire/getById/{id}")
     @RolesAllowed(value = {"SUPERADMIN","ROOT","GESTIONNAIRECENTRE"})
-    List<CentrePartenaireDTO> getById(@PathVariable Long id) throws Exception {
+    public CentrePartenaireDTO listByIdAdmin(@PathVariable Long id) throws Exception {
+        return centrePartenaire.findById(id);
+    }
+    @GetMapping(value = "api/centrepartenaire/getByIdUser/{id}")
+    @RolesAllowed(value = {"SUPERADMIN","ROOT","GESTIONNAIRECENTRE"})
+    public CentrePartenaireDTO getById(@PathVariable Long id) throws Exception {
         return centrePartenaire.findByUserId(id);
     }
 
-    @PutMapping("active/{id}")
+    @PutMapping("api/centrepartenaire/active/{id}")
     @RolesAllowed(value = {"SUPERADMIN","ROOT"})
     public void active(@PathVariable Long id) throws Exception {
         centrePartenaire.active(id);

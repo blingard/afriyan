@@ -11,38 +11,37 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/denonciation")
 public class DenonciationController {
 
     @Autowired
     IDenonciation denonciation;
 
-    @PostMapping
+    @PostMapping("public/denonciation")
     DenonciationDTO saveDenonciation(@RequestBody DenonciationDTO denonciationDto) throws Exception {
         return denonciation.save(denonciationDto);
     }
 
-    @DeleteMapping(value = "/delete/{id}")
+    @DeleteMapping(value = "/denonciation/delete/{id}")
     @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     void deleteDenonciation (@PathVariable long id) throws Exception{
         denonciation.delete(id);
     }
 
-    @GetMapping(value = "/list/{page}")
+    @GetMapping(value = "/denonciation/list/{page}")
     Page<DenonciationDTO> listDenonciation(@PathVariable  int page) throws Exception {
         return denonciation.getPage(page);
     }
 
-    @GetMapping
+    @GetMapping("/denonciation")
     public PageDTO<DenonciationDTO> list(@RequestParam(name = "page", defaultValue = "0")int page) throws Exception {
         return denonciation.get(page);
     }
-    @GetMapping("find-by-id/{id}")
+    @GetMapping("/denonciation/find-by-id/{id}")
     public DenonciationDTO findById(@PathVariable Long id) throws Exception {
         return denonciation.findById(id);
     }
 
-    @PutMapping(value = "/update/{id}")
+    @PutMapping(value = "/denonciation/update/{id}")
     @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
     DenonciationDTO updateDenonciation(@RequestBody DenonciationDTO denonciationDto, @PathVariable Long id) throws Exception {
         return denonciation.update(denonciationDto, id);

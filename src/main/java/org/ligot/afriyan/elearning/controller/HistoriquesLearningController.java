@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/test/api/historiques")
 @Tag(name = "HistoriquesLearning", description = "Gestion des Historiques du E-Learning")
 public class HistoriquesLearningController {
     private final HistoriquesLearningService service;
@@ -17,19 +16,19 @@ public class HistoriquesLearningController {
         this.service = service;
     }
 
-    @PostMapping
+    @PostMapping("api/historiques")
     public ResponseEntity<?> create(@RequestBody HistoriquesLearningDTO historiquesLearningDTO)throws Exception{
         service.save(historiquesLearningDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PutMapping("{id}")
+    @PutMapping("api/historiques/{id}")
     public ResponseEntity<?> update(@PathVariable("id") Long id)throws Exception{
         service.passTest(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("{userId}/{formationId}")
+    @GetMapping("api/historiques/{userId}/{formationId}")
     public ResponseEntity<?> getAll(
             @PathVariable("userId") Long userId,
             @PathVariable("formationId") Long formationId

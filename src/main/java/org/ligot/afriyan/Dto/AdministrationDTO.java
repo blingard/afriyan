@@ -84,13 +84,13 @@ public class AdministrationDTO extends PersonneDTO{
     }
 
     @Override
-    public String getNumero_telephone() {
-        return super.getNumero_telephone();
+    public String getTelephone() {
+        return super.getTelephone();
     }
 
     @Override
-    public void setNumero_telephone(String numero_telephone) {
-        super.setNumero_telephone(numero_telephone);
+    public void setTelephone(String telephone) {
+        super.setTelephone(telephone);
     }
 
     @Override

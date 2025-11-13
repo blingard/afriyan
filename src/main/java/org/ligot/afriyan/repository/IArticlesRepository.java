@@ -1,7 +1,7 @@
 package org.ligot.afriyan.repository;
 
 import org.ligot.afriyan.entities.Articles;
-import org.ligot.afriyan.entities.Categorie;
+import org.ligot.afriyan.entities.Categories;
 import org.ligot.afriyan.entities.TypeDonne;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +16,6 @@ public interface IArticlesRepository extends JpaRepository<Articles, Long> {
     List<Articles> findTop6ByTypeDonne(TypeDonne typeDonne, Sort sort);
     List<Articles> findAllByStatusTrueAndTypeDonne(TypeDonne typeDonne);
     List<Articles> findAllByTypeDonne(TypeDonne typeDonne);
-    List<Articles> findAllByTypeDonneAndCategorieAndStatusTrue(TypeDonne typeDonne, Categorie categorie);
+    List<Articles> findAllByTypeDonneAndCategoriesAndStatusTrue(TypeDonne typeDonne, Categories categories);
     Page<Articles> findAllByTypeDonne(TypeDonne typeDonne, Pageable pageable);
 }

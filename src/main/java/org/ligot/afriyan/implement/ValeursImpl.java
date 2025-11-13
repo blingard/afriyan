@@ -81,14 +81,9 @@ public class ValeursImpl implements IValeurs {
 
     @Override
     public void active(Long id) {
-        System.err.println("sdfsdfsdfsadfsaddfsadf"+id);
         Valeurs valeurs = repository.findById(id).orElse(null);
-        System.err.println("Before "+valeurs);
         if(valeurs != null){
-            System.err.println("Before "+valeurs.isStatus());
             valeurs.setStatus(!valeurs.isStatus());
-
-            System.err.println("After "+valeurs.isStatus());
             repository.save(valeurs);
         }
     }

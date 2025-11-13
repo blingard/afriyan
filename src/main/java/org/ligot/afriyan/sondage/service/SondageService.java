@@ -1,5 +1,6 @@
 package org.ligot.afriyan.sondage.service;
 
+import org.ligot.afriyan.Dto.CategoriesDTO;
 import org.ligot.afriyan.Dto.PageDTO;
 import org.ligot.afriyan.sondage.dto.*;
 import org.ligot.afriyan.sondage.entities.Sondage;
@@ -18,6 +19,8 @@ public interface SondageService {
     void assignResponseToQuestion(QuestionResponseMap body) throws Exception;
     void update(Long id, SondageDTO sondageDTO) throws Exception;
     SondageDTO findById(Long id) throws Exception;
+    SondageDTO findByIdAdmin(Long id) throws Exception;
+    SondageDTO findByIdToPassTest(Long id) throws Exception;
     List<SondageDTO> findAllSondage();
     PageDTO<SondageDTO> findAllSondage(int page);
     List<SondageDTO> findAllSondageDTO(String etat) throws Exception ;
@@ -26,10 +29,12 @@ public interface SondageService {
     List<Sondage> findAllSondage(EtatSondage state);
     void doSondage(Set<AnswerDTO> answerDTOSet) throws Exception;
     Map<String, Object> elearningExam(Set<AnswerDTO> answerDTOSet) throws Exception;
+    void elearningExam(Long idSondage) throws Exception;
+    List<?> elearningExamResult() throws Exception;
     void setStatus(Long id, String etatSondage) throws Exception;
     Map<String, String> sondageStat(Long id) throws Exception;
     Map<String, String> sondageStat() throws Exception;
     void updateQuestion(Long idSondage, Long idQuestion, QuestionsDTO questionsDTO) throws Exception;
 
-    List<CategorieEntitiesDTO> findCategoriesDTO();
+    List<CategoriesDTO> findCategoriesDTO();
 }

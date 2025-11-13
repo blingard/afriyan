@@ -1,6 +1,5 @@
 package org.ligot.afriyan.Dto;
 
-import org.ligot.afriyan.entities.Categorie;
 import org.ligot.afriyan.entities.TypeDonne;
 
 import java.util.Date;
@@ -16,14 +15,14 @@ public class ArticlesDTO {
     private String phote;
     private TypeDonne typeDonne;
 
-    private Categorie categorie;
+    private CategoriesDTO categories;
 
     private int lue;
 
     public ArticlesDTO() {
     }
 
-    public ArticlesDTO(Long id, String title, String author, String contenu, String resumer, boolean status, Date date, TypeDonne type, PublicationsDTO publication) {
+    public ArticlesDTO(Long id, String title, String author, String contenu, String resumer, boolean status, Date date, String phote, TypeDonne typeDonne, CategoriesDTO categories, int lue) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -31,7 +30,10 @@ public class ArticlesDTO {
         this.resumer = resumer;
         this.status = status;
         this.date = date;
-        this.typeDonne = type;
+        this.phote = phote;
+        this.typeDonne = typeDonne;
+        this.categories = categories;
+        this.lue = lue;
     }
 
     public ArticlesDTO(Long id) {
@@ -110,12 +112,12 @@ public class ArticlesDTO {
         this.phote = phote;
     }
 
-    public Categorie getCategorie() {
-        return categorie;
+    public CategoriesDTO getCategories() {
+        return categories;
     }
 
-    public void setCategorie(Categorie categorie) {
-        this.categorie = categorie;
+    public void setCategories(CategoriesDTO categories) {
+        this.categories = categories;
     }
 
     public int getLue() {

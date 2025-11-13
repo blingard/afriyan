@@ -50,17 +50,10 @@ public class GroupesImpl implements IGroupes {
 
     @Override
     public GroupesDTO findByName(String name) throws Exception {
-
-        System.err.println("1111");
         Groupes groupes = repository.findByName(name).orElse(null);
-
-        System.err.println("ok");
         if(groupes == null){
-            System.err.println("nullllllll");
             throw new Exception("Group with name "+name+" don't exist");
         }
-
-        System.err.println("end 1");
         return mapper.toDTO(groupes);
     }
 
@@ -71,6 +64,11 @@ public class GroupesImpl implements IGroupes {
             throw new Exception("Group with name "+name+" don't exist");
         }
         return groupes;
+    }
+
+    @Override
+    public Groupes findByIdEntiti(Long id) throws Exception {
+        return repository.findById(id).orElseThrow(()->new RuntimeException("Group not found"));
     }
 
     @Override

@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface HistoriquesLearningRepo extends JpaRepository<HistoriquesLearning, Long> {
     List<HistoriquesLearning> findByUserIdAndFormationId(Long userId, Long formationId);
-    Optional<HistoriquesLearning> findByUserIdAndFormationIdAndChapitreId(Long userId, Long formationId, Long chapterId);
+    Optional<HistoriquesLearning> findByUserIdAndFormationIdAndModuleIdAndChapitreId(Long userId, Long formationId, Long moduleId, Long chapterId);
 }

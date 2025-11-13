@@ -1,15 +1,18 @@
 package org.ligot.afriyan.sondage.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.ligot.afriyan.Dto.CategoriesDTO;
 import org.ligot.afriyan.Dto.PageDTO;
 import org.ligot.afriyan.elearning.entities.Formations;
 import org.ligot.afriyan.elearning.repo.FormationsRepo;
+import org.ligot.afriyan.entities.Utilisateur;
 import org.ligot.afriyan.implement.UtilsService;
+import org.ligot.afriyan.repository.ICategoriesRepository;
 import org.ligot.afriyan.sondage.dto.*;
 import org.ligot.afriyan.sondage.entities.*;
 import org.ligot.afriyan.sondage.enumerations.EtatSondage;
 import org.ligot.afriyan.sondage.enumerations.TypeUserSondage;
-import org.ligot.afriyan.sondage.mapper.CategorieEntitieMapper;
+import org.ligot.afriyan.sondage.mapper.CategoriesMapper;
 import org.ligot.afriyan.sondage.mapper.QuestionsMapper;
 import org.ligot.afriyan.sondage.mapper.SondageMapper;
 import org.ligot.afriyan.sondage.repo.*;
@@ -35,15 +38,15 @@ public class SondageImpl implements SondageService {
     private final QuestionsService questionsService;
     private final SchedulerService schedulerService;
     private final AnswerService answerService;
-    private final CategorieEntitiesRepo categorieEntitiesRepo;
-    private final CategorieEntitieMapper categorieEntitieMapper;
+    private final ICategoriesRepository iCategoriesRepository;
+    private final CategoriesMapper categoriesMapper;
     private final QuestionsMapper questionsMapper;
     private final QuestionsRepo questionsRepo;
     private final FormationsRepo formationsRepo;
     private final ModelResponseRepo modelResponseRepo;
     private final ResultatsRepo resultatsRepo;
 
-    public SondageImpl(SondageRepo repo, UtilsService utilsService, QuestionResponseRepo questionResponseRepo, SondageMapper mapper, QuestionsService questionsService, SchedulerService schedulerService, AnswerService answerService, CategorieEntitiesRepo categorieEntitiesRepo, CategorieEntitieMapper categorieEntitieMapper, QuestionsMapper questionsMapper, QuestionsRepo questionsRepo, FormationsRepo formationsRepo, ModelResponseRepo modelResponseRepo, ResultatsRepo resultatsRepo) {
+    public SondageImpl(SondageRepo repo, UtilsService utilsService, QuestionResponseRepo questionResponseRepo, SondageMapper mapper, QuestionsService questionsService, SchedulerService schedulerService, AnswerService answerService, ICategoriesRepository iCategoriesRepository, CategoriesMapper categoriesMapper, QuestionsMapper questionsMapper, QuestionsRepo questionsRepo, FormationsRepo formationsRepo, ModelResponseRepo modelResponseRepo, ResultatsRepo resultatsRepo) {
         this.repo = repo;
         this.utilsService = utilsService;
         this.questionResponseRepo = questionResponseRepo;
@@ -51,8 +54,8 @@ public class SondageImpl implements SondageService {
         this.questionsService = questionsService;
         this.schedulerService = schedulerService;
         this.answerService = answerService;
-        this.categorieEntitiesRepo = categorieEntitiesRepo;
-        this.categorieEntitieMapper = categorieEntitieMapper;
+        this.iCategoriesRepository = iCategoriesRepository;
+        this.categoriesMapper = categoriesMapper;
         this.questionsMapper = questionsMapper;
         this.questionsRepo = questionsRepo;
         this.formationsRepo = formationsRepo;
@@ -80,7 +83,7 @@ public class SondageImpl implements SondageService {
                 }
         );
         sondage.setQuestions(questions);
-        sondageDTO.getDomain().forEach(domain -> categorieEntitiesRepo.findByDomain(domain.getDomain()).ifPresent(sondage.getDomain()::add));
+        sondageDTO.getDomain().forEach(domain -> iCategoriesRepository.findByCode(domain.getCode()).ifPresent(sondage.getDomain()::add));
         Sondage sondageSave = repo.save(sondage);
         sondageDTO = mapper.toDTO(sondageSave);
         sondageDTO.getQuestions().clear();
@@ -171,7 +174,6 @@ public class SondageImpl implements SondageService {
 
     @Override
     public SondageDTO findById(Long id) throws Exception {
-
         Sondage sondage = repo.findById(id).orElseThrow(()->new Exception("Sondage not found"));
         SondageDTO sondageDTO = mapper.toDTO(sondage);
         sondageDTO.getQuestions().clear();
@@ -188,6 +190,28 @@ public class SondageImpl implements SondageService {
         return sondageDTO;
     }
 
+    @Override
+    public SondageDTO findByIdAdmin(Long id) throws Exception {
+        return findById(id);
+    }
+
+    @Override
+    public SondageDTO findByIdToPassTest(Long id) throws Exception {
+        Sondage sondage = repo.findById(id).orElseThrow(()->new Exception("Sondage not found"));
+        SondageDTO sondageDTO = mapper.toDTO(sondage);
+        sondageDTO.getQuestions().clear();
+        for (Questions question : sondage.getQuestions()){
+            QuestionsDTO questionsDTO = questionsMapper.toDTO(question);
+            questionsDTO.getModelResponses().clear();
+            Set<ModelResponseDTO> modelResponseDTOS = new HashSet<>(0);
+            for (ModelResponse modelResponse : question.getModelResponses()){
+                modelResponseDTOS.add(new ModelResponseDTO(modelResponse.getId(), modelResponse.getValue(), 0));
+            }
+            questionsDTO.setModelResponses(modelResponseDTOS);
+            sondageDTO.getQuestions().add(questionsDTO);
+        }
+        return sondageDTO;
+    }
 
 
     @Override
@@ -261,8 +285,11 @@ public class SondageImpl implements SondageService {
                 .stream()
                 .map(mapper::toDTO)
                 .toList().forEach(sondageDTO -> {
-                    if(!quizzes.contains(sondageDTO.getId()))
-                        sondageDTOS.add(sondageDTO);
+                    if(!quizzes.contains(sondageDTO.getId())){
+                        if(!sondageDTO.getQuestions().isEmpty()) {
+                            sondageDTOS.add(sondageDTO);
+                        }
+                    }
                 });
         return sondageDTOS;
     }
@@ -292,13 +319,32 @@ public class SondageImpl implements SondageService {
     }
 
     @Override
-    public Map<String, Object> elearningExam(Set<AnswerDTO> answerDTOSet) throws Exception {
-        Sondage sondage = repo.findById(answerDTOSet.stream().toList().get(0).getSondageId()).orElseThrow(()->new Exception("Sondage not found"));
+    public void elearningExam(Long idSondage) throws Exception {
+        Sondage sondage = repo.findById(idSondage).orElseThrow(()->new Exception("Quizz introuvable"));
         Formations formations = formationsRepo.findFormationsByQuizz_Id(sondage.getId()).orElseThrow(()->new Exception("Ce sondange ne correspond a aucune formation"));
         int score=0;
         int scoreTotal = 0;
         if(sondage.getState() != EtatSondage.ACTIVE)
-            throw new Exception("You can't pass this sondage because he status is :"+sondage.getState());
+            throw new Exception("Vous ne pouvez pas passer ce Quiz car il est "+sondage.getState());
+        long count = resultatsRepo.countByUtilisateurAndFormationAndStatusTrue(utilsService.getUser(), formations);
+        if(count>0)
+            throw new Exception("Vous avez deja Reussi ce test");
+    }
+
+    @Override
+    public List<?> elearningExamResult() throws Exception {
+        Utilisateur utilisateur = utilsService.getUser();
+        return resultatsRepo.findAllByUtilisateurAndStatusTrue(utilisateur);
+    }
+
+    @Override
+    public Map<String, Object> elearningExam(Set<AnswerDTO> answerDTOSet) throws Exception {
+        Sondage sondage = repo.findById(answerDTOSet.stream().toList().get(0).getSondageId()).orElseThrow(()->new Exception("Quizz introuvable"));
+        Formations formations = formationsRepo.findFormationsByQuizz_Id(sondage.getId()).orElseThrow(()->new Exception("Ce sondange ne correspond a aucune formation"));
+        int score=0;
+        int scoreTotal = 0;
+        if(sondage.getState() != EtatSondage.ACTIVE)
+            throw new Exception("Vous ne pouvez pas passer ce Quiz car il est "+sondage.getState());
         long count = resultatsRepo.countByUtilisateurAndFormationAndStatusTrue(utilsService.getUser(), formations);
         if(count>0)
             throw new Exception("Vous avez deja Reussi ce test");
@@ -317,7 +363,7 @@ public class SondageImpl implements SondageService {
             }
         }
         if(scoreTotal == 0){
-            throw new Exception("Examen non valid");
+            throw new Exception("Examen non valide");
         }else {
             float result = (score/scoreTotal)*100;
             boolean status = (result>=sondage.getScoreTotal()) ? true : false;
@@ -371,8 +417,8 @@ public class SondageImpl implements SondageService {
     }
 
     @Override
-    public List<CategorieEntitiesDTO> findCategoriesDTO() {
-        return categorieEntitiesRepo.findAll().stream().map(categorieEntitieMapper::toDTO).toList();
+    public List<CategoriesDTO> findCategoriesDTO() {
+        return iCategoriesRepository.findAll().stream().map(categoriesMapper::toDTO).toList();
     }
 
     private Sondage verifieStatus(Long id, List<EtatSondage> states) throws Exception {

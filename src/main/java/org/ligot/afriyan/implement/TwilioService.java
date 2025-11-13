@@ -1,12 +1,14 @@
 package org.ligot.afriyan.implement;
 
-import com.twilio.type.PhoneNumber;
-
+import kong.unirest.GenericType;
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
 import okhttp3.OkHttpClient;
 
+import org.ligot.afriyan.Dto.SMSDto;
 import org.ligot.afriyan.config.swaggerConf.TwilioConfiguration;
+import org.ligot.afriyan.echo.dto.ReverseGeocodingResponse;
 import org.springframework.stereotype.Component;
-import com.twilio.rest.api.v2010.account.Message;
 import okhttp3.*;
 
 import java.util.HashMap;
@@ -36,7 +38,7 @@ public class TwilioService {
         toNumbers.forEach(phone -> {
             try {
                 if (phone.length() == 9 && phone.startsWith("6")) {
-                    String fullNumber = countryCode + phone.trim();
+                    String fullNumber = phone.trim().startsWith(countryCode) ? phone.trim() :  countryCode + phone.trim();
 
                     String jsonBody = "{\n" +
                             "    \"senderId\": \"" + twilioConfiguration.getSender() + "\",\n" +
@@ -58,6 +60,7 @@ public class TwilioService {
                             .build();
 
                     Response response = client.newCall(request).execute();
+
 
                     if (response.isSuccessful()) {
                         mapStatus.put(phone, "SENT");
@@ -110,7 +113,7 @@ public class TwilioService {
             final String countryCode = "237";
             toNumber = toNumber.trim();
             if (toNumber.length() == 9 & toNumber.startsWith("6")) {
-                String fullNumber = countryCode + toNumber.trim();
+                String fullNumber = toNumber.trim().startsWith(countryCode) ? toNumber.trim() :  countryCode + toNumber.trim();
                 String jsonBody = "{\n" +
                         "    \"senderId\": \"" + twilioConfiguration.getSender() + "\",\n" +
                         "    \"message\": \"" + message + "\",\n" +
@@ -146,15 +149,24 @@ public class TwilioService {
             ex.printStackTrace();
         }
     }
-
+/*
     public void sendOneSm(String toNumber, String message) throws Exception {
         try {
 
-            Map<String, String> mapStatus = new HashMap(0);
+            System.err.println(message);
+            //Map<String, String> mapStatus = new HashMap(0);
             final String countryCode = "237";
             toNumber = toNumber.trim();
             if (toNumber.length() == 9 & toNumber.startsWith("6")) {
-                String fullNumber = countryCode + toNumber.trim();
+                String fullNumber = toNumber.trim().startsWith(countryCode) ? toNumber.trim() :  countryCode + toNumber.trim();
+                SMSDto smsDto = new SMSDto(twilioConfiguration.getSender(), message, fullNumber);
+                *//*HttpResponse<String> response = Unirest
+                        .post(twilioConfiguration.getUrl())
+                        .header("X-Api-Key", twilioConfiguration.getAccountSid())
+                        .header("X-Secret", twilioConfiguration.getAuthToken())
+                        .header("Content-Type", "application/json")
+                        .asString();
+                System.err.println(response.getBody());*//*
                 String jsonBody = "{\n" +
                         "    \"senderId\": \"" + twilioConfiguration.getSender() + "\",\n" +
                         "    \"message\": \"" + message + "\",\n" +
@@ -175,19 +187,16 @@ public class TwilioService {
                         .build();
 
                 Response response = client.newCall(request).execute();
-
-                if (response.isSuccessful()) {
-                    mapStatus.put(toNumber, "SENT");
-                } else {
-                    mapStatus.put(toNumber, "FAILED");
-                    System.err.println("Echec de l'envoi vers " + fullNumber + ": " + response.body().string());
+                if (!response.isSuccessful()) {
+                    ResponseBody responseBody = response.body();
+                    throw new RuntimeException(responseBody.);
                 }
             } else {
-                throw new Exception("Le numero de telephone 237" + toNumber.trim() + " n'est pas valide");
+                throw new Exception("Le numero de telephone " + toNumber.trim() + " n'est pas valide");
             }
 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
+    }*/
 }

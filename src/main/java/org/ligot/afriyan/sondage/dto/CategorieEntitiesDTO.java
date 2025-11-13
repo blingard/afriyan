@@ -1,18 +1,18 @@
 package org.ligot.afriyan.sondage.dto;
 
-import org.ligot.afriyan.entities.Categorie;
+import org.ligot.afriyan.Dto.CategoriesDTO;
 
 import java.io.Serializable;
 
 public class CategorieEntitiesDTO {
     private Long id;
 
-    private Categorie domain;
+    private CategoriesDTO domain;
 
     public CategorieEntitiesDTO() {
     }
 
-    public CategorieEntitiesDTO(Long id, Categorie domain) {
+    public CategorieEntitiesDTO(Long id, CategoriesDTO domain) {
         this.id = id;
         this.domain = domain;
     }
@@ -25,11 +25,11 @@ public class CategorieEntitiesDTO {
         this.id = id;
     }
 
-    public Categorie getDomain() {
+    public CategoriesDTO getDomain() {
         return domain;
     }
 
-    public void setDomain(Categorie domain) {
+    public void setDomain(CategoriesDTO domain) {
         this.domain = domain;
     }
 }

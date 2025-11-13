@@ -32,7 +32,11 @@ public class Groupes {
     private Long id;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "ROLES", referencedColumnName = "IDENTIFIANT")
+    @JoinTable(
+            name = "groupes_roles",
+            joinColumns = @JoinColumn(name = "groupe_identifiant"),
+            inverseJoinColumns = @JoinColumn(name = "role_identifiant")
+    )
     private Set<Roles> roles= new HashSet<>();
 
     @Column(name = "NOM", unique = true)
