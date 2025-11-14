@@ -20,6 +20,9 @@ public class Partenaire implements Serializable {
     private String nom;
 
     @Column(columnDefinition = "TEXT")
+    private String imageBase64;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column(nullable = false)
@@ -39,15 +42,25 @@ public class Partenaire implements Serializable {
     public Partenaire() {
     }
 
-    public Partenaire(UUID id, String nom, String description, Boolean statut, Boolean publish, Date dateCreation, Date dateModification) {
+    public Partenaire(UUID id, String nom, String imageBase64, String description, Boolean statut, Boolean publish, Date dateCreation, Date dateModification) {
         this.id = id;
         this.nom = nom;
+        this.imageBase64 = imageBase64;
         this.description = description;
         this.statut = statut;
         this.publish = publish;
         this.dateCreation = dateCreation;
         this.dateModification = dateModification;
     }
+
+    public String getImageBase64() {
+        return imageBase64;
+    }
+
+    public void setImageBase64(String imageBase64) {
+        this.imageBase64 = imageBase64;
+    }
+
 
     public UUID getId() {
         return id;

@@ -1,5 +1,6 @@
 package org.ligot.afriyan.learn.service.impl;
 
+import org.ligot.afriyan.implement.UtilsService;
 import org.ligot.afriyan.learn.dto.*;
 import org.ligot.afriyan.learn.entities.*;
 import org.ligot.afriyan.learn.repository.*;
@@ -9,9 +10,7 @@ import org.ligot.afriyan.repository.IUtilisateurRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,8 +27,9 @@ public class QuizServiceImpl implements QuizService {
     private final ModuleRepository moduleRepository;
     private final FormationRepository formationRepository;
     private final IUtilisateurRepository utilisateurRepo;
+    private final UtilsService utilsService;
 
-    public QuizServiceImpl(QuizRepository quizRepository, QuestionRepository questionRepository, QuestionOptionRepository optionRepository, UserQuizAttemptRepository attemptRepository, UserQuizAnswerRepository answerRepository, UserFormationEnrollmentRepository enrollmentRepository, UserProgressRepository progressRepository, ModuleRepository moduleRepository, FormationRepository formationRepository, IUtilisateurRepository utilisateurRepo) {
+    public QuizServiceImpl(QuizRepository quizRepository, QuestionRepository questionRepository, QuestionOptionRepository optionRepository, UserQuizAttemptRepository attemptRepository, UserQuizAnswerRepository answerRepository, UserFormationEnrollmentRepository enrollmentRepository, UserProgressRepository progressRepository, ModuleRepository moduleRepository, FormationRepository formationRepository, IUtilisateurRepository utilisateurRepo, UtilsService utilsService) {
         this.quizRepository = quizRepository;
         this.questionRepository = questionRepository;
         this.optionRepository = optionRepository;
@@ -40,6 +40,7 @@ public class QuizServiceImpl implements QuizService {
         this.moduleRepository = moduleRepository;
         this.formationRepository = formationRepository;
         this.utilisateurRepo = utilisateurRepo;
+        this.utilsService = utilsService;
     }
 
     @Override
@@ -193,8 +194,9 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public UserQuizAttemptDTO startQuizAttempt(Long userId, String quizId, String enrollmentId) {
-        if (!canUserAttemptQuiz(userId, quizId)) {
+    public UserQuizAttemptDTO startQuizAttempt(String quizId, String enrollmentId) {
+        Long userId = utilsService.getUser().getId();
+        if (!canUserAttemptQuiz(quizId)) {
             throw new RuntimeException("Nombre maximum de tentatives atteint");
         }
 
@@ -237,14 +239,18 @@ public class QuizServiceImpl implements QuizService {
 
         Quiz quiz = attempt.getQuiz();
         int totalPoints = 0;
-        int obtainedPoints = 0;
+        double obtainedPoints = 0;
+        Map<Question, List<QuestionOption>> currentQuestion = new HashMap<>();
+
 
         // Traiter chaque réponse
         for (QuizAnswerDTO answerDto : dto.getAnswers()) {
             Question question = questionRepository.findById(answerDto.getQuestionId())
                     .orElseThrow(() -> new RuntimeException("Question non trouvée"));
-
-            totalPoints += question.getPoints();
+            if(!currentQuestion.containsKey(question)) {
+                currentQuestion.put(question, new ArrayList<>());
+                totalPoints += question.getPoints();
+            }
 
             QuestionOption selectedOption = null;
             if (answerDto.getSelectedOptionId() != null) {
@@ -263,16 +269,24 @@ public class QuizServiceImpl implements QuizService {
             answer.setDateReponse(new Date());
 
             if (isCorrect) {
-                obtainedPoints += question.getPoints();
+                List<QuestionOption> response = (List) currentQuestion.get(question);
+                response.add(selectedOption);
+                currentQuestion.put(question, response);
             }
 
             answerRepository.save(answer);
         }
 
+        for (Map.Entry<Question, List<QuestionOption>> entry : currentQuestion.entrySet()) {
+            long totalTrue = entry.getKey().getOptions().stream().filter(questionOption -> questionOption.getIsCorrect()==true).count();
+            long totalResponse = entry.getValue().size();
+            obtainedPoints += (totalResponse / totalTrue) * entry.getKey().getPoints();
+        }
+
         // Calculer le score
         double scorePercent = totalPoints > 0 ? (obtainedPoints * 100.0 / totalPoints) : 0.0;
         
-        attempt.setPointsObtenus(obtainedPoints);
+        attempt.setPointsObtenus((int) Math.floor(obtainedPoints));
         attempt.setPointsTotaux(totalPoints);
         attempt.setScoreObtenu(scorePercent);
         attempt.setCompleted(true);
@@ -305,8 +319,8 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserQuizAttemptDTO> getUserQuizAttempts(Long userId, String quizId) {
-        return attemptRepository.findByUserIdAndQuizIdOrderByNumeroTentativeDesc(userId, UUID.fromString(quizId))
+    public List<UserQuizAttemptDTO> getUserQuizAttempts(String quizId) {
+        return attemptRepository.findByUserIdAndQuizIdOrderByNumeroTentativeDesc(utilsService.getUser().getId(), UUID.fromString(quizId))
                 .stream()
                 .map(this::toAttemptDTO)
                 .collect(Collectors.toList());
@@ -322,7 +336,8 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean canUserAttemptQuiz(Long userId, String quizId) {
+    public boolean canUserAttemptQuiz(String quizId) {
+        Long userId = utilsService.getUser().getId();
         Quiz quiz = quizRepository.findById(UUID.fromString(quizId))
                 .orElseThrow(() -> new RuntimeException("Quiz non trouvé"));
 
@@ -393,6 +408,10 @@ public class QuizServiceImpl implements QuizService {
         Integer totalPoints = questionRepository.getTotalPointsByQuizId(quiz.getId());
         dto.setPointsTotaux(totalPoints != null ? totalPoints : 0);
 
+        List<QuestionDTO> questionDTOS = questionRepository.findByQuizIdOrderByOrdre(quiz.getId())
+                .stream().map(this::toQuestionDTO).toList();
+
+        dto.setQuestions(questionDTOS);
         return dto;
     }
 

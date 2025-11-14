@@ -4,7 +4,9 @@ import org.ligot.afriyan.Dto.CategoriesDTO;
 import org.ligot.afriyan.entities.Categories;
 import org.ligot.afriyan.implement.UtilsService;
 import org.ligot.afriyan.learn.dto.*;
+import org.ligot.afriyan.learn.entities.Chapitres;
 import org.ligot.afriyan.learn.entities.Formation;
+import org.ligot.afriyan.learn.entities.Modules;
 import org.ligot.afriyan.learn.enumerations.FormationLevel;
 import org.ligot.afriyan.learn.repository.*;
 import org.ligot.afriyan.learn.service.ChapitresService;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;

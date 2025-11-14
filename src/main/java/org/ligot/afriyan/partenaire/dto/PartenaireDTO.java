@@ -8,6 +8,8 @@ public class PartenaireDTO {
     private UUID id;
     private String nom;
     private String description;
+
+    private String imageBase64;
     private Boolean statut;
     private Boolean publish;
     private Date dateCreation;
@@ -16,10 +18,11 @@ public class PartenaireDTO {
     public PartenaireDTO() {
     }
 
-    public PartenaireDTO(UUID id, String nom, String description, Boolean statut, Boolean publish, Date dateCreation, Date dateModification) {
+    public PartenaireDTO(UUID id, String nom, String description, String imageBase64, Boolean statut, Boolean publish, Date dateCreation, Date dateModification) {
         this.id = id;
         this.nom = nom;
         this.description = description;
+        this.imageBase64 = imageBase64;
         this.statut = statut;
         this.publish = publish;
         this.dateCreation = dateCreation;
@@ -80,5 +83,13 @@ public class PartenaireDTO {
 
     public void setDateModification(Date dateModification) {
         this.dateModification = dateModification;
+    }
+
+    public String getImageBase64() {
+        return imageBase64;
+    }
+
+    public void setImageBase64(String imageBase64) {
+        this.imageBase64 = imageBase64;
     }
 }

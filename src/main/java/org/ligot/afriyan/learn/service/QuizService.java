@@ -26,13 +26,13 @@ public interface QuizService {
     
     List<QuestionDTO> getQuestionsByQuizId(String quizId);
     
-    UserQuizAttemptDTO startQuizAttempt(Long userId, String quizId, String enrollmentId);
+    UserQuizAttemptDTO startQuizAttempt(String quizId, String enrollmentId);
     
     UserQuizAttemptDTO submitQuizAttempt(SubmitQuizDTO dto);
     
-    List<UserQuizAttemptDTO> getUserQuizAttempts(Long userId, String quizId);
+    List<UserQuizAttemptDTO> getUserQuizAttempts(String quizId);
     
     UserQuizAttemptDTO getAttemptById(String attemptId);
     
-    boolean canUserAttemptQuiz(Long userId, String quizId);
+    boolean canUserAttemptQuiz(String quizId);
 }

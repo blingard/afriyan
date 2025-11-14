@@ -6,15 +6,15 @@ import java.util.List;
 
 public interface EnrollmentService {
     
-    UserFormationEnrollmentDTO enrollUser(Long userId, String formationId);
+    UserFormationEnrollmentDTO enrollUser(String formationId);
     
     UserFormationEnrollmentDTO getEnrollmentById(String id);
     
-    List<UserFormationEnrollmentDTO> getUserEnrollments(Long userId);
+    List<UserFormationEnrollmentDTO> getUserEnrollments();
     
     List<UserFormationEnrollmentDTO> getFormationEnrollments(String formationId);
     
-    UserFormationEnrollmentDTO getUserEnrollmentForFormation(Long userId, String formationId);
+    UserFormationEnrollmentDTO getUserEnrollmentForFormation(String formationId);
     
     UserFormationEnrollmentDTO restartFormation(String enrollmentId);
     
@@ -29,4 +29,9 @@ public interface EnrollmentService {
     List<UserProgressDTO> getEnrollmentProgress(String enrollmentId);
     
     void calculateAndUpdateEnrollmentProgress(String enrollmentId);
+    
+    // Nouvelles méthodes pour le parcours détaillé
+    DetailedProgressDTO getDetailedProgress(String enrollmentId);
+    
+    void markChapterAsCompleted(MarkChapterCompleteDTO dto);
 }

@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/partenaires")
 @CrossOrigin(origins = "*")
 public class PartenaireController {
 
@@ -24,14 +23,14 @@ public class PartenaireController {
         this.partenaireService = partenaireService;
     }
 
-    @PostMapping
+    @PostMapping("api/partenaires")
     @RolesAllowed(value = {"SUPERADMIN", "ADMIN", "ROOT"})
     public ResponseEntity<PartenaireDTO> createPartenaire(@Valid @RequestBody PartenaireCreateDTO dto) {
         PartenaireDTO created = partenaireService.createPartenaire(dto);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("api/partenaires/{id}")
     @RolesAllowed(value = {"SUPERADMIN", "ADMIN", "ROOT"})
     public ResponseEntity<PartenaireDTO> updatePartenaire(
             @PathVariable UUID id,
@@ -40,19 +39,19 @@ public class PartenaireController {
         return ResponseEntity.ok(updated);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("api/partenaires/{id}")
     public ResponseEntity<PartenaireDTO> getPartenaireById(@PathVariable UUID id) {
         PartenaireDTO partenaire = partenaireService.getPartenaireById(id);
         return ResponseEntity.ok(partenaire);
     }
 
-    @GetMapping
+    @GetMapping("api/partenaires")
     public ResponseEntity<List<PartenaireDTO>> getAllPartenaires() {
         List<PartenaireDTO> partenaires = partenaireService.getAllPartenaires();
         return ResponseEntity.ok(partenaires);
     }
 
-    @GetMapping("/page")
+    @GetMapping("api/partenaires/page")
     public ResponseEntity<Page<PartenaireDTO>> getAllPartenairesPage(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
@@ -60,13 +59,13 @@ public class PartenaireController {
         return ResponseEntity.ok(partenaires);
     }
 
-    @GetMapping("/statut/{statut}")
+    @GetMapping("api/partenaires/statut/{statut}")
     public ResponseEntity<List<PartenaireDTO>> getPartenairesByStatut(@PathVariable Boolean statut) {
         List<PartenaireDTO> partenaires = partenaireService.getPartenairesByStatut(statut);
         return ResponseEntity.ok(partenaires);
     }
 
-    @GetMapping("/statut/{statut}/page")
+    @GetMapping("api/partenaires/statut/{statut}/page")
     public ResponseEntity<Page<PartenaireDTO>> getPartenairesByStatutPage(
             @PathVariable Boolean statut,
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -75,13 +74,13 @@ public class PartenaireController {
         return ResponseEntity.ok(partenaires);
     }
 
-    @GetMapping("/published")
+    @GetMapping("api/partenaires/published")
     public ResponseEntity<List<PartenaireDTO>> getPublishedPartenaires() {
         List<PartenaireDTO> partenaires = partenaireService.getPublishedPartenaires();
         return ResponseEntity.ok(partenaires);
     }
 
-    @GetMapping("/published/page")
+    @GetMapping("api/partenaires/published/page")
     public ResponseEntity<Page<PartenaireDTO>> getPublishedPartenairesPage(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
@@ -89,13 +88,13 @@ public class PartenaireController {
         return ResponseEntity.ok(partenaires);
     }
 
-    @GetMapping("/active-published")
+    @GetMapping("public/api/partenaires/active-published")
     public ResponseEntity<List<PartenaireDTO>> getActiveAndPublishedPartenaires() {
         List<PartenaireDTO> partenaires = partenaireService.getActiveAndPublishedPartenaires();
         return ResponseEntity.ok(partenaires);
     }
 
-    @GetMapping("/active-published/page")
+    @GetMapping("api/partenaires/active-published/page")
     public ResponseEntity<Page<PartenaireDTO>> getActiveAndPublishedPartenairesPage(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
@@ -103,13 +102,13 @@ public class PartenaireController {
         return ResponseEntity.ok(partenaires);
     }
 
-    @GetMapping("/search")
+    @GetMapping("api/partenaires/search")
     public ResponseEntity<List<PartenaireDTO>> searchPartenaires(@RequestParam String keyword) {
         List<PartenaireDTO> partenaires = partenaireService.searchPartenaires(keyword);
         return ResponseEntity.ok(partenaires);
     }
 
-    @GetMapping("/search/page")
+    @GetMapping("api/partenaires/search/page")
     public ResponseEntity<Page<PartenaireDTO>> searchPartenairesPage(
             @RequestParam String keyword,
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -118,21 +117,21 @@ public class PartenaireController {
         return ResponseEntity.ok(partenaires);
     }
 
-    @PutMapping("/{id}/toggle-statut")
+    @PutMapping("api/partenaires/{id}/toggle-statut")
     @RolesAllowed(value = {"SUPERADMIN", "ADMIN", "ROOT"})
     public ResponseEntity<PartenaireDTO> toggleStatut(@PathVariable UUID id) {
         PartenaireDTO partenaire = partenaireService.toggleStatut(id);
         return ResponseEntity.ok(partenaire);
     }
 
-    @PutMapping("/{id}/toggle-publish")
+    @PutMapping("api/partenaires/{id}/toggle-publish")
     @RolesAllowed(value = {"SUPERADMIN", "ADMIN", "ROOT"})
     public ResponseEntity<PartenaireDTO> togglePublish(@PathVariable UUID id) {
         PartenaireDTO partenaire = partenaireService.togglePublish(id);
         return ResponseEntity.ok(partenaire);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("api/partenaires/{id}")
     @RolesAllowed(value = {"SUPERADMIN", "ADMIN", "ROOT"})
     public ResponseEntity<Void> deletePartenaire(@PathVariable UUID id) {
         partenaireService.deletePartenaire(id);

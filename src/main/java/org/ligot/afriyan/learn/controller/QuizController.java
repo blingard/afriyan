@@ -86,11 +86,8 @@ public class QuizController {
 
     @PostMapping("/attempts/start")
     public ResponseEntity<UserQuizAttemptDTO> startQuizAttempt(
-            @RequestParam String quizId, @RequestParam String enrollmentId,
-            Authentication authentication) {
-        Long userId = getUserIdFromAuth(authentication);
-        UserQuizAttemptDTO attempt = quizService.startQuizAttempt(
-                userId, quizId, enrollmentId);
+            @RequestParam String quizId, @RequestParam String enrollmentId) {
+        UserQuizAttemptDTO attempt = quizService.startQuizAttempt(quizId, enrollmentId);
         return new ResponseEntity<>(attempt, HttpStatus.CREATED);
     }
 
@@ -108,26 +105,14 @@ public class QuizController {
 
     @GetMapping("/{quizId}/my-attempts")
     public ResponseEntity<List<UserQuizAttemptDTO>> getMyQuizAttempts(
-            @PathVariable String quizId,
-            Authentication authentication) {
-        Long userId = getUserIdFromAuth(authentication);
-        List<UserQuizAttemptDTO> attempts = quizService.getUserQuizAttempts(userId, quizId);
+            @PathVariable String quizId) {
+        List<UserQuizAttemptDTO> attempts = quizService.getUserQuizAttempts(quizId);
         return ResponseEntity.ok(attempts);
     }
 
     @GetMapping("/{quizId}/can-attempt")
-    public ResponseEntity<Boolean> canUserAttemptQuiz(
-            @PathVariable String quizId,
-            Authentication authentication) {
-        Long userId = getUserIdFromAuth(authentication);
-        boolean canAttempt = quizService.canUserAttemptQuiz(userId, quizId);
+    public ResponseEntity<Boolean> canUserAttemptQuiz(@PathVariable String quizId) {
+        boolean canAttempt = quizService.canUserAttemptQuiz(quizId);
         return ResponseEntity.ok(canAttempt);
-    }
-
-    private Long getUserIdFromAuth(Authentication authentication) {
-        if (authentication != null && authentication.getPrincipal() != null) {
-            return 1L; // À adapter selon votre implémentation
-        }
-        throw new RuntimeException("Utilisateur non authentifié");
     }
 }

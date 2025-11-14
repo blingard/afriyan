@@ -1,6 +1,7 @@
 package org.ligot.afriyan.learn.service;
 
 import org.ligot.afriyan.learn.dto.*;
+import org.ligot.afriyan.learn.entities.Formation;
 import org.ligot.afriyan.learn.enumerations.FormationLevel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +13,7 @@ public interface FormationService {
     FormationDTO createFormation(FormationCreateDTO dto);
     
     FormationDTO updateFormation(String id, FormationCreateDTO dto);
-    
+
     FormationDTO getFormationById(String id);
     
     Page<FormationDTO> getAllFormations(int page, int size);

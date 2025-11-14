@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("public/api/learn/enrollments")
-@CrossOrigin("*")
+@RequestMapping("api/learn/enrollments")
 public class EnrollmentController {
 
     private final EnrollmentService enrollmentService;
@@ -22,10 +21,8 @@ public class EnrollmentController {
 
     @PostMapping("/enroll")
     public ResponseEntity<UserFormationEnrollmentDTO> enrollUser(
-            @RequestParam String id,
-            Authentication authentication) {
-        Long userId = getUserIdFromAuth(authentication);
-        UserFormationEnrollmentDTO enrollment = enrollmentService.enrollUser(userId, id);
+            @RequestParam String id) {
+        UserFormationEnrollmentDTO enrollment = enrollmentService.enrollUser(id);
         return new ResponseEntity<>(enrollment, HttpStatus.CREATED);
     }
 
@@ -36,9 +33,8 @@ public class EnrollmentController {
     }
 
     @GetMapping("/my-enrollments")
-    public ResponseEntity<List<UserFormationEnrollmentDTO>> getMyEnrollments(Authentication authentication) {
-        Long userId = getUserIdFromAuth(authentication);
-        List<UserFormationEnrollmentDTO> enrollments = enrollmentService.getUserEnrollments(userId);
+    public ResponseEntity<List<UserFormationEnrollmentDTO>> getMyEnrollments() {
+        List<UserFormationEnrollmentDTO> enrollments = enrollmentService.getUserEnrollments();
         return ResponseEntity.ok(enrollments);
     }
 
@@ -51,10 +47,8 @@ public class EnrollmentController {
 
     @GetMapping("/formation/{formationId}/my-enrollment")
     public ResponseEntity<UserFormationEnrollmentDTO> getMyEnrollmentForFormation(
-            @PathVariable String formationId,
-            Authentication authentication) {
-        Long userId = getUserIdFromAuth(authentication);
-        UserFormationEnrollmentDTO enrollment = enrollmentService.getUserEnrollmentForFormation(userId, formationId);
+            @PathVariable String formationId) {
+        UserFormationEnrollmentDTO enrollment = enrollmentService.getUserEnrollmentForFormation(formationId);
         return ResponseEntity.ok(enrollment);
     }
 
@@ -98,10 +92,15 @@ public class EnrollmentController {
         return ResponseEntity.ok(progress);
     }
 
-    private Long getUserIdFromAuth(Authentication authentication) {
-        if (authentication != null && authentication.getPrincipal() != null) {
-            return 1L; // À adapter selon votre implémentation
-        }
-        throw new RuntimeException("Utilisateur non authentifié");
+    @GetMapping("/{enrollmentId}/detailed-progress")
+    public ResponseEntity<DetailedProgressDTO> getDetailedProgress(@PathVariable String enrollmentId) {
+        DetailedProgressDTO progress = enrollmentService.getDetailedProgress(enrollmentId);
+        return ResponseEntity.ok(progress);
+    }
+
+    @PostMapping("/chapter/complete")
+    public ResponseEntity<Void> markChapterAsCompleted(@RequestBody MarkChapterCompleteDTO dto) {
+        enrollmentService.markChapterAsCompleted(dto);
+        return ResponseEntity.ok().build();
     }
 }

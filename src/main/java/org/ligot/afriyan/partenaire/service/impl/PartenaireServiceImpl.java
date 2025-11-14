@@ -35,6 +35,7 @@ public class PartenaireServiceImpl implements PartenaireService {
         Partenaire partenaire = new Partenaire();
         partenaire.setNom(dto.getNom());
         partenaire.setDescription(dto.getDescription());
+        partenaire.setImageBase64(dto.getImageBase64());
         partenaire.setStatut(dto.getStatut() != null ? dto.getStatut() : true);
         partenaire.setPublish(dto.getPublish() != null ? dto.getPublish() : false);
 
@@ -191,6 +192,7 @@ public class PartenaireServiceImpl implements PartenaireService {
         PartenaireDTO dto = new PartenaireDTO();
         dto.setId(partenaire.getId());
         dto.setNom(partenaire.getNom());
+        dto.setImageBase64(partenaire.getImageBase64());
         dto.setDescription(partenaire.getDescription());
         dto.setStatut(partenaire.getStatut());
         dto.setPublish(partenaire.getPublish());

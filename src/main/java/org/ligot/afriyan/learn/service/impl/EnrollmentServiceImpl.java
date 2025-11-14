@@ -1,25 +1,16 @@
 package org.ligot.afriyan.learn.service.impl;
 
 import org.ligot.afriyan.entities.Utilisateur;
-import org.ligot.afriyan.learn.dto.UpdateProgressDTO;
-import org.ligot.afriyan.learn.dto.UserFormationEnrollmentDTO;
-import org.ligot.afriyan.learn.dto.UserProgressDTO;
-import org.ligot.afriyan.learn.entities.Formation;
-import org.ligot.afriyan.learn.entities.Modules;
-import org.ligot.afriyan.learn.entities.UserFormationEnrollment;
-import org.ligot.afriyan.learn.entities.UserProgress;
-import org.ligot.afriyan.learn.repository.FormationRepository;
-import org.ligot.afriyan.learn.repository.ModuleRepository;
-import org.ligot.afriyan.learn.repository.UserFormationEnrollmentRepository;
-import org.ligot.afriyan.learn.repository.UserProgressRepository;
+import org.ligot.afriyan.implement.UtilsService;
+import org.ligot.afriyan.learn.dto.*;
+import org.ligot.afriyan.learn.entities.*;
+import org.ligot.afriyan.learn.repository.*;
 import org.ligot.afriyan.learn.service.EnrollmentService;
 import org.ligot.afriyan.repository.IUtilisateurRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,29 +21,44 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private final UserProgressRepository progressRepository;
     private final FormationRepository formationRepository;
     private final ModuleRepository moduleRepository;
+    private final ChapitreRepository chapitreRepository;
+    private final UserChapterProgressRepository chapterProgressRepository;
+    private final UserQuizAttemptRepository quizAttemptRepository;
     private final IUtilisateurRepository utilisateurRepo;
+    private final UtilsService utilsService;
 
-    public EnrollmentServiceImpl(UserFormationEnrollmentRepository enrollmentRepository, UserProgressRepository progressRepository, FormationRepository formationRepository, ModuleRepository moduleRepository, IUtilisateurRepository utilisateurRepo) {
+    public EnrollmentServiceImpl(UserFormationEnrollmentRepository enrollmentRepository, 
+                                 UserProgressRepository progressRepository, 
+                                 FormationRepository formationRepository, 
+                                 ModuleRepository moduleRepository,
+                                 ChapitreRepository chapitreRepository,
+                                 UserChapterProgressRepository chapterProgressRepository,
+                                 UserQuizAttemptRepository quizAttemptRepository,
+                                 IUtilisateurRepository utilisateurRepo, 
+                                 UtilsService utilsService) {
         this.enrollmentRepository = enrollmentRepository;
         this.progressRepository = progressRepository;
         this.formationRepository = formationRepository;
         this.moduleRepository = moduleRepository;
+        this.chapitreRepository = chapitreRepository;
+        this.chapterProgressRepository = chapterProgressRepository;
+        this.quizAttemptRepository = quizAttemptRepository;
         this.utilisateurRepo = utilisateurRepo;
+        this.utilsService = utilsService;
     }
 
     @Override
-    public UserFormationEnrollmentDTO enrollUser(Long userId, String formationId) {
+    public UserFormationEnrollmentDTO enrollUser(String formationId) {
         
         UUID id = UUID.fromString(formationId);
+        Utilisateur user = utilsService.getUser();
         // Vérifier si l'utilisateur est déjà inscrit
-        var existing = enrollmentRepository.findByUserIdAndFormationId(userId, id);
+        Optional<UserFormationEnrollment> existing = enrollmentRepository.findByUserIdAndFormationId(user.getId(), id);
         if (existing.isPresent()) {
-            throw new RuntimeException("Utilisateur déjà inscrit à cette formation");
+            UserFormationEnrollment saved = existing.get();
+            return toEnrollmentDTO(saved);
         }
 
-        Utilisateur user = utilisateurRepo.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
-        
         Formation formation = formationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Formation non trouvée"));
 
@@ -85,6 +91,39 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         return toEnrollmentDTO(saved);
     }
 
+//    @Override
+//    public ProgressEnrollement enrollUserProgression(String formationId) {
+//        UUID id = UUID.fromString(formationId);
+//        Utilisateur user = utilsService.getUser();
+//        Optional<UserFormationEnrollment> existing = enrollmentRepository.findByUserIdAndFormationId(user.getId(), id);
+//        if (existing.isEmpty()) {
+//            throw new RuntimeException("Vous n'etes pas inscrit a cette formation");
+//        }
+//        Formation formation = formationRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("Formation non trouvée"));
+//
+//        if (!formation.getStatus().equals(Formation.FormationStatus.PUBLISHED)) {
+//            throw new RuntimeException("Cette formation n'est pas encore publiée");
+//        }
+//        ProgressEnrollement.FormationsProgress formationsProgress = new ProgressEnrollement.FormationsProgress();
+//        formationsProgress.setTitre(formation.getTitre());
+//        formationsProgress.setId(formation.getId());
+//        List<ProgressEnrollement.ModulesProgress> modules=new ArrayList<>();
+//
+//        formation.getModules().stream().forEach(module -> {
+//
+//        });
+//        for(Modules modules : formation.getModules())
+//
+//
+//        formationsProgress.setModules();
+//        ProgressEnrollement progressEnrollement = new ProgressEnrollement();
+//        progressEnrollement.setProgress();
+//
+//
+//        return progressEnrollement;
+//    }
+
     @Override
     @Transactional(readOnly = true)
     public UserFormationEnrollmentDTO getEnrollmentById(String idEn) {
@@ -96,8 +135,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserFormationEnrollmentDTO> getUserEnrollments(Long userId) {
-        return enrollmentRepository.findByUserId(userId).stream()
+    public List<UserFormationEnrollmentDTO> getUserEnrollments() {
+        return enrollmentRepository.findByUserId(utilsService.getUser().getId()).stream()
                 .map(this::toEnrollmentDTO)
                 .collect(Collectors.toList());
     }
@@ -113,10 +152,10 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserFormationEnrollmentDTO getUserEnrollmentForFormation(Long userId, String formationId) {
+    public UserFormationEnrollmentDTO getUserEnrollmentForFormation(String formationId) {
         
         UUID id = UUID.fromString(formationId);
-        UserFormationEnrollment enrollment = enrollmentRepository.findByUserIdAndFormationId(userId, id)
+        UserFormationEnrollment enrollment = enrollmentRepository.findByUserIdAndFormationId(utilsService.getUser().getId(), id)
                 .orElseThrow(() -> new RuntimeException("Inscription non trouvée"));
         return toEnrollmentDTO(enrollment);
     }
@@ -265,6 +304,226 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         enrollmentRepository.save(enrollment);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public DetailedProgressDTO getDetailedProgress(String enrollmentId) {
+        UUID id = UUID.fromString(enrollmentId);
+        
+        // Récupérer l'inscription
+        UserFormationEnrollment enrollment = enrollmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Inscription non trouvée"));
+        
+        Formation formation = enrollment.getFormation();
+        Utilisateur user = enrollment.getUser();
+        
+        // Construire le DTO de la formation
+        DetailedProgressDTO.FormationProgressDetail formationDetail = new DetailedProgressDTO.FormationProgressDetail();
+        formationDetail.setId(formation.getId());
+        formationDetail.setTitre(formation.getTitre());
+        formationDetail.setDescription(formation.getDescription());
+        formationDetail.setProgressionPourcent(enrollment.getProgressionPourcent());
+        
+        List<DetailedProgressDTO.ModuleProgressDetail> moduleDetails = new ArrayList<>();
+        
+        // Récupérer tous les modules de la formation
+        List<Modules> modules = moduleRepository.findByFormationIdOrderByOrdre(formation.getId());
+        
+        int completedModulesCount = 0;
+        
+        for (Modules module : modules) {
+            DetailedProgressDTO.ModuleProgressDetail moduleDetail = new DetailedProgressDTO.ModuleProgressDetail();
+            moduleDetail.setId(module.getId());
+            moduleDetail.setTitre(module.getTitre());
+            moduleDetail.setDescription(module.getDescription());
+            moduleDetail.setOrdre(module.getOrdre());
+            moduleDetail.setWithQuiz(module.getWithQuiz());
+            
+            // Récupérer tous les chapitres du module
+            List<Chapitres> chapitres = chapitreRepository.findByModuleIdOrderByOrdre(module.getId());
+            List<DetailedProgressDTO.ChapterProgressDetail> chapterDetails = new ArrayList<>();
+            
+            int completedChaptersCount = 0;
+            
+            for (Chapitres chapitre : chapitres) {
+                DetailedProgressDTO.ChapterProgressDetail chapterDetail = new DetailedProgressDTO.ChapterProgressDetail();
+                chapterDetail.setId(chapitre.getId());
+                chapterDetail.setTitre(chapitre.getTitre());
+                chapterDetail.setOrdre(chapitre.getOrdre());
+                chapterDetail.setDureeEstimee(chapitre.getDureeEstimee());
+                
+                // Vérifier si le chapitre est complété
+                Optional<UserChapterProgress> chapterProgress = chapterProgressRepository
+                        .findByEnrollmentIdAndChapterId(id, chapitre.getId());
+                
+                boolean isChapterCompleted = chapterProgress.isPresent() && chapterProgress.get().getCompleted();
+                chapterDetail.setCompleted(isChapterCompleted);
+                
+                if (isChapterCompleted) {
+                    completedChaptersCount++;
+                }
+                
+                chapterDetails.add(chapterDetail);
+            }
+            
+            moduleDetail.setChapitres(chapterDetails);
+            
+            // Vérifier si le module a un quiz et s'il est passé
+            boolean quizPassed = false;
+            DetailedProgressDTO.QuizProgressDetail quizDetail = null;
+            
+            if (module.getWithQuiz() && module.getQuiz() != null) {
+                Quiz quiz = module.getQuiz();
+                quizDetail = new DetailedProgressDTO.QuizProgressDetail();
+                quizDetail.setId(quiz.getId());
+                quizDetail.setTitre(quiz.getTitre());
+                quizDetail.setScoreMinimum(quiz.getScoreMinimum());
+                
+                // Récupérer la dernière tentative de quiz
+                Optional<UserQuizAttempt> latestAttempt = quizAttemptRepository
+                        .findLatestAttemptByUserIdAndQuizId(user.getId(), quiz.getId());
+                
+                if (latestAttempt.isPresent()) {
+                    UserQuizAttempt attempt = latestAttempt.get();
+                    quizPassed = attempt.getPassed() != null && attempt.getPassed();
+                    quizDetail.setPassed(quizPassed);
+                    quizDetail.setLastScore(attempt.getScoreObtenu());
+                } else {
+                    quizDetail.setPassed(false);
+                    quizDetail.setLastScore(null);
+                }
+                
+                moduleDetail.setQuiz(quizDetail);
+            }
+            
+            // Calculer si le module est complété
+            boolean allChaptersCompleted = (chapitres.size() > 0) && (completedChaptersCount == chapitres.size());
+            boolean moduleCompleted;
+            
+            if (module.getWithQuiz()) {
+                // Si le module a un quiz, il faut que tous les chapitres soient lus ET que le quiz soit passé
+                moduleCompleted = allChaptersCompleted && quizPassed;
+            } else {
+                // Si pas de quiz, il suffit que tous les chapitres soient lus
+                moduleCompleted = allChaptersCompleted;
+            }
+            
+            moduleDetail.setCompleted(moduleCompleted);
+            
+            if (moduleCompleted) {
+                completedModulesCount++;
+            }
+            
+            moduleDetails.add(moduleDetail);
+        }
+        
+        formationDetail.setModules(moduleDetails);
+        
+        // La formation est complétée si tous les modules sont complétés
+        boolean formationCompleted = (modules.size() > 0) && (completedModulesCount == modules.size());
+        formationDetail.setCompleted(formationCompleted);
+        
+        DetailedProgressDTO result = new DetailedProgressDTO();
+        result.setEnrollmentId(id);
+        result.setFormation(formationDetail);
+        
+        return result;
+    }
+
+    @Override
+    public void markChapterAsCompleted(MarkChapterCompleteDTO dto) {
+        // Vérifier que l'inscription existe
+        UserFormationEnrollment enrollment = enrollmentRepository.findById(dto.getEnrollmentId())
+                .orElseThrow(() -> new RuntimeException("Inscription non trouvée"));
+        
+        // Vérifier que le chapitre existe
+        Chapitres chapter = chapitreRepository.findById(dto.getChapterId())
+                .orElseThrow(() -> new RuntimeException("Chapitre non trouvé"));
+        
+        // Vérifier ou créer le progrès du chapitre
+        UserChapterProgress chapterProgress = chapterProgressRepository
+                .findByEnrollmentIdAndChapterId(dto.getEnrollmentId(), dto.getChapterId())
+                .orElse(new UserChapterProgress());
+        
+        if (chapterProgress.getId() == null) {
+            // Nouveau progrès
+            chapterProgress.setEnrollment(enrollment);
+            chapterProgress.setChapter(chapter);
+            chapterProgress.setDateFirstView(new Date());
+        }
+        
+        chapterProgress.setCompleted(true);
+        chapterProgress.setDateCompletion(new Date());
+        
+        if (dto.getTimeSpentSeconds() != null) {
+            chapterProgress.setTimeSpentSeconds(dto.getTimeSpentSeconds());
+        }
+        
+        chapterProgressRepository.save(chapterProgress);
+        
+        // Mettre à jour le progrès du module si nécessaire
+        updateModuleProgressBasedOnChapters(enrollment.getId().toString(), chapter.getModule().getId().toString());
+    }
+    
+    /**
+     * Met à jour le progrès d'un module en fonction de la complétion de ses chapitres
+     */
+    private void updateModuleProgressBasedOnChapters(String enrollmentId, String moduleId) {
+        UUID enrollmentUuid = UUID.fromString(enrollmentId);
+        UUID moduleUuid = UUID.fromString(moduleId);
+        
+        // Compter le nombre total de chapitres dans le module
+        Long totalChapters = chapitreRepository.countByModuleId(moduleUuid);
+        
+        // Compter le nombre de chapitres complétés
+        Long completedChapters = chapterProgressRepository
+                .countCompletedChaptersByEnrollmentAndModule(enrollmentUuid, moduleUuid);
+        
+        // Récupérer le progrès du module ou en créer un nouveau
+        UserProgress moduleProgress = progressRepository
+                .findByEnrollmentIdAndModuleId(enrollmentUuid, moduleUuid)
+                .orElseGet(() -> {
+                    UserFormationEnrollment enrollment = enrollmentRepository.findById(enrollmentUuid)
+                            .orElseThrow(() -> new RuntimeException("Inscription non trouvée"));
+                    Modules module = moduleRepository.findById(moduleUuid)
+                            .orElseThrow(() -> new RuntimeException("Module non trouvé"));
+                    
+                    UserProgress newProgress = new UserProgress();
+                    newProgress.setEnrollment(enrollment);
+                    newProgress.setModule(module);
+                    newProgress.setStatus(UserProgress.ProgressStatus.NOT_STARTED);
+                    newProgress.setProgressionPourcent(0.0);
+                    newProgress.setDateCreation(new Date());
+                    return progressRepository.save(newProgress);
+                });
+        
+        // Calculer le pourcentage de progression basé sur les chapitres
+        double progressPourcent = 0.0;
+        if (totalChapters != null && totalChapters > 0) {
+            progressPourcent = (completedChapters.doubleValue() / totalChapters.doubleValue()) * 100.0;
+        }
+        
+        moduleProgress.setProgressionPourcent(progressPourcent);
+        
+        // Si tous les chapitres sont complétés
+        if (totalChapters != null && completedChapters != null && totalChapters.equals(completedChapters)) {
+            Modules module = moduleProgress.getModule();
+            
+            // Si le module n'a pas de quiz, le marquer comme complété
+            if (!module.getWithQuiz()) {
+                moduleProgress.setStatus(UserProgress.ProgressStatus.COMPLETED);
+                moduleProgress.setDateCompletion(new Date());
+            }
+            // Si le module a un quiz, il faut vérifier si l'utilisateur l'a passé
+            // (ce sera géré par le système de quiz existant)
+        }
+        
+        progressRepository.save(moduleProgress);
+        
+        // Recalculer la progression globale de l'inscription
+        calculateAndUpdateEnrollmentProgress(enrollmentId);
+    }
+
 
     private UserFormationEnrollmentDTO toEnrollmentDTO(UserFormationEnrollment enrollment) {
         UserFormationEnrollmentDTO dto = new UserFormationEnrollmentDTO();
