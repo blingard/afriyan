@@ -75,4 +75,16 @@ public class LocalitiesDTO {
     public void setCommune(Communes commune) {
         this.commune = commune;
     }
+
+    @Override
+    public String toString() {
+        return "LocalitiesDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", latitude='" + latitude + '\'' +
+                ", longitude='" + longitude + '\'' +
+                ", type=" + type +
+                ", commune=" + commune +
+                '}';
+    }
 }

@@ -35,14 +35,23 @@ public class SecurityController {
 
     @PostMapping("/public/api/auth/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) throws Exception {
+        System.err.println("ELLA");
         HttpHeaders  httpHeaders = new HttpHeaders();
+        System.err.println("ELLA 1");
         Map<String, Object> data = new HashMap<>();
+        System.err.println("ELLA");
         String accessToken = "Bearer "+service.login(loginRequest);
+        System.err.println("ELLA 2");
         data.put("accessToken", accessToken);
+        System.err.println("ELLA");
         UtilisateurDTO utilisateur = service.getUtilisateurByLogin(loginRequest.getLogin().trim());
+        System.err.println("ELLA 3");
         utilisateur.getGroupe().getRoles().clear();
+        System.err.println("ELLA");
         data.put("user", utilisateur);
+        System.err.println("ELLA 4");
         String refreshToken = "Bearer "+service.refreshToken(utilisateur.getId());
+        System.err.println("ELLA");
         data.put("refreshToken", refreshToken);
         return new ResponseEntity<>(data, httpHeaders, HttpStatus.OK);
     }

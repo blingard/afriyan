@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 public interface IArticlesRepository extends JpaRepository<Articles, Long> {
-    List<Articles> findTop6ByTypeDonne(TypeDonne typeDonne, Sort sort);
+    List<Articles> findTop6ByTypeDonneAndStatusIsTrue(TypeDonne typeDonne, Sort sort);
     List<Articles> findAllByStatusTrueAndTypeDonne(TypeDonne typeDonne);
     List<Articles> findAllByTypeDonne(TypeDonne typeDonne);
     List<Articles> findAllByTypeDonneAndCategoriesAndStatusTrue(TypeDonne typeDonne, Categories categories);

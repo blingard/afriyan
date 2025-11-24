@@ -131,19 +131,14 @@ public class ArticlesImpl implements IArticles {
     }
     public void logg(){
         try {
-            System.err.println("1");
             UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            System.err.println("2");
             iUserConnect.save(new UserConnect(
                     Date.from(Instant.now()),
                     userDetails.getUsername()));
-            System.err.println("3");
         }catch (Exception ex){
-            System.err.println("4");
             iUserConnect.save(new UserConnect(
                     Date.from(Instant.now()),
                     "anonymous"));
-            System.err.println("5");
         }
     }
 
@@ -198,7 +193,7 @@ public class ArticlesImpl implements IArticles {
 
     @Override
     public List<ArticlesDTO> get6TopDesc(TypeDonne typeDonne) {
-        return repository.findTop6ByTypeDonne(typeDonne,Sort.by("id").descending()).stream().map(this::findWithFile).toList();
+        return repository.findTop6ByTypeDonneAndStatusIsTrue(typeDonne,Sort.by("id").descending()).stream().map(this::findWithFile).toList();
     }
 
     @Override

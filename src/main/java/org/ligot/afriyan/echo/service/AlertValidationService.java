@@ -45,12 +45,14 @@ public class AlertValidationService {
     private final AlertMapper mapper;
     private final LocationMapper locationMapper;
     private final AlertRiskTypeRepository alertRiskTypeRepository;
+    private final LocalityRepo localityRepo;
 
 
     public AlertValidationService(AlertRepository alertRepository, NotificationService notificationService,
                                   UtilsService utilsService, IUtilisateurRepository repository, UtilisateurMapper utilisateurMapper, CrppRepository crppRepository,
                                   MaireRepo maireRepo, PrefetRepo prefetRepo,
-                                  AlertMapper mapper, LocationMapper locationMapper, AlertRiskTypeRepository alertRiskTypeRepository) {
+                                  AlertMapper mapper, LocationMapper locationMapper, AlertRiskTypeRepository alertRiskTypeRepository,
+                                  LocalityRepo localityRepo) {
         this.alertRepository = alertRepository;
         this.notificationService = notificationService;
         this.utilsService = utilsService;
@@ -62,6 +64,7 @@ public class AlertValidationService {
         this.mapper = mapper;
         this.locationMapper = locationMapper;
         this.alertRiskTypeRepository = alertRiskTypeRepository;
+        this.localityRepo = localityRepo;
     }
 
     @Transactional
@@ -71,6 +74,7 @@ public class AlertValidationService {
                 RolesName.COMMUNITY_COMMITTEE, RolesName.CCPR_COMMITTEE, RolesName.MAIRE,
                 RolesName.LOCAL_AUTHORITY, RolesName.ADMIN, RolesName.ROOT, RolesName.SUPERADMIN});
         AlertRiskType riskType = alertRiskTypeRepository.findAllById(alertsDTO.getRiskType().getId()).orElseThrow(()->new RuntimeException("Alert risk type n'existe pas"));
+        Localities localities = localityRepo.findById(alertsDTO.getLocalities().getId()).orElseThrow(()->new RuntimeException("Locality n'existe pas"));
         Alerts alert = mapper.create(alertsDTO);
         alert.setId(null);
         alert.setReporterUserId(utilisateur.getId().toString());
@@ -78,12 +82,14 @@ public class AlertValidationService {
         alert.setCreatedAt(LocalDateTime.now());
         alert.setLastUpdatedAt(LocalDateTime.now());
         alert.setRiskType(riskType);
+        alert.setLocalities(localities);
         alert.setCurrentValidatorRole(ValidationRole.CCPR_COMMITTEE.name()); // Première étape de validation par le CCPR [67]
-        final Alerts savedAlert = alertRepository.save(alert);
+        Alerts savedAlert = alertRepository.save(alert);
+        UUID communeId = savedAlert.getLocalities().getCommune().getId();
 
         CompletableFuture.runAsync(() -> {
             try {
-                List<Utilisateur> utilisateurs = crppRepository.findAllByUserOfCrpp(savedAlert.getLocalities().getCommune().getId());
+                List<Utilisateur> utilisateurs = crppRepository.findAllByUserOfCrpp(communeId);
                 if(utilisateurs.isEmpty())
                     throw new RuntimeException("User list is null");
                 Set<String> phoneNumber = utilisateurs.stream().map(Utilisateur::getTelephone).collect(Collectors.toSet());
@@ -154,7 +160,7 @@ public class AlertValidationService {
         if (approved) {
             // Logique de progression de la validation en fonction de la nature du risque et du rôle
             switch (role) {
-                case CCPR_COMMITTEE:
+                case CCPR_COMMITTEE: {
                     // Le CCPR a validé [67]. Maintenant, ça remonte aux autorités [70, 114]
                     alert.setStatus(AlertStatus.PENDING_AUTHORITY_APPROVAL);
                     alert.setCurrentValidatorRole(ValidationRole.LOCAL_AUTHORITY.name());
@@ -162,25 +168,26 @@ public class AlertValidationService {
                     CompletableFuture.runAsync(() -> {
                         try {
                             List<Utilisateur> utilisateurs = new ArrayList<>();
-                            List< Maire> maire = maireRepo.findAllByCommuneAndActive(commune, true);
-                            if(!maire.isEmpty())
+                            List<Maire> maire = maireRepo.findAllByCommuneAndActive(commune, true);
+                            if (!maire.isEmpty())
                                 utilisateurs = maire.stream().map(Maire::getUtilisateur).toList();
                             List<Prefet> prefets = prefetRepo.findAllByDepartementAndActive(commune.getDepartement(), true);
-                            if(!prefets.isEmpty())
+                            if (!prefets.isEmpty())
                                 utilisateurs = prefets.stream().map(Prefet::getUtilisateur).toList();
-                            if(utilisateurs.isEmpty())
+                            if (utilisateurs.isEmpty())
                                 throw new RuntimeException("User list is null");
                             Set<String> phoneNumber = utilisateurs.stream().map(Utilisateur::getTelephone).collect(Collectors.toSet());
-                            String message = "Alert: en attente de validation dans la localite de "+alert.getLocalities().getName()+
-                                    " (Commune: "+alert.getLocalities().getCommune().getName()+", Departement: "+alert.getLocalities().getCommune().getDepartement().getName()+")";
+                            String message = "Alert: en attente de validation dans la localite de " + alert.getLocalities().getName() +
+                                    " (Commune: " + alert.getLocalities().getCommune().getName() + ", Departement: " + alert.getLocalities().getCommune().getDepartement().getName() + ")";
                             notificationService.notifyCSPRForReview(phoneNumber, message); // Notifier le Authorite
-                        }catch (Exception ex){
+                        } catch (Exception ex) {
                             ex.printStackTrace();
                         }
 
                     });
                     break;
-                case SUPERADMIN, ROOT, ADMIN, LOCAL_AUTHORITY, MAIRE:
+                }
+                case SUPERADMIN, ROOT, ADMIN, LOCAL_AUTHORITY, MAIRE: {
                     // Les autorités ont validé [70, 114]. L'alerte est active.
                     alert.setStatus(AlertStatus.ALERT_ACTIVE);
                     alert.setCurrentValidatorRole(null); // Plus de validateur requis
@@ -190,18 +197,20 @@ public class AlertValidationService {
                             int page = 0;
                             int size = 100;
                             Page<Utilisateur> utilisateurs = repository.findAllByCommunes_IdAndStatus(communes.getId(), Status.ACTIVE, PageRequest.of(page, size));
-                            while (!utilisateurs.isEmpty()){
+
+                            while (!utilisateurs.isEmpty()) {
                                 Set<String> phoneNumber = utilisateurs.stream().map(Utilisateur::getTelephone).collect(Collectors.toSet());
-                                String message = "Alert: dans la localite de "+alert.getLocalities().getName()+
-                                        " (Commune: "+alert.getLocalities().getCommune().getName()+", Departement: "+alert.getLocalities().getCommune().getDepartement().getName()+")";
+                                String message = "Alert: dans la localite de " + alert.getLocalities().getName() +
+                                        " (Commune: " + alert.getLocalities().getCommune().getName() + ", Departement: " + alert.getLocalities().getCommune().getDepartement().getName() + ")";
                                 notificationService.notifyCSPRForReview(phoneNumber, message); // Notifier le Authorite
-                                page = page +1;
+                                page = page + 1;
                             }
-                        }catch (Exception ex){
+                        } catch (Exception ex) {
                             ex.printStackTrace();
                         }
                     });
                     break;
+                }
                 default:
                     throw new RuntimeException("Validation non supportée pour ce rôle à cette étape.");
             }

@@ -23,8 +23,8 @@ import java.util.concurrent.Executors;
 @SpringBootApplication
 @OpenAPIDefinition(
         servers = {
-                @Server(url = "http://localhost:8087/")//
-               // @Server(url = "https://back.youthfp.cm/")//
+                //@Server(url = "http://localhost:8087/")//
+               @Server(url = "https://back.youthfp.cm/")//
         },
                 info = @Info(
                 title = "AfriYan APIs",

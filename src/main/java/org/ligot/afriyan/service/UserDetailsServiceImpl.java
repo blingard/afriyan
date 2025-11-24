@@ -27,7 +27,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         username = username.trim();
+        System.err.println("loadUserByUsername");
         Optional<Utilisateur> user = repository.findByEmail(username);
+        System.err.println(user.isEmpty() ? "Empty":"NOTICE.txt empty");
         if (user.isEmpty()) {
             user = repository.findByCode(username);
             if(user.isEmpty()){
