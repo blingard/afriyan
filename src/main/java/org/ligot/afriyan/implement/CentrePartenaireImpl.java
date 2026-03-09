@@ -17,7 +17,6 @@ import org.ligot.afriyan.service.IUtilisateur;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,17 +31,19 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
     private UtilisateurMapper utilisateurMapper;
     private final IUtilisateur utilisateur;
     private final IServiceEntity iServiceEntity;
+    private final UtilsService utilsService;
     private final int PAGE_SIZE = 5;
 
     public CentrePartenaireImpl(CentrePartenaireMapper mapper, ICentrePartenaireRepository repository,
-            FileStorageService fileStorageService, UtilisateurMapper utilisateurMapper, IUtilisateur utilisateur,
-            IServiceEntity iServiceEntity) {
+                                FileStorageService fileStorageService, UtilisateurMapper utilisateurMapper, IUtilisateur utilisateur,
+                                IServiceEntity iServiceEntity, UtilsService utilsService) {
         this.mapper = mapper;
         this.repository = repository;
         this.fileStorageService = fileStorageService;
         this.utilisateurMapper = utilisateurMapper;
         this.utilisateur = utilisateur;
         this.iServiceEntity = iServiceEntity;
+        this.utilsService = utilsService;
     }
 
     @Override
@@ -101,10 +102,8 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
         return mapper.toDTO(repository.save(centrePartenaire));
     }
 
-    private Utilisateur getUser() throws Exception {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        UtilisateurDTO utilisateurDTO = utilisateur.findByUUID(username);
-        return utilisateurMapper.create(utilisateurDTO);
+    private void getUser() {
+        utilsService.getUser();
     }
 
     @Override

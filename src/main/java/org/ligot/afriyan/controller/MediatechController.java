@@ -25,16 +25,6 @@ public class MediatechController {
     }
     @GetMapping("active")
     public List<MediatechDTO> findAllActive(){
-        try {
-            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            iUserConnect.save(new UserConnect(
-                    Date.from(Instant.now()),
-                    userDetails.getUsername()));
-        }catch (Exception ex){
-            iUserConnect.save(new UserConnect(
-                    Date.from(Instant.now()),
-                    "anonymous"));
-        }
         return mediatech.findAllActive();
     }
     @GetMapping

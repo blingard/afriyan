@@ -45,7 +45,7 @@ public class UserDetailsServiceImpl {
         Utilisateur utilisateur = user.get();
         if(user.get().getUuid()==null) {
             if(passwordEncoder.matches(pwd, user.get().getPwd())==false)
-                throw new UsernameNotFoundException("User with username pwd " + username + " don't exist");
+                throw new UsernameNotFoundException("Please check your username/password");
             String uuid = keycloakService.createUser(utilisateur.getEmail()==null ? utilisateur.getCode() : utilisateur.getEmail(),
                     utilisateur.getEmail(), pwd, utilisateur.getPrenom(), utilisateur.getNom(), true);
             utilisateur.setUuid(uuid);

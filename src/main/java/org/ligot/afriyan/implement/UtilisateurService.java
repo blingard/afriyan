@@ -44,6 +44,7 @@ import static org.ligot.afriyan.implement.Utils.genDefaultCode;
 public class UtilisateurService implements IUtilisateur {
 
     private final IUtilisateurRepository repository;
+    private final UtilsService utilsService;
     private final ICentrePartenaireRepository iCentrePartenaireRepository;
     private final IArticlesRepository iArticlesRepository;
     private final IGroupes groupesService;
@@ -69,9 +70,10 @@ public class UtilisateurService implements IUtilisateur {
     private final IGroupesRepository iGroupesRepository;
     private final KeycloakService keycloakService;
 
-    public UtilisateurService(IUtilisateurRepository repository, ICentrePartenaireRepository iCentrePartenaireRepository, IArticlesRepository iArticlesRepository, IGroupes groupesService, IDenonciationRepository iDenonciationRepository, @Qualifier("passwordEncoder") PasswordEncoder passwordEncoder, IForgetPasswordRepository iForgetPasswordRepository, UtilisateurMapper mapper, TwilioService twilioService, ExecutorService executorService, FileStorageService fileStorageService, DepartementsRepo departementsRepo, PrefetRepo prefetRepo, PrefetMapper prefetMapper, CommuneRepo communeRepo, MaireRepo maireRepo, MaireMapper maireMapper, LocalityRepo localityRepo, CrppRepository crppRepository, CrppMapper crppMapper, CommunityComityRepo communityComityRepo, CommunityComityMapper communityComityMapper,
+    public UtilisateurService(IUtilisateurRepository repository, UtilsService utilsService, ICentrePartenaireRepository iCentrePartenaireRepository, IArticlesRepository iArticlesRepository, IGroupes groupesService, IDenonciationRepository iDenonciationRepository, @Qualifier("passwordEncoder") PasswordEncoder passwordEncoder, IForgetPasswordRepository iForgetPasswordRepository, UtilisateurMapper mapper, TwilioService twilioService, ExecutorService executorService, FileStorageService fileStorageService, DepartementsRepo departementsRepo, PrefetRepo prefetRepo, PrefetMapper prefetMapper, CommuneRepo communeRepo, MaireRepo maireRepo, MaireMapper maireMapper, LocalityRepo localityRepo, CrppRepository crppRepository, CrppMapper crppMapper, CommunityComityRepo communityComityRepo, CommunityComityMapper communityComityMapper,
                               IGroupesRepository iGroupesRepository, KeycloakService keycloakService) {
         this.repository = repository;
+        this.utilsService = utilsService;
         this.iCentrePartenaireRepository = iCentrePartenaireRepository;
         this.iArticlesRepository = iArticlesRepository;
         this.groupesService = groupesService;
@@ -735,24 +737,11 @@ public class UtilisateurService implements IUtilisateur {
     @Override
     @Transactional
     public String update(MultipartFile file, Long id) throws Exception {
-        Utilisateur utilisateur = getUser();
-        Utilisateur utilisateurSave = repository.findById(id).orElse(null);
-        if(utilisateurSave==null){
-            throw new Exception("Erreur: information non concordante");
-        }
-        if(utilisateur.getId()!=utilisateurSave.getId()){
-            throw new Exception("Erreur: information non concordante");
-        }
+        Utilisateur utilisateur = utilsService.getUser();
         String name = fileStorageService.storeParagraphFileImage(file, Constantes.USERIMAGESUBPATH);
-        utilisateurSave.setPhoto(name);
-        repository.save(utilisateurSave);
+        utilisateur.setPhoto(name);
+        repository.save(utilisateur);
         return findWithFile(utilisateur).getPhoto();
-    }
-
-    private Utilisateur getUser() throws Exception {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        UtilisateurDTO utilisateurDTO = this.findByName(username);
-        return mapper.create(utilisateurDTO);
     }
 
     @Override
@@ -812,16 +801,13 @@ public class UtilisateurService implements IUtilisateur {
     @Override
     @Transactional
     public void changePassword(ChangePwd changePwd) throws Exception {
-        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Utilisateur utilisateur = repository.findByEmail(userDetails.getEmail()).orElse(null);
-        if(utilisateur == null)
-            throw new Exception("User not found");
+        Utilisateur utilisateur = utilsService.getUser();
         if(changePwd.getConfirmPwd() == changePwd.getNewPwd())
             throw new Exception("Password not valid");
         if(changePwd.getConfirmPwd().length() < 8)
             throw new Exception("Password not valid");
-        utilisateur.setPwd(passwordEncoder.encode(changePwd.getConfirmPwd().trim()));
         utilisateur.setIsFirstConnexion(false);
+        keycloakService.resetPassword(utilisateur.getUuid(), changePwd.getNewPwd(), false);
         repository.save(utilisateur);
     }
 
@@ -869,15 +855,17 @@ public class UtilisateurService implements IUtilisateur {
         try{
             if(utilisateur == null)
                 throw new Exception("User not found");
-            utilisateur.setPwd(passwordEncoder.encode(pwd));
+            keycloakService.resetPassword(utilisateur.getUuid(), pwd, false);
             utilisateur.setIsFirstConnexion(true);
             updateIt(utilisateur);
             executorService.execute(()->{
-                String message = "Votre mot de passe a ete reinitialiser par l'administrateur. Votre nouveau mot de passe est:";
+                String message = "Votre mot de passe a ete reinitialiser par l'administrateur. Votre nouveau mot de passe est: ";
                 message = message+pwd;
                 twilioService.sendOneSms(utilisateur.getTelephone().trim(),message);
             });
-        }catch (Exception ex){}
+        }catch (Exception ex){
+            throw ex;
+        }
     }
 
     @Override

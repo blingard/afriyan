@@ -47,7 +47,11 @@ public class FormationsServiceImpl implements FormationsService {
     private final ChapitresMapper chapitresMapper;
     private final ParagraphsMapper paragraphsMapper;
 
-    public FormationsServiceImpl(FormationsRepo repo, ICategoriesRepository iCategoriesRepository, ResultatsRepo resultatsRepo, UtilsService utilsService, FormationsMapper mapper, ChapterService chapterService, FormationUserRepo formationUserRepo, SondageRepo sondageRepo, QuestionResponseRepo questionResponseRepo, HistoriquesLearningRepo historiquesLearningRepo, ChapitresMapper chapitresMapper, ParagraphsMapper paragraphsMapper) {
+    public FormationsServiceImpl(FormationsRepo repo, ICategoriesRepository iCategoriesRepository,
+            ResultatsRepo resultatsRepo, UtilsService utilsService, FormationsMapper mapper,
+            ChapterService chapterService, FormationUserRepo formationUserRepo, SondageRepo sondageRepo,
+            QuestionResponseRepo questionResponseRepo, HistoriquesLearningRepo historiquesLearningRepo,
+            ChapitresMapper chapitresMapper, ParagraphsMapper paragraphsMapper) {
         this.repo = repo;
         this.iCategoriesRepository = iCategoriesRepository;
         this.resultatsRepo = resultatsRepo;
@@ -63,12 +67,19 @@ public class FormationsServiceImpl implements FormationsService {
     }
 
     @Override
+    @org.springframework.cache.annotation.CacheEvict(value = { "elearningFormationsActive", "elearningFormationsPage",
+            "elearningFormationsByCategory" }, allEntries = true)
     public void create(FormationsDTO formationsDTO) throws Exception {
         formationsDTO.setStatus(Boolean.FALSE.booleanValue());
         repo.save(mapper.toEntity(formationsDTO));
     }
 
     @Override
+    @org.springframework.cache.annotation.Caching(evict = {
+            @org.springframework.cache.annotation.CacheEvict(value = "elearningFormations", key = "#idFormation"),
+            @org.springframework.cache.annotation.CacheEvict(value = { "elearningFormationsActive",
+                    "elearningFormationsPage", "elearningFormationsByCategory" }, allEntries = true)
+    })
     public void update(Long idFormation, FormationsDTO formationsDTO) throws Exception {
         Formations formations = getById(idFormation);
         mapper.update(formationsDTO, formations);
@@ -76,6 +87,7 @@ public class FormationsServiceImpl implements FormationsService {
     }
 
     @Override
+    @org.springframework.cache.annotation.Cacheable(value = "elearningFormations", key = "#idFormation")
     public FormationsDTO findById(Long idFormation) throws Exception {
         FormationsDTO formationsDTO = findByIdUser(idFormation);
         formationsDTO.setQuizz(null);
@@ -83,40 +95,45 @@ public class FormationsServiceImpl implements FormationsService {
     }
 
     @Override
+    @org.springframework.cache.annotation.Cacheable(value = "elearningFormations", key = "#idFormation")
     public FormationsDTO findByIdUser(Long idFormation) throws Exception {
         Formations formations = getById(idFormation);
-        if(!formations.isStatus())
+        if (!formations.isStatus())
             throw new Exception("Not found");
         FormationsDTO formationsDTO = mapper.toDTO(formations);
         List<ChapitresDTO> chapitresDTOS = new ArrayList<>(0);
         formationsDTO.getChapitres().forEach(chapitresDTO -> {
             try {
                 ChapitresDTO chapitres = chapterService.getById(chapitresDTO.getId());
-                if(chapitres.isStatus() && !chapitres.getParagraphes().isEmpty()) {
+                if (chapitres.isStatus() && !chapitres.getParagraphes().isEmpty()) {
                     chapitresDTOS.add(chapitres);
                 }
             } catch (Exception e) {
             }
         });
         Collections.sort(chapitresDTOS);
-        formationsDTO=constructOrder(formationsDTO, chapitresDTOS);
+        formationsDTO = constructOrder(formationsDTO, chapitresDTOS);
         return formationsDTO;
     }
 
     @Override
     public ElearningScope findByIdUserStatus(Long idFormation) throws Exception {
+        // Pas de cache ici car dépendant de l'utilisateur connecté et de son historique
         Formations formations = getById(idFormation);
         ElearningScope elearningScope = null;
-        if(!formations.isStatus())
+        if (!formations.isStatus())
             throw new Exception("Not found");
         Utilisateur utilisateur = utilsService.getUser();
         List<ElearningModuleScope> elearningModuleScopes = new ArrayList<>();
-        List<HistoriquesLearning> list = historiquesLearningRepo.findByUserIdAndFormationId(utilisateur.getId(), idFormation).stream().sorted(Comparator.comparing(HistoriquesLearning::getId)).collect(Collectors.toList());
-        if(list.isEmpty()){
+        List<HistoriquesLearning> list = historiquesLearningRepo
+                .findByUserIdAndFormationId(utilisateur.getId(), idFormation).stream()
+                .sorted(Comparator.comparing(HistoriquesLearning::getId)).collect(Collectors.toList());
+        if (list.isEmpty()) {
             FormationsDTO formationsDTO = mapper.toDTO(formations);
             formationsDTO.setChapitres(new HashSet<>());
-            List<Chapitres> chapitres = formations.getChapitres().stream().sorted(Comparator.comparing(Chapitres::getId)).collect(Collectors.toList());
-            for(int i =0; i<=chapitres.size()-1; i++){
+            List<Chapitres> chapitres = formations.getChapitres().stream()
+                    .sorted(Comparator.comparing(Chapitres::getId)).collect(Collectors.toList());
+            for (int i = 0; i <= chapitres.size() - 1; i++) {
                 ChapitresDTO chapitresDTO = chapitresMapper.toDTO(chapitres.get(i));
                 ElearningModuleScope currentModule = new ElearningModuleScope();
                 chapitresDTO.setParagraphes(new HashSet<>());
@@ -124,54 +141,55 @@ public class FormationsServiceImpl implements FormationsService {
                 currentModule.setPass(false);
                 ElearningModuleScope previousModule = null;
                 ElearningModuleScope nextModule = null;
-                if(i==0){
-                    if((chapitres.size()-1)==0){
+                if (i == 0) {
+                    if ((chapitres.size() - 1) == 0) {
                         previousModule = null;
-                    }else {
+                    } else {
                         nextModule = new ElearningModuleScope();
                         nextModule.setPass(false);
-                        nextModule.setModule(chapitresMapper.toDTO(chapitres.get(i+1)));
+                        nextModule.setModule(chapitresMapper.toDTO(chapitres.get(i + 1)));
                     }
-                }else if(i==(chapitres.size()-1)){
+                } else if (i == (chapitres.size() - 1)) {
                     previousModule = new ElearningModuleScope();
                     previousModule.setPass(true);
-                    previousModule.setModule(chapitresMapper.toDTO(chapitres.get(i-1)));
-                }else{
+                    previousModule.setModule(chapitresMapper.toDTO(chapitres.get(i - 1)));
+                } else {
                     nextModule = new ElearningModuleScope();
                     nextModule.setPass(false);
-                    nextModule.setModule(chapitresMapper.toDTO(chapitres.get(i+1)));
+                    nextModule.setModule(chapitresMapper.toDTO(chapitres.get(i + 1)));
                     previousModule = new ElearningModuleScope();
                     previousModule.setPass(true);
-                    previousModule.setModule(chapitresMapper.toDTO(chapitres.get(i-1)));
+                    previousModule.setModule(chapitresMapper.toDTO(chapitres.get(i - 1)));
                 }
                 List<ElearningChapterScope> elearningChapterScopes = new ArrayList<>();
-                List<Paragraphs> paragraphs = chapitres.get(i).getParagraphes().stream().sorted(Comparator.comparing(Paragraphs::getId)).collect(Collectors.toList());
-                for(int j =0; j<=paragraphs.size()-1; j++){
+                List<Paragraphs> paragraphs = chapitres.get(i).getParagraphes().stream()
+                        .sorted(Comparator.comparing(Paragraphs::getId)).collect(Collectors.toList());
+                for (int j = 0; j <= paragraphs.size() - 1; j++) {
                     ParagraphsDTO paragraphsDTO = paragraphsMapper.toDTO(paragraphs.get(j));
                     ElearningChapterScope currentChap = new ElearningChapterScope();
                     currentChap.setChapitre(paragraphsDTO);
                     currentChap.setPass(false);
                     ElearningChapterScope previousChap = null;
                     ElearningChapterScope nextChap = null;
-                    if(j==0){
-                        if((paragraphs.size()-1)==0){
+                    if (j == 0) {
+                        if ((paragraphs.size() - 1) == 0) {
                             previousChap = null;
-                        }else {
+                        } else {
                             nextChap = new ElearningChapterScope();
                             nextChap.setPass(false);
-                            nextChap.setChapitre(paragraphsMapper.toDTO(paragraphs.get(j+1)));
+                            nextChap.setChapitre(paragraphsMapper.toDTO(paragraphs.get(j + 1)));
                         }
-                    }else if(j==(paragraphs.size()-1)){
+                    } else if (j == (paragraphs.size() - 1)) {
                         previousChap = new ElearningChapterScope();
                         previousChap.setPass(true);
-                        previousChap.setChapitre(paragraphsMapper.toDTO(paragraphs.get(j-1)));
-                    }else{
+                        previousChap.setChapitre(paragraphsMapper.toDTO(paragraphs.get(j - 1)));
+                    } else {
                         nextChap = new ElearningChapterScope();
                         nextChap.setPass(false);
-                        nextChap.setChapitre(paragraphsMapper.toDTO(paragraphs.get(j+1)));
+                        nextChap.setChapitre(paragraphsMapper.toDTO(paragraphs.get(j + 1)));
                         previousChap = new ElearningChapterScope();
                         previousChap.setPass(true);
-                        previousChap.setChapitre(paragraphsMapper.toDTO(paragraphs.get(j-1)));
+                        previousChap.setChapitre(paragraphsMapper.toDTO(paragraphs.get(j - 1)));
                     }
 
                     currentChap.setChapitreNext(nextChap);
@@ -185,23 +203,25 @@ public class FormationsServiceImpl implements FormationsService {
                 elearningModuleScopes.add(currentModule);
             }
             elearningScope = new ElearningScope(formationsDTO, elearningModuleScopes, false);
-        }else{
+        } else {
             FormationsDTO formationsDTO = mapper.toDTO(formations);
             formationsDTO.setChapitres(new HashSet<>());
-            for (int i = 0 ; i<=list.size()-1; i++) {
+            for (int i = 0; i <= list.size() - 1; i++) {
                 HistoriquesLearning historiquesLearning = list.get(i);
                 Long currentModId = historiquesLearning.getModuleId();
-                List<HistoriquesLearning> allElementCurrentIdMod = list.stream().filter(historiquesLearning1 -> historiquesLearning1.getModuleId() == currentModId).toList();
+                List<HistoriquesLearning> allElementCurrentIdMod = list.stream()
+                        .filter(historiquesLearning1 -> historiquesLearning1.getModuleId() == currentModId).toList();
                 Chapitres chapitres = formations.getChapitres().stream()
                         .filter(chapitre -> chapitre.getId() == currentModId).findFirst().orElse(null);
                 if (chapitres != null) {
                     ChapitresDTO currentChapitresDTO = chapitresMapper.toDTO(chapitres);
                     ElearningModuleScope currentModule = new ElearningModuleScope();
-                    //currentChapitresDTO.setParagraphes(new HashSet<>());
+                    // currentChapitresDTO.setParagraphes(new HashSet<>());
                     currentModule.setModule(currentChapitresDTO);
                     currentModule.setPass(true);
                     ChapitresDTO previousChapitresDTO = formations.getChapitres().stream()
-                            .filter(chapitre -> chapitre.getId() == historiquesLearning.getPreviousModule()).map(chapitresMapper::toDTO)
+                            .filter(chapitre -> chapitre.getId() == historiquesLearning.getPreviousModule())
+                            .map(chapitresMapper::toDTO)
                             .findFirst().orElse(null);
                     ElearningModuleScope previousModule = null;
                     if (previousChapitresDTO != null) {
@@ -209,7 +229,8 @@ public class FormationsServiceImpl implements FormationsService {
                         previousModule = new ElearningModuleScope(previousChapitresDTO, null, null, null, true);
                     }
                     ChapitresDTO nextChapitresDTO = formations.getChapitres().stream()
-                            .filter(chapitre -> chapitre.getId() == historiquesLearning.getNextModule()).map(chapitresMapper::toDTO)
+                            .filter(chapitre -> chapitre.getId() == historiquesLearning.getNextModule())
+                            .map(chapitresMapper::toDTO)
                             .findFirst().orElse(null);
                     ElearningModuleScope nextModule = null;
                     if (nextChapitresDTO != null) {
@@ -217,13 +238,19 @@ public class FormationsServiceImpl implements FormationsService {
                         nextModule = new ElearningModuleScope(nextChapitresDTO, null, null, null, true);
                     }
                     List<ElearningChapterScope> elearningChapterScopes = new ArrayList<>();
-                    list.stream().filter(historiquesLearning1 -> ((historiquesLearning1.getFormationId() == historiquesLearning.getFormationId()) && (historiquesLearning1.getModuleId() == historiquesLearning.getModuleId()))).forEach(historiquesLearning1 -> {
-                        currentChapitresDTO.getParagraphes().forEach(paragraphsDTO -> {
-                            elearningChapterScopes.add(new ElearningChapterScope(paragraphsDTO, null, null, true));
-                        });
-                    });
+                    list.stream()
+                            .filter(historiquesLearning1 -> ((historiquesLearning1
+                                    .getFormationId() == historiquesLearning.getFormationId())
+                                    && (historiquesLearning1.getModuleId() == historiquesLearning.getModuleId())))
+                            .forEach(historiquesLearning1 -> {
+                                currentChapitresDTO.getParagraphes().forEach(paragraphsDTO -> {
+                                    elearningChapterScopes
+                                            .add(new ElearningChapterScope(paragraphsDTO, null, null, true));
+                                });
+                            });
                     currentChapitresDTO.setParagraphes(new HashSet<>());
-                    elearningModuleScopes.add(new ElearningModuleScope(currentChapitresDTO, previousModule, nextModule, elearningChapterScopes, true));
+                    elearningModuleScopes.add(new ElearningModuleScope(currentChapitresDTO, previousModule, nextModule,
+                            elearningChapterScopes, true));
                 }
             }
             elearningScope = new ElearningScope(formationsDTO, elearningModuleScopes, false);
@@ -231,21 +258,27 @@ public class FormationsServiceImpl implements FormationsService {
                     .forEach(chapitres -> {
                         List<ElearningModuleScope> remove = new ArrayList<>();
                         List<ElearningModuleScope> add = new ArrayList<>();
-                        for(ElearningModuleScope elearningModuleScope : elearningModuleScopes){
+                        for (ElearningModuleScope elearningModuleScope : elearningModuleScopes) {
                             ElearningModuleScope elearningModuleSco = elearningModuleScope;
-                            if(elearningModuleScope.getModule().getId() == chapitres.getId()){
-                                if(elearningModuleScope.getChapitres().size() == chapitres.getParagraphes().size()) {
+                            if (elearningModuleScope.getModule().getId() == chapitres.getId()) {
+                                if (elearningModuleScope.getChapitres().size() == chapitres.getParagraphes().size()) {
                                     continue;
-                                }else if(elearningModuleScope.getChapitres().size() < chapitres.getParagraphes().size()){
-                                    final List<Long> listId = elearningModuleScope.getChapitres().stream().map(elearningModuleScop -> elearningModuleScop.getChapitre().getId()).toList();
-                                    chapitres.getParagraphes().stream().filter(paragraphs -> !listId.contains(paragraphs.getId())).sorted(Comparator.comparing(Paragraphs::getId)).forEach(paragraphs -> {
-                                        ParagraphsDTO paragraphsDTO = paragraphsMapper.toDTO(paragraphs);
-                                        elearningModuleSco.getChapitres().add(new ElearningChapterScope(paragraphsDTO, null, null, false));
-                                        add.add(elearningModuleSco);
-                                        remove.add(elearningModuleScope);
-                                    });
+                                } else if (elearningModuleScope.getChapitres().size() < chapitres.getParagraphes()
+                                        .size()) {
+                                    final List<Long> listId = elearningModuleScope.getChapitres().stream()
+                                            .map(elearningModuleScop -> elearningModuleScop.getChapitre().getId())
+                                            .toList();
+                                    chapitres.getParagraphes().stream()
+                                            .filter(paragraphs -> !listId.contains(paragraphs.getId()))
+                                            .sorted(Comparator.comparing(Paragraphs::getId)).forEach(paragraphs -> {
+                                                ParagraphsDTO paragraphsDTO = paragraphsMapper.toDTO(paragraphs);
+                                                elearningModuleSco.getChapitres().add(
+                                                        new ElearningChapterScope(paragraphsDTO, null, null, false));
+                                                add.add(elearningModuleSco);
+                                                remove.add(elearningModuleScope);
+                                            });
                                 }
-                            }else{
+                            } else {
                                 ChapitresDTO chapitresDTO = chapitresMapper.toDTO(chapitres);
                                 ElearningModuleScope currentModule = new ElearningModuleScope();
                                 chapitresDTO.setParagraphes(new HashSet<>());
@@ -254,33 +287,34 @@ public class FormationsServiceImpl implements FormationsService {
                                 ElearningModuleScope previousModule = null;
                                 ElearningModuleScope nextModule = null;
                                 List<ElearningChapterScope> elearningChapterScopes = new ArrayList<>();
-                                List<Paragraphs> paragraphs = chapitres.getParagraphes().stream().sorted(Comparator.comparing(Paragraphs::getId)).collect(Collectors.toList());
-                                for(int j =0; j<=paragraphs.size()-1; j++){
+                                List<Paragraphs> paragraphs = chapitres.getParagraphes().stream()
+                                        .sorted(Comparator.comparing(Paragraphs::getId)).collect(Collectors.toList());
+                                for (int j = 0; j <= paragraphs.size() - 1; j++) {
                                     ParagraphsDTO paragraphsDTO = paragraphsMapper.toDTO(paragraphs.get(j));
                                     ElearningChapterScope currentChap = new ElearningChapterScope();
                                     currentChap.setChapitre(paragraphsDTO);
                                     currentChap.setPass(false);
                                     ElearningChapterScope previousChap = null;
                                     ElearningChapterScope nextChap = null;
-                                    if(j==0){
-                                        if((paragraphs.size()-1)==0){
+                                    if (j == 0) {
+                                        if ((paragraphs.size() - 1) == 0) {
                                             previousChap = null;
-                                        }else {
+                                        } else {
                                             nextChap = new ElearningChapterScope();
                                             nextChap.setPass(false);
-                                            nextChap.setChapitre(paragraphsMapper.toDTO(paragraphs.get(j+1)));
+                                            nextChap.setChapitre(paragraphsMapper.toDTO(paragraphs.get(j + 1)));
                                         }
-                                    }else if(j==(paragraphs.size()-1)){
+                                    } else if (j == (paragraphs.size() - 1)) {
                                         previousChap = new ElearningChapterScope();
                                         previousChap.setPass(true);
-                                        previousChap.setChapitre(paragraphsMapper.toDTO(paragraphs.get(j-1)));
-                                    }else{
+                                        previousChap.setChapitre(paragraphsMapper.toDTO(paragraphs.get(j - 1)));
+                                    } else {
                                         nextChap = new ElearningChapterScope();
                                         nextChap.setPass(false);
-                                        nextChap.setChapitre(paragraphsMapper.toDTO(paragraphs.get(j+1)));
+                                        nextChap.setChapitre(paragraphsMapper.toDTO(paragraphs.get(j + 1)));
                                         previousChap = new ElearningChapterScope();
                                         previousChap.setPass(true);
-                                        previousChap.setChapitre(paragraphsMapper.toDTO(paragraphs.get(j-1)));
+                                        previousChap.setChapitre(paragraphsMapper.toDTO(paragraphs.get(j - 1)));
                                     }
                                     currentChap.setChapitreNext(nextChap);
                                     currentChap.setChapitrePrevious(previousChap);
@@ -292,11 +326,11 @@ public class FormationsServiceImpl implements FormationsService {
                                 }
                             }
                         }
-                        if(remove.size()>0)
+                        if (remove.size() > 0)
                             elearningModuleScopes.removeAll(remove);
-                        if(add.size()>0)
+                        if (add.size() > 0)
                             elearningModuleScopes.addAll(add);
-            });
+                    });
         }
         elearningScope.setModule(elearningModuleScopes);
         return elearningScope;
@@ -315,24 +349,25 @@ public class FormationsServiceImpl implements FormationsService {
 
     }
 
-    private List<FormationsDTO> getData(List<FormationsUser> formationsUsers){
+    private List<FormationsDTO> getData(List<FormationsUser> formationsUsers) {
         List<FormationsDTO> formations = new ArrayList<>(0);
         List<FormationsDTO> formationsDTOS = new ArrayList<>(0);
         formationsUsers.forEach(formationsUser -> {
             try {
                 Formations formation = repo.findById(formationsUser.getFormationId()).orElseThrow();
                 formationsDTOS.add(mapper.toDTO(formation));
-            }catch (Exception ex){}
+            } catch (Exception ex) {
+            }
         });
         formationsDTOS.forEach(formationsDTO -> {
             Set<ChapitresDTO> chapitresDTOS = new HashSet<>(0);
             formationsDTO.getChapitres().forEach(chapitresDTO -> {
                 Set<ParagraphsDTO> paragraphsDTOS = new HashSet<>(0);
                 chapitresDTO.getParagraphes().forEach(paragraphsDTO -> {
-                    if(paragraphsDTO.isStatus())
+                    if (paragraphsDTO.isStatus())
                         paragraphsDTOS.add(paragraphsDTO);
                 });
-                if(chapitresDTO.isStatus() && !chapitresDTO.getParagraphes().isEmpty()) {
+                if (chapitresDTO.isStatus() && !chapitresDTO.getParagraphes().isEmpty()) {
                     ChapitresDTO dto = chapitresDTO;
                     dto.getParagraphes().clear();
                     dto.setParagraphes(paragraphsDTOS);
@@ -342,7 +377,7 @@ public class FormationsServiceImpl implements FormationsService {
             FormationsDTO dto = formationsDTO;
             dto.getChapitres().clear();
             dto.setChapitres(chapitresDTOS);
-            if(!dto.getChapitres().isEmpty())
+            if (!dto.getChapitres().isEmpty())
                 formations.add(dto);
         });
         return formationsDTOS;
@@ -355,15 +390,19 @@ public class FormationsServiceImpl implements FormationsService {
     }
 
     @Override
+    @org.springframework.cache.annotation.Cacheable(value = "elearningFormations", key = "#idFormation")
     public FormationsDTO findByIdAdmin(Long idFormation) throws Exception {
         return mapper.toDTO(getById(idFormation));
     }
 
     @Override
+    @org.springframework.cache.annotation.Cacheable(value = "elearningFormations", key = "#idFormation + '-detail'")
     public FormationsDTO findByIdAdminWithDetail(Long idFormation) throws Exception {
         Formations formations = getById(idFormation);
-        /*if(!formations.isStatus())
-            throw new Exception("Not found");*/
+        /*
+         * if(!formations.isStatus())
+         * throw new Exception("Not found");
+         */
         FormationsDTO formationsDTO = mapper.toDTO(formations);
         List<ChapitresDTO> chapitresDTOS = new ArrayList<>(0);
         formationsDTO.getChapitres().forEach(chapitresDTO -> {
@@ -374,11 +413,12 @@ public class FormationsServiceImpl implements FormationsService {
             }
         });
         Collections.sort(chapitresDTOS);
-        formationsDTO=constructOrder(formationsDTO, chapitresDTOS);
+        formationsDTO = constructOrder(formationsDTO, chapitresDTOS);
         return formationsDTO;
     }
 
     @Override
+    @org.springframework.cache.annotation.Cacheable(value = "elearningFormationsPage", key = "{#page, #size}")
     public Page<FormationsDTO> findAll(int page, int size) throws Exception {
         Page<Formations> formations = repo.findAll(PageRequest.of(page, size));
         return new PageImpl<>(
@@ -388,6 +428,7 @@ public class FormationsServiceImpl implements FormationsService {
     }
 
     @Override
+    @org.springframework.cache.annotation.Cacheable(value = "elearningFormationsPage", key = "{#page, #size, 'admin'}")
     public Page<FormationsDTO> findAllFormationOnlyAdmin(int page, int size) throws Exception {
         Page<Formations> formations = repo.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id")));
         return new PageImpl<>(
@@ -397,23 +438,26 @@ public class FormationsServiceImpl implements FormationsService {
     }
 
     @Override
+    @org.springframework.cache.annotation.Cacheable(value = "elearningFormationsActive")
     public List<FormationsDTO> findAll() throws Exception {
         return repo.findAll().stream().map(mapper::toDTO).collect(Collectors.toList());
     }
 
     @Override
+    @org.springframework.cache.annotation.Cacheable(value = "elearningFormationsActive")
     public List<FormationsDTO> findAllActive() throws Exception {
-        List<FormationsDTO> formationsDTOS = repo.findAll().stream().map(mapper::toDTO).filter(FormationsDTO::isStatus).collect(Collectors.toList());
+        List<FormationsDTO> formationsDTOS = repo.findAll().stream().map(mapper::toDTO).filter(FormationsDTO::isStatus)
+                .collect(Collectors.toList());
         List<FormationsDTO> formations = new ArrayList<>(0);
         formationsDTOS.forEach(formationsDTO -> {
             Set<ChapitresDTO> chapitresDTOS = new HashSet<>(0);
             formationsDTO.getChapitres().forEach(chapitresDTO -> {
                 Set<ParagraphsDTO> paragraphsDTOS = new HashSet<>(0);
                 chapitresDTO.getParagraphes().forEach(paragraphsDTO -> {
-                    if(paragraphsDTO.isStatus())
+                    if (paragraphsDTO.isStatus())
                         paragraphsDTOS.add(paragraphsDTO);
                 });
-                if(chapitresDTO.isStatus() && !chapitresDTO.getParagraphes().isEmpty()) {
+                if (chapitresDTO.isStatus() && !chapitresDTO.getParagraphes().isEmpty()) {
                     ChapitresDTO dto = chapitresDTO;
                     dto.getParagraphes().clear();
                     dto.setParagraphes(paragraphsDTOS);
@@ -423,22 +467,23 @@ public class FormationsServiceImpl implements FormationsService {
             FormationsDTO dto = formationsDTO;
             dto.getChapitres().clear();
             dto.setChapitres(chapitresDTOS);
-            if(!dto.getChapitres().isEmpty())
+            if (!dto.getChapitres().isEmpty())
                 formations.add(dto);
         });
         return formations;
     }
 
     @Override
+    @org.springframework.cache.annotation.Cacheable(value = "elearningFormationsActive", key = "'lite'")
     public List<FormationsDTO> findAllActiveLite() throws Exception {
-        List<FormationsDTO> formationsDTOS = repo.findAll().stream().map(mapper::toDTO).filter(FormationsDTO::isStatus).collect(Collectors.toList());
+        List<FormationsDTO> formationsDTOS = repo.findAll().stream().map(mapper::toDTO).filter(FormationsDTO::isStatus)
+                .collect(Collectors.toList());
 
         List<FormationsDTO> formations = new ArrayList<>(0);
         formationsDTOS.forEach(formationsDTO -> {
             Set<ChapitresDTO> chapitresDTOS = new HashSet<>(0);
             formationsDTO.getChapitres().forEach(chapitresDTO -> {
-                Set<ParagraphsDTO> paragraphsDTOS = new HashSet<>(0);
-                if(chapitresDTO.isStatus() && !chapitresDTO.getParagraphes().isEmpty()) {
+                if (chapitresDTO.isStatus() && !chapitresDTO.getParagraphes().isEmpty()) {
                     ChapitresDTO dto = chapitresDTO;
                     dto.getParagraphes().clear();
                     chapitresDTOS.add(dto);
@@ -448,53 +493,59 @@ public class FormationsServiceImpl implements FormationsService {
             dto.getChapitres().clear();
             dto.setChapitres(chapitresDTOS);
 
-            /*if(dto.getQuizz()!=null) {
-                dto.getQuizz().setQuestions(new HashSet<>());
-            }*/
-            //if(!dto.getChapitres().isEmpty())
-                formations.add(dto);
+            /*
+             * if(dto.getQuizz()!=null) {
+             * dto.getQuizz().setQuestions(new HashSet<>());
+             * }
+             */
+            // if(!dto.getChapitres().isEmpty())
+            formations.add(dto);
         });
         return formations;
     }
 
     @Override
+    @org.springframework.cache.annotation.Cacheable(value = "elearningFormations", key = "#id + '-lite'")
     public FormationsDTO findByIdActiveFormationsLite(Long id) throws Exception {
-        Formations formations = repo.findFormationsByIdAndStatusIsTrue(id).orElseThrow(()->new Exception("Formation non trouvee"));
+        Formations formations = repo.findFormationsByIdAndStatusIsTrue(id)
+                .orElseThrow(() -> new Exception("Formation non trouvee"));
         FormationsDTO formationsDTOS = mapper.toDTO(formations);
         Set<ChapitresDTO> chapitresDTOS = new HashSet<>(0);
         formations.getChapitres().forEach(chapitres -> {
             Set<ParagraphsDTO> paragraphs = new HashSet<>(0);
             chapitres.getParagraphes().forEach(paragraph -> {
-                if(paragraph.isStatus())
+                if (paragraph.isStatus())
                     paragraphs.add(new ParagraphsDTO(paragraph.getId(), paragraph.getType(), "", "",
                             paragraph.isStatus(), paragraph.getDescription()));
             });
-            if(chapitres.isStatus() && !chapitres.getParagraphes().isEmpty()) {
+            if (chapitres.isStatus() && !chapitres.getParagraphes().isEmpty()) {
                 ChapitresDTO dto = new ChapitresDTO(chapitres.getId(), chapitres.getTitle(), chapitres.isStatus(),
-                        chapitres.getOrderParagraph(),paragraphs, new HashSet<>());
+                        chapitres.getOrderParagraph(), paragraphs, new HashSet<>());
                 chapitresDTOS.add(dto);
             }
         });
         formationsDTOS.getChapitres().clear();
         formationsDTOS.setChapitres(chapitresDTOS);
-        if(formationsDTOS.getQuizz()!=null) {
+        if (formationsDTOS.getQuizz() != null) {
             formationsDTOS.getQuizz().setQuestions(new HashSet<>());
         }
         return formationsDTOS;
     }
 
     @Override
+    @org.springframework.cache.annotation.Cacheable(value = "elearningFormationsByCategory", key = "#categorie")
     public List<FormationsDTO> findAllActiveByCategoryLite(String categorie) {
-        Categories categories = iCategoriesRepository.findById(UUID.fromString(categorie)).orElseThrow(()->new RuntimeException("Categorie non trouve"));
-        if(Objects.equals(categories.isStatus(), Boolean.FALSE.booleanValue()))
+        Categories categories = iCategoriesRepository.findById(UUID.fromString(categorie))
+                .orElseThrow(() -> new RuntimeException("Categorie non trouve"));
+        if (Objects.equals(categories.isStatus(), Boolean.FALSE.booleanValue()))
             throw new RuntimeException("Categorie desactive, veillez l'activer pour l'utiliser");
-        List<FormationsDTO> formationsDTOS = repo.findFormationsByCategoriesAndStatusIsTrue(categories).stream().map(mapper::toDTO).collect(Collectors.toList());
+        List<FormationsDTO> formationsDTOS = repo.findFormationsByCategoriesAndStatusIsTrue(categories).stream()
+                .map(mapper::toDTO).collect(Collectors.toList());
         List<FormationsDTO> formations = new ArrayList<>(0);
         formationsDTOS.forEach(formationsDTO -> {
             Set<ChapitresDTO> chapitresDTOS = new HashSet<>(0);
             formationsDTO.getChapitres().forEach(chapitresDTO -> {
-                Set<ParagraphsDTO> paragraphsDTOS = new HashSet<>(0);
-                if(chapitresDTO.isStatus() && !chapitresDTO.getParagraphes().isEmpty()) {
+                if (chapitresDTO.isStatus() && !chapitresDTO.getParagraphes().isEmpty()) {
                     ChapitresDTO dto = chapitresDTO;
                     dto.getParagraphes().clear();
                     chapitresDTOS.add(dto);
@@ -503,25 +554,27 @@ public class FormationsServiceImpl implements FormationsService {
             FormationsDTO dto = formationsDTO;
             dto.getChapitres().clear();
             dto.setChapitres(chapitresDTOS);
-            if(dto.getQuizz()!=null) {
+            if (dto.getQuizz() != null) {
                 dto.getQuizz().setQuestions(new HashSet<>());
             }
-            if(!dto.getChapitres().isEmpty())
+            if (!dto.getChapitres().isEmpty())
                 formations.add(dto);
         });
         return formations;
     }
 
     @Override
+    @org.springframework.cache.annotation.Cacheable(value = "elearningFormationsByCategory", key = "#categorieCode")
     public List<FormationsDTO> findAllActiveByCategoryLiteByCode(String categorieCode) {
-        Categories categories = iCategoriesRepository.findByCode(categorieCode).orElseThrow(()->new RuntimeException("Categorie non trouve"));
-        List<FormationsDTO> formationsDTOS = repo.findFormationsByCategoriesAndStatusIsTrue(categories).stream().map(mapper::toDTO).collect(Collectors.toList());
+        Categories categories = iCategoriesRepository.findByCode(categorieCode)
+                .orElseThrow(() -> new RuntimeException("Categorie non trouve"));
+        List<FormationsDTO> formationsDTOS = repo.findFormationsByCategoriesAndStatusIsTrue(categories).stream()
+                .map(mapper::toDTO).collect(Collectors.toList());
         List<FormationsDTO> formations = new ArrayList<>(0);
         formationsDTOS.forEach(formationsDTO -> {
             Set<ChapitresDTO> chapitresDTOS = new HashSet<>(0);
             formationsDTO.getChapitres().forEach(chapitresDTO -> {
-                Set<ParagraphsDTO> paragraphsDTOS = new HashSet<>(0);
-                if(chapitresDTO.isStatus() && !chapitresDTO.getParagraphes().isEmpty()) {
+                if (chapitresDTO.isStatus() && !chapitresDTO.getParagraphes().isEmpty()) {
                     ChapitresDTO dto = chapitresDTO;
                     dto.getParagraphes().clear();
                     chapitresDTOS.add(dto);
@@ -530,17 +583,21 @@ public class FormationsServiceImpl implements FormationsService {
             FormationsDTO dto = formationsDTO;
             dto.getChapitres().clear();
             dto.setChapitres(chapitresDTOS);
-            if(dto.getQuizz()!=null) {
+            if (dto.getQuizz() != null) {
                 dto.getQuizz().setQuestions(new HashSet<>());
             }
-            if(!dto.getChapitres().isEmpty())
+            if (!dto.getChapitres().isEmpty())
                 formations.add(dto);
         });
         return formations;
     }
 
-
     @Override
+    @org.springframework.cache.annotation.Caching(evict = {
+            @org.springframework.cache.annotation.CacheEvict(value = "elearningFormations", key = "#id"),
+            @org.springframework.cache.annotation.CacheEvict(value = { "elearningFormationsActive",
+                    "elearningFormationsPage", "elearningFormationsByCategory" }, allEntries = true)
+    })
     public void enable(Long id) throws Exception {
         Formations formations = getById(id);
         formations.setStatus(Boolean.TRUE.booleanValue());
@@ -550,29 +607,42 @@ public class FormationsServiceImpl implements FormationsService {
     @Override
     public void finishFormation(Long idUser, Long idFormation) throws Exception {
         Optional<FormationsUser> formationsUsers = formationUserRepo.findByUserIdAndFormationId(idUser, idFormation);
-        if(formationsUsers.isEmpty())
+        if (formationsUsers.isEmpty())
             throw new Exception("Error contacter l'administrateur du site");
         FormationsUser formationsUser = formationsUsers.get();
         formationsUser.setFinish(Boolean.TRUE.booleanValue());
         formationUserRepo.save(formationsUser);
-        //Formations formations = repo.findById(idFormation).orElseThrow(()->new Exception("not found"));
-        //List<QuestionResponse> questionResponses = questionResponseRepo.findQuestionResponsesBySondageId(formations.getQuizz().getId());
+        // Formations formations = repo.findById(idFormation).orElseThrow(()->new
+        // Exception("not found"));
+        // List<QuestionResponse> questionResponses =
+        // questionResponseRepo.findQuestionResponsesBySondageId(formations.getQuizz().getId());
 
     }
 
     @Override
+    @org.springframework.cache.annotation.Caching(evict = {
+            @org.springframework.cache.annotation.CacheEvict(value = "elearningFormations", key = "#idFormation"),
+            @org.springframework.cache.annotation.CacheEvict(value = { "elearningFormationsActive",
+                    "elearningFormationsPage", "elearningFormationsByCategory" }, allEntries = true)
+    })
     public void addQuizz(Long idFormation, Long idQuizz) throws Exception {
-        Formations formations = repo.findById(idFormation).orElseThrow(()->new RuntimeException("Formation non trouvee"));
-        Sondage sondage = sondageRepo.findById(idQuizz).orElseThrow(()->new RuntimeException("Quizz non trouvee"));
-        if(sondage.getTypeUser() != TypeUserSondage.FORMATION)
+        Formations formations = repo.findById(idFormation)
+                .orElseThrow(() -> new RuntimeException("Formation non trouvee"));
+        Sondage sondage = sondageRepo.findById(idQuizz).orElseThrow(() -> new RuntimeException("Quizz non trouvee"));
+        if (sondage.getTypeUser() != TypeUserSondage.FORMATION)
             throw new Exception("Quizz non fait pour les formations");
-        if(repo.findFormationsByQuizz(sondage).isPresent())
+        if (repo.findFormationsByQuizz(sondage).isPresent())
             throw new Exception("Quizz deja utilise par une autre formation");
         formations.setQuizz(sondage);
         repo.save(formations);
     }
 
     @Override
+    @org.springframework.cache.annotation.Caching(evict = {
+            @org.springframework.cache.annotation.CacheEvict(value = "elearningFormations", key = "#id"),
+            @org.springframework.cache.annotation.CacheEvict(value = { "elearningFormationsActive",
+                    "elearningFormationsPage", "elearningFormationsByCategory" }, allEntries = true)
+    })
     public void disable(Long id) throws Exception {
         Formations formations = getById(id);
         formations.setStatus(Boolean.FALSE.booleanValue());
@@ -584,27 +654,30 @@ public class FormationsServiceImpl implements FormationsService {
         Utilisateur utilisateur = utilsService.getUser();
         Formations formations = new Formations();
         formations.setId(idFormation);
-        return resultatsRepo.findAllByUtilisateurAndFormationAndStatusTrue(utilisateur, formations).orElseThrow(()->new Exception("Pas de certificat pour cet utilisateur"));
+        return resultatsRepo.findAllByUtilisateurAndFormationAndStatusTrue(utilisateur, formations)
+                .orElseThrow(() -> new Exception("Pas de certificat pour cet utilisateur"));
     }
 
     @Override
-    public Resultats certificateAdmin(Long idUser, Long idFormation) throws Exception{
+    public Resultats certificateAdmin(Long idUser, Long idFormation) throws Exception {
         Utilisateur utilisateur = utilsService.getUserById(idUser);
         Formations formations = new Formations();
         formations.setId(idFormation);
-        return resultatsRepo.findAllByUtilisateurAndFormationAndStatusTrue(utilisateur, formations).orElseThrow(()->new Exception("Pas de certificat pour cet utilisateur"));
+        return resultatsRepo.findAllByUtilisateurAndFormationAndStatusTrue(utilisateur, formations)
+                .orElseThrow(() -> new Exception("Pas de certificat pour cet utilisateur"));
     }
 
-    private Formations getById(Long id)throws Exception{
-        return repo.findById(id).orElseThrow(()->new Exception("not found"));
+    private Formations getById(Long id) throws Exception {
+        return repo.findById(id).orElseThrow(() -> new Exception("not found"));
     }
-    private FormationsDTO constructOrder(FormationsDTO formationsDTO, List<ChapitresDTO> chapterList){
-        String order ="";
-        for(int i = 0;i<=(chapterList.size()-1);i=i+1){
-            if(i==0){
+
+    private FormationsDTO constructOrder(FormationsDTO formationsDTO, List<ChapitresDTO> chapterList) {
+        String order = "";
+        for (int i = 0; i <= (chapterList.size() - 1); i = i + 1) {
+            if (i == 0) {
                 order = chapterList.get(0).getId().toString();
-            }else {
-                order = order+","+chapterList.get(i).getId().toString();
+            } else {
+                order = order + "," + chapterList.get(i).getId().toString();
             }
         }
         formationsDTO.setOrderChapter(order);

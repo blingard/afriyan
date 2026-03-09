@@ -78,6 +78,12 @@ public class USRAJController {
         return centrePartenaire.trouverCPProches(latitude, longitude);
     }
 
+    @GetMapping("api/centrepartenaire/proches/{latitude}/{longitude}")
+    @RolesAllowed(value = {"GET_USRAJ"})
+    public List<CentrePartenaireDTO> getCentrePartenaireProchesUser(@PathVariable double latitude, @PathVariable double longitude) {
+        return centrePartenaire.trouverCPProches(latitude, longitude);
+    }
+
     @GetMapping(value = "public/api/centrepartenaire/getById/{id}")
     public CentrePartenaireDTO listById(@PathVariable Long id) throws Exception {
         return centrePartenaire.findById(id);

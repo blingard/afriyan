@@ -8,7 +8,6 @@ import org.ligot.afriyan.entities.*;
 import org.ligot.afriyan.mapper.ArticlesMapper;
 import org.ligot.afriyan.mapper.UtilisateurMapper;
 import org.ligot.afriyan.repository.IArticlesRepository;
-import org.ligot.afriyan.repository.ICategoriesRepository;
 import org.ligot.afriyan.repository.IUserConnect;
 import org.ligot.afriyan.service.IArticles;
 import org.ligot.afriyan.service.ICategories;
@@ -38,18 +37,20 @@ public class ArticlesImpl implements IArticles {
     private final ICategories iCategories;
     private final IUtilisateur utilisateur;
     private final UtilisateurMapper utilisateurMapper;
+    private final UtilsService utilsService;
 
     private final FileStorageService fileStorageService;
 
     public ArticlesImpl(IArticlesRepository repository, ArticlesMapper mapper, IUserConnect iUserConnect,
-            ICategories iCategories, IUtilisateur utilisateur, UtilisateurMapper utilisateurMapper,
-            FileStorageService fileStorageService) {
+                        ICategories iCategories, IUtilisateur utilisateur, UtilisateurMapper utilisateurMapper,
+                        UtilsService utilsService, FileStorageService fileStorageService) {
         this.repository = repository;
         this.mapper = mapper;
         this.iUserConnect = iUserConnect;
         this.iCategories = iCategories;
         this.utilisateur = utilisateur;
         this.utilisateurMapper = utilisateurMapper;
+        this.utilsService = utilsService;
         this.fileStorageService = fileStorageService;
     }
 
@@ -87,28 +88,11 @@ public class ArticlesImpl implements IArticles {
     }
 
     private Utilisateur getUser() throws Exception {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        UtilisateurDTO utilisateurDTO = utilisateur.findByName(username);
-        return utilisateurMapper.create(utilisateurDTO);
+        return utilsService.getUser();
     }
 
     private ArticlesDTO findWithFile(Articles articles) {
         ArticlesDTO articlesDTO = mapper.toDTO(articles);
-        /*
-         * try {
-         * String[] elements = articles.getPhote().split(":");
-         * String imageBase64 =
-         * fileStorageService.convertImageToBase64(Constantes.ARTICLEIMAGESUBPATH1+
-         * elements[0]);
-         * String image = "data:image/"+elements[1]+";base64,"+imageBase64;
-         * articlesDTO.setPhote(image);
-         * if(image.contains(";base64,null")){
-         * articlesDTO.setPhote(null);
-         * }
-         * }catch (Exception ex){
-         * 
-         * }
-         */
         return articlesDTO;
     }
 
@@ -147,20 +131,6 @@ public class ArticlesImpl implements IArticles {
     public List<ArticlesDTO> getListActive(TypeDonne typeDonne) {
         return repository.findAllByStatusTrueAndTypeDonne(typeDonne).stream()
                 .map(articles -> this.findWithFile(articles, typeDonne)).toList();
-    }
-
-    public void logg() {
-        try {
-            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
-                    .getPrincipal();
-            iUserConnect.save(new UserConnect(
-                    Date.from(Instant.now()),
-                    userDetails.getUsername()));
-        } catch (Exception ex) {
-            iUserConnect.save(new UserConnect(
-                    Date.from(Instant.now()),
-                    "anonymous"));
-        }
     }
 
     @Override

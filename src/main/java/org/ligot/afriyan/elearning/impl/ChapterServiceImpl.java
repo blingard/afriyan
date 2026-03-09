@@ -30,7 +30,9 @@ public class ChapterServiceImpl implements ChapterService {
     private final FileStorageService fileStorageService;
     private final FileStorageProperties fileStorageProperties;
 
-    public ChapterServiceImpl(ChapitresMapper mapper, ChapterRepo repo, ParagraphService paragraphService, FormationsRepo formationsRepo, FileStorageService fileStorageService, FileStorageProperties fileStorageProperties) {
+    public ChapterServiceImpl(ChapitresMapper mapper, ChapterRepo repo, ParagraphService paragraphService,
+            FormationsRepo formationsRepo, FileStorageService fileStorageService,
+            FileStorageProperties fileStorageProperties) {
         this.mapper = mapper;
         this.repo = repo;
         this.paragraphService = paragraphService;
@@ -40,33 +42,45 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
+    @org.springframework.cache.annotation.Caching(evict = {
+            @org.springframework.cache.annotation.CacheEvict(value = "elearningFormations", key = "#idFormation"),
+            @org.springframework.cache.annotation.CacheEvict(value = { "elearningFormationsActive",
+                    "elearningFormationsPage", "elearningFormationsByCategory" }, allEntries = true)
+    })
     public void save(Long idFormation, ChapitresDTO chapitresDTO) throws Exception {
-        Formations formations = formationsRepo.findById(idFormation).orElseThrow(()->new Exception("Formation not found"));
-        if(formations.getChapitres()==null)
+        Formations formations = formationsRepo.findById(idFormation)
+                .orElseThrow(() -> new Exception("Formation not found"));
+        if (formations.getChapitres() == null)
             formations.setChapitres(new HashSet<>(0));
         Chapitres chapitres = mapper.toEntity(chapitresDTO);
         chapitres.getParagraphes().clear();
         chapitres.setStatus(Boolean.TRUE.booleanValue());
         Chapitres chapitreSave = repo.save(chapitres);
         formations.getChapitres().add(chapitreSave);
-        if(formations.getOrderChapter()==null){
+        if (formations.getOrderChapter() == null) {
             formations.setOrderChapter(chapitreSave.getId().toString());
-        }else {
-            formations.setOrderChapter(formations.getOrderChapter()+","+chapitreSave.getId().toString());
+        } else {
+            formations.setOrderChapter(formations.getOrderChapter() + "," + chapitreSave.getId().toString());
         }
         formationsRepo.save(formations);
     }
 
     @Override
+    @org.springframework.cache.annotation.Caching(evict = {
+            @org.springframework.cache.annotation.CacheEvict(value = "elearningChapters", key = "#id"),
+            @org.springframework.cache.annotation.CacheEvict(value = { "elearningFormationsActive",
+                    "elearningFormationsPage", "elearningFormationsByCategory" }, allEntries = true)
+    })
     public void update(Long id, ChapitresDTO chapitresDTO) throws Exception {
         Chapitres chapitres = findById(id);
-        if(!chapitres.isStatus())
+        if (!chapitres.isStatus())
             throw new Exception("Not found");
         mapper.update(chapitresDTO, chapitres);
         repo.save(chapitres);
     }
 
     @Override
+    @org.springframework.cache.annotation.CacheEvict(value = "elearningChapters", key = "#id")
     public void enable(Long id) throws Exception {
         Chapitres chapitres = findById(id);
         chapitres.setStatus(Boolean.TRUE.booleanValue());
@@ -74,6 +88,7 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
+    @org.springframework.cache.annotation.CacheEvict(value = "elearningChapters", key = "#id")
     public void disable(Long id) throws Exception {
         Chapitres chapitres = findById(id);
         chapitres.setStatus(Boolean.FALSE.booleanValue());
@@ -81,25 +96,29 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
+    @org.springframework.cache.annotation.Cacheable(value = "elearningChapters", key = "#id")
     public ChapitresDTO getById(Long id) throws Exception {
         ChapitresDTO chapitresDTO = mapper.toDTO(findById(id));
-        if(!chapitresDTO.isStatus())
+        if (!chapitresDTO.isStatus())
             throw new Exception("Not found");
         List<ParagraphsDTO> paragraphsDTOS = new ArrayList<>(0);
         chapitresDTO.getParagraphes().forEach(paragraphsDTO -> {
-            if(paragraphsDTO.isStatus()){
+            if (paragraphsDTO.isStatus()) {
                 ParagraphsDTO localParagraph = paragraphsDTO;
-                /*if(paragraphsDTO.getType()== TypeParagraph.IMAGE){
-                    String[] elements = paragraphsDTO.getContent().split(":");
-                    String imageBase64 = fileStorageService.convertImageToBase64( Constantes.PARAGRAPHIMAGESUBPATH1+elements[0]);
-                    String image = "data:image/"+elements[1]+";base64,"+imageBase64;
-                    localParagraph.setContent(image);
-                }*/
+                /*
+                 * if(paragraphsDTO.getType()== TypeParagraph.IMAGE){
+                 * String[] elements = paragraphsDTO.getContent().split(":");
+                 * String imageBase64 = fileStorageService.convertImageToBase64(
+                 * Constantes.PARAGRAPHIMAGESUBPATH1+elements[0]);
+                 * String image = "data:image/"+elements[1]+";base64,"+imageBase64;
+                 * localParagraph.setContent(image);
+                 * }
+                 */
                 paragraphsDTOS.add(localParagraph);
             }
         });
         Collections.sort(paragraphsDTOS);
-        chapitresDTO=constructOrder(chapitresDTO, paragraphsDTOS);
+        chapitresDTO = constructOrder(chapitresDTO, paragraphsDTOS);
         chapitresDTO.getParagraphes().clear();
         chapitresDTO.setParagraphes(paragraphsDTOS.stream().collect(Collectors.toSet()));
         return chapitresDTO;
@@ -111,17 +130,21 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
+    @org.springframework.cache.annotation.Cacheable(value = "elearningChapters", key = "#id + '-admin'")
     public ChapitresDTO getByIdAdmin(Long id) throws Exception {
         ChapitresDTO chapitresDTO = mapper.toDTO(findById(id));
         List<ParagraphsDTO> paragraphsDTOS = new ArrayList<>(0);
         chapitresDTO.getParagraphes().forEach(paragraphsDTO -> {
             ParagraphsDTO localParagraph = paragraphsDTO;
-            /*if (paragraphsDTO.getType() == TypeParagraph.IMAGE) {
-                String[] elements = paragraphsDTO.getContent().split(":");
-                String imageBase64 = fileStorageService.convertImageToBase64("paragraph/image/" + elements[0]);
-                String image = "data:image/" + elements[1] + ";base64," + imageBase64;
-                localParagraph.setContent(image);
-            }*/
+            /*
+             * if (paragraphsDTO.getType() == TypeParagraph.IMAGE) {
+             * String[] elements = paragraphsDTO.getContent().split(":");
+             * String imageBase64 =
+             * fileStorageService.convertImageToBase64("paragraph/image/" + elements[0]);
+             * String image = "data:image/" + elements[1] + ";base64," + imageBase64;
+             * localParagraph.setContent(image);
+             * }
+             */
             paragraphsDTOS.add(localParagraph);
         });
         Collections.sort(paragraphsDTOS);
@@ -132,9 +155,9 @@ public class ChapterServiceImpl implements ChapterService {
     @Override
     public List<ParagraphsDTO> getByIdAdminP(Long id) throws Exception {
         ChapitresDTO chapitresDTO = getByIdAdmin(id);
-        if(chapitresDTO.getParagraphes()==null)
+        if (chapitresDTO.getParagraphes() == null)
             throw new RuntimeException("Pas de Chapitres disponible");
-        if(chapitresDTO.getParagraphes().isEmpty())
+        if (chapitresDTO.getParagraphes().isEmpty())
             throw new RuntimeException("Pas de Chapitres disponible");
         return getByIdAdmin(id).getParagraphes().stream().map(paragraphsDTO -> {
             paragraphsDTO.setContent(null);
@@ -142,17 +165,17 @@ public class ChapterServiceImpl implements ChapterService {
         }).toList();
     }
 
-    private Chapitres findById(Long id)throws Exception{
-        return repo.findById(id).orElseThrow(()->new Exception("not found"));
+    private Chapitres findById(Long id) throws Exception {
+        return repo.findById(id).orElseThrow(() -> new Exception("not found"));
     }
 
-    private ChapitresDTO constructOrder(ChapitresDTO chapitresDTO, List<ParagraphsDTO> paragraphsDTOList){
-        String order ="";
-        for(int i = 0;i<=(paragraphsDTOList.size()-1);i=i+1){
-            if(i==0){
+    private ChapitresDTO constructOrder(ChapitresDTO chapitresDTO, List<ParagraphsDTO> paragraphsDTOList) {
+        String order = "";
+        for (int i = 0; i <= (paragraphsDTOList.size() - 1); i = i + 1) {
+            if (i == 0) {
                 order = paragraphsDTOList.get(0).getId().toString();
-            }else {
-                order = order+","+paragraphsDTOList.get(i).getId().toString();
+            } else {
+                order = order + "," + paragraphsDTOList.get(i).getId().toString();
             }
         }
         chapitresDTO.setOrderParagraph(order);
