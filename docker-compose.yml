@@ -1,180 +1,249 @@
-version: '3.8'
-
 services:
-  # PostgreSQL Database
+
   postgres:
-    image: postgres:15-alpine
-    container_name: afriyan_postgres
+    image: postgres:14
+    container_name: postgresyouthfp
+    restart: always
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    ports:
-      - "${POSTGRES_PORT}:5432"
+      POSTGRES_DB: ${DB_NAME}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - afriyan-network
-    restart: unless-stopped
+      - /home/ubuntu/app/youthfp/db:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - afriyan-network
 
-  # Application Spring Boot
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: afriyan_app
-    ports:
-      - "${APP_PORT}:8087"
+  pgbounceryouthfp:
+    image: edoburu/pgbouncer
+    container_name: pgbounceryouthfp
+    restart: always
     environment:
-      # Database Configuration
-      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
-      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
-      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
-      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
-      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: ${SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT}
-
-      # Server Configuration
-      SERVER_PORT: ${SERVER_PORT}
-      SPRING_JMX_ENABLED: ${SPRING_JMX_ENABLED}
-
-      # Swagger Configuration
-      SPRINGDOC_SWAGGER_UI_PATH: ${SPRINGDOC_SWAGGER_UI_PATH}
-
-      # File Upload Configuration
-      SPRING_WEB_RESOURCES_STATIC_LOCATIONS: ${SPRING_WEB_RESOURCES_STATIC_LOCATIONS}
-      FILE_UPLOAD_DIR: ${FILE_UPLOAD_DIR}
-      SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE: ${SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE}
-      SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE: ${SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE}
-
-      # SMS Configuration (LMT Group)
-      LMT_ACCOUNTSID: ${LMT_ACCOUNT_SID}
-      LMT_AUTHTOKEN: ${LMT_AUTH_TOKEN}
-      LMT_SENDER: ${LMT_SENDER}
-      LMT_URL: ${LMT_URL}
-
-      # Email Configuration
-      SPRING_MAIL_HOST: ${SPRING_MAIL_HOST}
-      SPRING_MAIL_PORT: ${SPRING_MAIL_PORT}
-      SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME}
-      SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD}
-      SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: ${SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH}
-      SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: ${SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE}
-
-      # Images Configuration
-      UNFPAPHOTO: ${UNFPA_PHOTO}
-      YOUNG: ${YOUNG_LOGO}
-
-      # Weather API Configuration
-      WEATHER_WEBSITE: ${WEATHER_WEBSITE}
-      WEATHER_KEY: ${WEATHER_KEY}
-      WEATHER_URL: ${WEATHER_URL}
-
-      # Redis Configuration
-      REDIS_URL: ${REDIS_URL}
-      REDIS_PORD: ${REDIS_PORD}
-    volumes:
-      # Mapping du dossier config
-      - ./config:/app/config:ro
-      # Mapping du dossier uploads
-      - ./uploads:/app/uploads
-      # Mapping optionnel pour les logs
-      - ./logs:/app/logs
+      DB_HOST: postgresyouthfp
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      AUTH_TYPE: scram-sha-256
+      POOL_MODE: session
+      MAX_CLIENT_CONN: 1000
+      DEFAULT_POOL_SIZE: 25
+      LISTEN_PORT: 6432
+    #ports:
+    #  - "6432:6432"
     depends_on:
       postgres:
         condition: service_healthy
-      redis:
-        condition: service_started
-    networks:
-      - afriyan-network
-    restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8087/actuator/health" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
-
-  # Redis Cache
-  redis:
-    image: redis:7-alpine
-    container_name: afriyan_redis
-    ports:
-      - "${REDIS_PORD}:6379"
-    networks:
-      - afriyan-network
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "pg_isready", "-h", "127.0.0.1", "-p", "6432", "-U", "${POSTGRES_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
-
-  # MinIO Object Storage
-  minio:
-    image: minio/minio:latest
-    container_name: afriyan_minio
-    command: server /data --console-address ":9001"
-    environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-    ports:
-      - "9000:9000" # MinIO API
-      - "9001:9001" # MinIO Console
-    volumes:
-      - minio_data:/data
     networks:
       - afriyan-network
+      - dokploy-network
+
+  nginxyouthfp:
+    image: nginx:latest
+    container_name: nginxyouthfp
+    restart: unless-stopped
+    ports:
+      - "8087:80"     # App Spring Boot
+    volumes:
+      - /home/ubuntu/app/youthfp/backend/nginx:/etc/nginx
+    depends_on:
+      - afriyan1
+      - afriyan2
+    networks:
+      - afriyan-network
+      - dokploy-network
+
+  minioyouthfp:
+    image: minio/minio:latest
+    container_name: minioyouthfp
+    restart: unless-stopped
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    command:
+      - server
+      - /data
+      - --console-address
+      - ":9001"
+    volumes:
+      - /home/ubuntu/app/youthfp/backend/minio:/data
+    networks:
+      - afriyan-network
+      - dokploy-network
+
+  redisyouthfp:
+    image: redis:7-alpine
+    container_name: redisyouthfp
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - afriyan-network
+
+  keycloakyouthfpdb:
+    image: postgres:15
+    container_name: keycloakyouthfpdb
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: kcpassword
+    volumes:
+      - /home/ubuntu/app/youthfp/keycloak:/var/lib/postgresql/data
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
+      test: ["CMD-SHELL", "pg_isready -U keycloak"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - afriyan-network
 
-  # Keycloak Identity and Access Management
-  keycloak:
-    image: quay.io/keycloak/keycloak:23.0
-    container_name: afriyan_keycloak
+  keycloakyouthfp:
+    image: quay.io/keycloak/keycloak:26.0.0
+    container_name: keycloakyouthfp
     command: start-dev
     environment:
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres:5432/${KEYCLOAK_DB_DATABASE}
-      KC_DB_USERNAME: ${KEYCLOAK_DB_USER}
-      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
-      KC_HOSTNAME: localhost
-      KC_HOSTNAME_PORT: 8180
-      KC_HOSTNAME_STRICT: false
-      KC_HOSTNAME_STRICT_HTTPS: false
-      KC_HTTP_ENABLED: true
-      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
-      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
-    ports:
-      - "8180:8080" # Keycloak HTTP (mappé sur 8180 pour éviter conflit)
+      KC_DB_URL_HOST: keycloakyouthfpdb
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: kcpassword
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin123
+      KC_HOSTNAME: keycloak.youthfp.cm
+      KC_PROXY_HEADERS: xforwarded
+      KC_HTTP_ENABLED: "true"
     depends_on:
-      postgres:
+      keycloakyouthfpdb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 15
+      start_period: 90s
+    restart: unless-stopped
+    networks:
+      - afriyan-network
+      - dokploy-network
+
+
+  afriyan1:
+    container_name: afriyan1
+    image: belinga/afriyan:0.0.1
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      LMTACCOUNTSID: ${LMTACCOUNTSID}
+      LMTAUTHTOKEN: ${LMTAUTHTOKEN}
+      LMTSENDER: ${LMTSENDER}
+      LMT_URL: ${LMT_URL}
+      KEYCLOAK_URL: ${KEYCLOAK_URL}
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID}
+      KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_CLIENT_SECRET}
+      KEYCLOAK_USERNAME: ${KEYCLOAK_USERNAME}
+      KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
+      KEYCLOAK_ENABLED: ${KEYCLOAK_ENABLED}
+      KEYCLOAK_USELECACYJWT: ${KEYCLOAK_USELECACYJWT}
+      MINIO_URL: ${MINIO_URL}
+      MINIO_FILE_URL: ${MINIO_FILE_URL}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      REDIS_URL: ${REDIS_URL}
+      REDIS_PORD: ${REDIS_PORD}
+    volumes:
+      - /home/ubuntu/app/youthfp/backend/uploads:/uploads
+      - /home/ubuntu/app/youthfp/backend/logs:/var/integration
+      - /home/ubuntu/app/youthfp/backend/config/application.properties:/config/application.properties
+    depends_on:
+      pgbounceryouthfp:
         condition: service_healthy
     networks:
       - afriyan-network
-    restart: unless-stopped
-    healthcheck:
-      test: [ "CMD-SHELL", "exec 3<>/dev/tcp/localhost/8080 && echo -e 'GET /health/ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && cat <&3 | grep -q '200 OK'" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 90s
 
-volumes:
-  postgres_data:
-    driver: local
-  minio_data:
-    driver: local
+  afriyan2:
+    container_name: afriyan2
+    image: belinga/afriyan:0.0.1
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      LMTACCOUNTSID: ${LMTACCOUNTSID}
+      LMTAUTHTOKEN: ${LMTAUTHTOKEN}
+      LMTSENDER: ${LMTSENDER}
+      LMT_URL: ${LMT_URL}
+      KEYCLOAK_URL: ${KEYCLOAK_URL}
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID}
+      KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_CLIENT_SECRET}
+      KEYCLOAK_USERNAME: ${KEYCLOAK_USERNAME}
+      KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
+      KEYCLOAK_ENABLED: ${KEYCLOAK_ENABLED}
+      KEYCLOAK_USELECACYJWT: ${KEYCLOAK_USELECACYJWT}
+      MINIO_URL: ${MINIO_URL}
+      MINIO_FILE_URL: ${MINIO_FILE_URL}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      REDIS_URL: ${REDIS_URL}
+      REDIS_PORD: ${REDIS_PORD}
+    volumes:
+      - /home/ubuntu/app/youthfp/backend/uploads:/uploads
+      - /home/ubuntu/app/youthfp/backend/logs:/var/integration
+      - /home/ubuntu/app/youthfp/backend/config/application.properties:/config/application.properties
+    depends_on:
+      pgbounceryouthfp:
+        condition: service_healthy
+    networks:
+      - afriyan-network
+
+    #prometheus:
+    #  image: prom/prometheus:latest
+    #  container_name: prometheus_youthfp
+    #  restart: unless-stopped
+    #  volumes:
+    #    - prometheus_data:/etc/prometheus
+    #ports:
+    #  - "9090:9090"
+    #  networks:
+    #    - afriyan-network
+
+
+    #grafana:
+    #  image: grafana/grafana:latest
+    #  container_name: grafana_youthfp
+    #  restart: unless-stopped
+    #ports:
+    #  - "3001:3000"
+  #  volumes:
+  #    - grafana_data:/var/lib/grafana
+  #  environment:
+  #    - GF_SECURITY_ADMIN_USER=admin
+  #    - GF_SECURITY_ADMIN_PASSWORD=admin123
+  #  networks:
+  #    - afriyan-network
+  #  depends_on:
+  #    - prometheus
 
 networks:
   afriyan-network:
     driver: bridge
+  dokploy-network:
+    external: true
+
+volumes:
+  redis_data:
