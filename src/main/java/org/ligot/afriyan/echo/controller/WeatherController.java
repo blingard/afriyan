@@ -23,6 +23,7 @@ public class WeatherController {
 
 
     @GetMapping("api/weather/list")
+    @RolesAllowed(value = {"GET_WEATHER"})
     public Set<WeatherRecord> listAll(@RequestParam(name = "date", required = false)String date,
                                       @RequestParam(name = "dep", required = false)String dep,
                                       @RequestParam(name = "weatherTime", required = true) WeatherTime weatherTime) throws Exception {

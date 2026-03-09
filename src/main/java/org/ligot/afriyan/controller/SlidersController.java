@@ -27,19 +27,19 @@ public class SlidersController {
 
 
     @GetMapping("api/sliders")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"GET_SLIDER"})
     public PageDTO<SlidersDTO> getAll(@RequestParam(name = "page", defaultValue = "0")int page) throws Exception {
         return service.getListAll(page);
     }
 
     @GetMapping("api/sliders/all")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"GET_SLIDER"})
     public List<SlidersDTO> getAll() throws Exception {
         return service.getListAll();
     }
 
     @PostMapping("api/sliders/save")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"CREATE_SLIDER"})
     public ResponseEntity<?> saveSlide(
             @RequestParam(name = "file",required = false) MultipartFile file,
             @RequestParam( "jsonData") String jsonData) throws Exception {
@@ -49,7 +49,7 @@ public class SlidersController {
     }
 
     @PutMapping(value = "api/sliders/update/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"UPDATE_SLIDER"})
     void updateSlide(@RequestBody @Valid SlidersDTO slidersDTO, @PathVariable Long id) throws Exception {
         service.update(slidersDTO, id);
     }
@@ -70,6 +70,7 @@ public class SlidersController {
     }
 
     @PutMapping(value = "/api/sliders/change_status/{id}")
+    @RolesAllowed(value = {"UPDATE_SLIDER"})
     void changeStatus(@PathVariable Long id) throws Exception {
         service.active(id);
     }

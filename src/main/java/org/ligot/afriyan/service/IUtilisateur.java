@@ -6,6 +6,7 @@ import org.ligot.afriyan.echo.dto.CrppDTO;
 import org.ligot.afriyan.echo.dto.MaireDTO;
 import org.ligot.afriyan.echo.dto.PrefetDTO;
 import org.ligot.afriyan.entities.Utilisateur;
+import org.ligot.afriyan.init.PermissionEnum;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,7 +15,10 @@ import java.util.Map;
 
 
 public interface IUtilisateur {
+    void removePermission(Long idUser, PermissionEnum permission);
+    void addPermission(Long idUser, PermissionRequest permission);
     UtilisateurDTO findById(Long id) throws Exception ;
+    UtilisateurDTO findByUUID(String id) throws Exception ;
     UtilisateurDTO save(UtilisateurDTO utilisateurDTO, Long idGroupe) throws Exception ;
     void saveUserFile(MultipartFile file) throws Exception ;
     UtilisateurDTO saveAdmin(UtilisateurDTO utilisateurDTO, Long idGroupe) throws Exception ;
@@ -35,7 +39,7 @@ public interface IUtilisateur {
     void disableUtilisateur(Long id) throws Exception ;
     UtilisateurDTO findByName(String nom) throws Exception;
     UtilisateurDTO findByLogin(String login) throws Exception;
-    UtilisateurDTO login(String login) throws Exception;
+    UtilisateurDTO login(String login) ;
     Utilisateur loginForgetPwd(String login) throws Exception;
     void changePassword(ChangePwd changePwd) throws Exception;
     Map<String, Object> dashboard() throws Exception;

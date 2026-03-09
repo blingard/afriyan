@@ -27,28 +27,31 @@ public class TemoignageController {
     }
 
     @PostMapping("api/temoignage")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {""})
     public ArticlesDTO create(@RequestBody ArticlesDTO valeursDTO) throws Exception {
         return service.save(valeursDTO);
     }
 
     @GetMapping("api/temoignage/{id}")
+    @RolesAllowed(value = {"GET_TEMOIGNAGE"})
     public Page<ArticlesDTO> listAll(@PathVariable int id){
         return service.getPage(id, TypeDonne.TEMOIGNAGE);
     }
 
     @DeleteMapping("api/temoignage/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
+    @RolesAllowed(value = {"DELETE_TEMOIGNAGE"})
     public void delete(@PathVariable Long id){
         service.delete(id);
     }
 
     @GetMapping("api/temoignage/find-by-id/{id}")
+    @RolesAllowed(value = {"GET_TEMOIGNAGE"})
     public ArticlesDTO findById(@PathVariable Long id) throws Exception {
         return service.findById(id);
     }
 
     @GetMapping("api/temoignage/getById/{id}")
+    @RolesAllowed(value = {"UPDATE_TEMOIGNAGE"})
     public ArticlesDTO findByIdActive(@PathVariable Long id) throws Exception {
         return service.findByIdActive(id);
     }
@@ -60,11 +63,12 @@ public class TemoignageController {
 
 
     @PutMapping("api/temoignage/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"UPDATE_TEMOIGNAGE"})
     public void update(@PathVariable Long id, @RequestBody ArticlesDTO valeursDTO) throws Exception {
         service.update(valeursDTO, id);
     }
     @GetMapping("api/temoignage/get-by-categorie/{categorie}")
+    @RolesAllowed(value = {"GET_TEMOIGNAGE"})
     public List<ArticlesDTO> findAllArticleByCategorieAdmin(@PathVariable String categorie){
         return service.getListAdmin(TypeDonne.TEMOIGNAGE, categorie);
     }
@@ -74,7 +78,7 @@ public class TemoignageController {
     }
 
     @PutMapping("api/temoignage/active/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
+    @RolesAllowed(value = {"UPDATE_TEMOIGNAGE"})
     public void active(@PathVariable Long id) throws Exception {
         service.active( id, TypeDonne.TEMOIGNAGE);
     }

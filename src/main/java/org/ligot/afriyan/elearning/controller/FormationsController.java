@@ -8,6 +8,7 @@ import org.ligot.afriyan.elearning.service.FormationsService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,42 +23,48 @@ public class FormationsController {
     }
 
     @GetMapping("api/formations/admin/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"GET_FORMATION_ADMIN"})
     public ResponseEntity<FormationsDTO> findFormationsAdmin(@PathVariable("id") Long id)throws Exception{
         return new ResponseEntity<>(services.findByIdAdmin(id), HttpStatus.OK);
     }
     @GetMapping("api/formations/admin/detail/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"GET_FORMATION_ADMIN"})
     public ResponseEntity<FormationsDTO> findFormationsWithDetail(@PathVariable("id") Long id)throws Exception{
         return new ResponseEntity<>(services.findByIdAdminWithDetail(id), HttpStatus.OK);
     }
     @GetMapping("api/formations/{id}")
+    @RolesAllowed(value = {"GET_FORMATION"})
     public ResponseEntity<FormationsDTO> findFormations(@PathVariable("id") Long id)throws Exception{
         return new ResponseEntity<>(services.findById(id), HttpStatus.OK);
     }
     @GetMapping("api/formations/user/{id}")
+    @RolesAllowed(value = {"GET_FORMATION_USER"})
     public ResponseEntity<FormationsDTO> findFormationsUser(@PathVariable("id") Long id)throws Exception{
         return new ResponseEntity<>(services.findByIdUser(id), HttpStatus.OK);
     }
     @GetMapping("api/formations/user/data/{id}")
+    @RolesAllowed(value = {"GET_FORMATION"})
     public ResponseEntity<ElearningScope> findFormationsUserLearn(@PathVariable("id") Long id)throws Exception{
         return new ResponseEntity<>(services.findByIdUserStatus(id), HttpStatus.OK);
     }
     @GetMapping("api/formations/user/{id}/all")
+    @RolesAllowed(value = {"GET_FORMATION"})
     public ResponseEntity<List<FormationsDTO>> findAllUserFormations(@PathVariable("id") Long id)throws Exception{
         return new ResponseEntity<>(services.findAllByIdUser(id), HttpStatus.OK);
     }
     @GetMapping("api/formations/user/{id}/finish")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<FormationsDTO>> findFinishUserFormations(@PathVariable("id") Long id)throws Exception{
         return new ResponseEntity<>(services.findFinishByIdUser(id), HttpStatus.OK);
     }
     @GetMapping("api/formations/user/{id}/notfinish")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<FormationsDTO>> findNotFinishUserFormations(@PathVariable("id") Long id)throws Exception{
         return new ResponseEntity<>(services.findNotFinishByIdUser(id), HttpStatus.OK);
     }
 
     @GetMapping("api/formations")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"GET_FORMATION"})
     public ResponseEntity<Page<FormationsDTO>> findAllFormations(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "5") int size)throws Exception{
@@ -65,61 +72,65 @@ public class FormationsController {
     }
 
     @GetMapping("api/formations/admin")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"GET_FORMATION_ADMIN"})
     public ResponseEntity<Page<FormationsDTO>> findAllFormationsAdmin(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "5") int size)throws Exception{
         return new ResponseEntity<>(services.findAllFormationOnlyAdmin(page, size), HttpStatus.OK);
     }
     @GetMapping("api/formations/all")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"GET_FORMATION"})
     public ResponseEntity<List<FormationsDTO>> findAllFormations()throws Exception{
         return new ResponseEntity<>(services.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("api/formations/all/active")
+    @RolesAllowed(value = {"GET_FORMATION"})
     public ResponseEntity<List<FormationsDTO>> findAllActiveFormations()throws Exception{
         return new ResponseEntity<>(services.findAllActive(), HttpStatus.OK);
     }
 
     @GetMapping("api/formations/all/active/lite")
+    @RolesAllowed(value = {"GET_FORMATION"})
     public ResponseEntity<List<FormationsDTO>> findAllActiveFormationsLite()throws Exception{
         return new ResponseEntity<>(services.findAllActiveLite(), HttpStatus.OK);
     }
 
     @GetMapping("api/formations/by/active/lite/{id}")
+    @RolesAllowed(value = {"GET_FORMATION"})
     public ResponseEntity<FormationsDTO> findByIdActiveFormationsLite(@PathVariable("id") Long id)throws Exception{
         return new ResponseEntity<>(services.findByIdActiveFormationsLite(id), HttpStatus.OK);
     }
 
     @GetMapping("api/formations/all/active/lite/{categorie}")
+    @RolesAllowed(value = {"GET_FORMATION"})
     public ResponseEntity<List<FormationsDTO>> findAllActiveFormationsCategorieLite(@PathVariable("categorie")String categorie)throws Exception{
         return new ResponseEntity<>(services.findAllActiveByCategoryLiteByCode(categorie), HttpStatus.OK);
     }
 
     @PutMapping("api/formations/enable/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
+    @RolesAllowed(value = {"UPDATE_FORMATION"})
     public ResponseEntity<?> enable(@PathVariable("id")Long id) throws Exception{
         services.enable(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("api/formations/add_quizz/{idFormation}/{idQuizz}")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"ADD_QUIZZ_FORMATION"})
     public ResponseEntity<?> addQuizz(@PathVariable("idFormation")Long idFormation, @PathVariable("idQuizz")Long idQuizz) throws Exception{
         services.addQuizz(idFormation, idQuizz);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("api/formations/disable/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
+    @RolesAllowed(value = {"UPDATE_FORMATION"})
     public ResponseEntity<?> disable(@PathVariable("id")Long id) throws Exception{
         services.disable(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("api/formations")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"CREATE_FORMATION"})
     public ResponseEntity<?> create(@RequestBody FormationsDTO formationsDTO) throws Exception{
         services.create(formationsDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);

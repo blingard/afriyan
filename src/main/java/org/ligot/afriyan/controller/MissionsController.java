@@ -22,24 +22,25 @@ public class MissionsController {
         return service.getListActive();
     }
     @GetMapping("api/missions/all")
+    @RolesAllowed(value = {"GET_MISSION"})
     public List<MissionsDTO> findAll(){
         return service.getList();
     }
 
     @PostMapping("api/missions")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"CREATE_MISSION"})
     public MissionsDTO create(@RequestBody MissionsDTO missionsDTO){
         return service.saveM(missionsDTO);
     }
 
     @GetMapping("/api/missions/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"GET_MISSION"})
     public Page<MissionsDTO> listAll(@PathVariable int id){
         return service.getPage(id);
     }
 
     @DeleteMapping("/api/missions/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
+    @RolesAllowed(value = {"DELETE_MISSION"})
     public void delete(@PathVariable Long id){
         service.delete(id);
     }
@@ -50,13 +51,13 @@ public class MissionsController {
     }
 
     @PutMapping("api/missions/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"UPDATE_MISSION"})
     public void update(@PathVariable Long id, @RequestBody MissionsDTO missionsDTO) throws Exception {
         service.update(missionsDTO, id);
     }
 
     @PutMapping("api/missions/active/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
+    @RolesAllowed(value = {"UPDATE_MISSION"})
     /*@RolesAllowed(value = {"SUPERADMIN"})*/
     public void active(@PathVariable Long id) throws Exception {
         service.active(id);

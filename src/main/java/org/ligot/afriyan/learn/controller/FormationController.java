@@ -27,7 +27,7 @@ public class FormationController {
     }
 
     @PostMapping
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"CREATE_FORMATION"})
     public ResponseEntity<FormationDTO> createFormation(
             @RequestBody FormationCreateDTO dto) {
         // Récupérer l'ID de l'utilisateur connecté depuis l'authentification
@@ -36,7 +36,7 @@ public class FormationController {
     }
 
     @PutMapping("/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"UPDATE_FORMATION"})
     public ResponseEntity<FormationDTO> updateFormation(
             @PathVariable String id,
             @RequestBody FormationCreateDTO dto) {
@@ -45,14 +45,14 @@ public class FormationController {
     }
 
     @GetMapping("/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"GET_FORMATION"})
     public ResponseEntity<FormationDTO> getFormationById(@PathVariable String id) {
         FormationDTO formation = formationService.getFormationById(id);
         return ResponseEntity.ok(formation);
     }
 
     @GetMapping
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"GET_FORMATION"})
     public ResponseEntity<Page<FormationDTO>> getAllFormations(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "5") int size
@@ -74,6 +74,7 @@ public class FormationController {
     }
 
     @GetMapping("/published/page")
+    @RolesAllowed(value = {"GET_FORMATION"})
     public ResponseEntity<Page<FormationDTO>> getPublishedFormationsPage(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
@@ -82,7 +83,7 @@ public class FormationController {
     }
 
     @GetMapping("/my-formations")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT","USER","CUSTOMER"})
+    @RolesAllowed(value = {"GET_FORMATION"})
     public ResponseEntity<List<FormationDTO>> getMyFormations(Authentication authentication) {
         Long userId = getUserIdFromAuth(authentication);
         List<FormationDTO> formations = formationService.getFormationsByCreator(userId);
@@ -90,7 +91,7 @@ public class FormationController {
     }
 
     @GetMapping("/my-formations/page")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT","USER","CUSTOMER"})
+    @RolesAllowed(value = {"GET_FORMATION"})
     public ResponseEntity<Page<FormationDTO>> getMyFormationsPage(
             Authentication authentication,
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -101,12 +102,14 @@ public class FormationController {
     }
 
     @GetMapping("/search")
+    @RolesAllowed(value = {"GET_FORMATION"})
     public ResponseEntity<List<FormationDTO>> searchFormations(@RequestParam String keyword) {
         List<FormationDTO> formations = formationService.searchFormations(keyword);
         return ResponseEntity.ok(formations);
     }
 
     @GetMapping("/search/page")
+    @RolesAllowed(value = {"GET_FORMATION"})
     public ResponseEntity<Page<FormationDTO>> searchFormationsPage(
             @RequestParam String keyword,
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -116,12 +119,14 @@ public class FormationController {
     }
 
     @GetMapping("/level/{niveau}")
+    @RolesAllowed(value = {"GET_FORMATION"})
     public ResponseEntity<List<FormationDTO>> getFormationsByLevel(@PathVariable FormationLevel niveau) {
         List<FormationDTO> formations = formationService.getFormationsByLevel(niveau);
         return ResponseEntity.ok(formations);
     }
 
     @GetMapping("/level/{niveau}/page")
+    @RolesAllowed(value = {"GET_FORMATION"})
     public ResponseEntity<Page<FormationDTO>> getFormationsByLevelPage(
             @PathVariable FormationLevel niveau,
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -131,18 +136,21 @@ public class FormationController {
     }
 
     @PutMapping("/{id}/publish")
+    @RolesAllowed(value = {"UPDATE_FORMATION"})
     public ResponseEntity<FormationDTO> publishFormation(@PathVariable String id) {
         FormationDTO formation = formationService.publishFormation(id);
         return ResponseEntity.ok(formation);
     }
 
     @PutMapping("/{id}/archive")
+    @RolesAllowed(value = {"UPDATE_FORMATION"})
     public ResponseEntity<FormationDTO> archiveFormation(@PathVariable String id) {
         FormationDTO formation = formationService.archiveFormation(id);
         return ResponseEntity.ok(formation);
     }
 
     @DeleteMapping("/{id}")
+    @RolesAllowed(value = {"UPDATE_FORMATION"})
     public ResponseEntity<Void> deleteFormation(@PathVariable String id) {
         formationService.deleteFormation(id);
         return ResponseEntity.noContent().build();

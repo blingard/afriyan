@@ -28,13 +28,13 @@ public class AlertController {
     }
 
     @PostMapping("api/alert/create")
-    @RolesAllowed(value = {"COMMUNITY_COMMITTEE"})
+    @RolesAllowed(value = {"CREATE_ALERT"})
     public void submitAlert(@Valid @RequestBody AlertsDTO alerts) throws Exception {
         service.submitAlert(alerts);
     }
 
     @PostMapping("api/alert/validate/{id}")
-    @RolesAllowed(value = {"CCPR_COMMITTEE","LOCAL_AUTHORITY","MAIRE"})
+    @RolesAllowed(value = {"VALIDATE_ALERT"})
     public void validate(@RequestParam(name = "approve") boolean approved,
                          @RequestParam(name = "comment") String comment,
                          @PathVariable(name = "id") String id) throws Exception {
@@ -42,13 +42,13 @@ public class AlertController {
     }
 
     @GetMapping("api/alert/get")
-    @RolesAllowed(value = {"SUPERADMIN","ROOT","ADMIN","CCPR_COMMITTEE","LOCAL_AUTHORITY","MAIRE","COMMUNITY_COMMITTEE"})
+    @RolesAllowed(value = {"GET_ALERT"})
     public AlertUserDto getAlertById(@RequestParam(name = "id") String id) throws Exception {
         return service.getAlert(UUID.fromString(id));
     }
 
     @GetMapping("api/alert/list")
-    @RolesAllowed(value = {"SUPERADMIN","ROOT","ADMIN","CCPR_COMMITTEE","LOCAL_AUTHORITY","MAIRE","COMMUNITY_COMMITTEE"})
+    @RolesAllowed(value = {"GET_ALERT"})
     public PageDTO<AlertsDTO> listAll(
             @RequestParam(name = "type") String idRiskType,
             @RequestParam(name = "page", defaultValue = "0") int page,
@@ -58,7 +58,7 @@ public class AlertController {
     }
 
     @GetMapping("api/alert/count")
-    @RolesAllowed(value = {"SUPERADMIN","ROOT","ADMIN","CCPR_COMMITTEE","LOCAL_AUTHORITY","MAIRE","COMMUNITY_COMMITTEE"})
+    @RolesAllowed(value = {"GET_ALERT"})
     public long count(@RequestParam(name = "type") String type) throws Exception {
         return service.count(type);
     }

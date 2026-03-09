@@ -4,22 +4,38 @@ import org.ligot.afriyan.entities.Groupes;
 import org.ligot.afriyan.entities.Sexe;
 import org.ligot.afriyan.entities.Status;
 import org.ligot.afriyan.entities.Utilisateur;
+import org.ligot.afriyan.init.PermissionEnum;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Repository
 public interface IUtilisateurRepository extends JpaRepository<Utilisateur, Long> {
+
+    @Query("""
+       SELECT DISTINCT u
+       FROM Utilisateur u
+       LEFT JOIN u.permissionsAdd pa
+       LEFT JOIN u.permissionsRemove pr
+       LEFT JOIN u.groupe g
+       LEFT JOIN g.permissions gp
+       WHERE 
+            (pa = :permission OR gp = :permission)
+       AND
+            (pr IS NULL OR pr <> :permission)
+       """)
+    Set<Utilisateur> findUsersWithEffectivePermission(@Param("permission") PermissionEnum permission);
+
     Optional<Utilisateur> findByCode(String code);
     Optional<Utilisateur> findByEmail(String eMail);
+    Optional<Utilisateur> findByUuid(String eMail);
 
     @Query("SELECT DISTINCT EXTRACT(YEAR FROM u.dCreation) FROM Utilisateur u WHERE u.dCreation IS NOT NULL ORDER BY EXTRACT(YEAR FROM u.dCreation) ASC")
     List<Integer> findDistinctYears();

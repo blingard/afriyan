@@ -5,9 +5,11 @@ import jakarta.validation.constraints.Email;
 import org.ligot.afriyan.echo.dto.CommunesDTO;
 import org.ligot.afriyan.entities.Sexe;
 import org.ligot.afriyan.entities.Status;
+import org.ligot.afriyan.init.PermissionEnum;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UtilisateurDTO extends PersonneDTO{
@@ -16,11 +18,13 @@ public class UtilisateurDTO extends PersonneDTO{
     @JsonIgnoreProperties({"roles","utilisateurs"})
     private GroupesDTO groupe;
     private CommunesDTO communes;
+    private Set<PermissionEnum> permissions;
 
-    public UtilisateurDTO(Long id, String code, String nom, String prenom, Date ddn, String lieu, String telephone, String photo, String location, String anonymat, Sexe sexe, @Email String email, Status status, String pwd, GroupesDTO groupe, List<String> phoneNumbers, CommunesDTO communes) {
+    public UtilisateurDTO(Long id, String code, String nom, String prenom, Date ddn, String lieu, String telephone, String photo, String location, String anonymat, Sexe sexe, @Email String email, Status status, String pwd, GroupesDTO groupe, List<String> phoneNumbers, CommunesDTO communes, Set<PermissionEnum> permissions) {
         super(id, code, nom, prenom, ddn, lieu, telephone, photo, location, anonymat, sexe, email, status, pwd, phoneNumbers);
         this.groupe = groupe;
         this.communes = communes;
+        this.permissions = permissions;
     }
 
     public UtilisateurDTO(GroupesDTO groupe) {
@@ -164,6 +168,14 @@ public class UtilisateurDTO extends PersonneDTO{
 
     public CommunesDTO getCommunes() {
         return communes;
+    }
+
+    public Set<PermissionEnum> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(Set<PermissionEnum> permissions) {
+        this.permissions = permissions;
     }
 
     public void setCommunes(CommunesDTO communes) {

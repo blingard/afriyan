@@ -3,8 +3,6 @@ package org.ligot.afriyan.init;
 import kong.unirest.GenericType;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
-import org.ligot.afriyan.Dto.CategoriesDTO;
-import org.ligot.afriyan.Dto.MenusDTO;
 import org.ligot.afriyan.Dto.UtilisateurDTO;
 import org.ligot.afriyan.echo.dto.Feature;
 import org.ligot.afriyan.echo.dto.GeoJson;
@@ -14,6 +12,7 @@ import org.ligot.afriyan.echo.repo.*;
 import org.ligot.afriyan.echo.service.AlertRiskTypeService;
 import org.ligot.afriyan.echo.service.GeoJsonService;
 import org.ligot.afriyan.entities.*;
+import org.ligot.afriyan.repository.IGroupesRepository;
 import org.ligot.afriyan.service.ICategories;
 import org.ligot.afriyan.service.IMenus;
 import org.ligot.afriyan.service.IParametres;
@@ -24,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Component
 public class Database implements CommandLineRunner {
@@ -36,9 +36,10 @@ public class Database implements CommandLineRunner {
         private final ICategories categories;
         private final AlertRiskTypeService alertRiskTypeService;
         private final IParametres iParametres;
+        private final IGroupesRepository groupesRepository;
 
         @Autowired
-    public Database(PaysRepo paysRepo, LocalityRepo localityRepo, RegionsRepo regionsRepo, DepartementsRepo departementsRepo, CommuneRepo communeRepo, IMenus menus, ICategories categories, AlertRiskTypeService alertRiskTypeService, IParametres iParametres) {
+    public Database(PaysRepo paysRepo, LocalityRepo localityRepo, RegionsRepo regionsRepo, DepartementsRepo departementsRepo, CommuneRepo communeRepo, IMenus menus, ICategories categories, AlertRiskTypeService alertRiskTypeService, IParametres iParametres, IGroupesRepository groupesRepository) {
         this.paysRepo = paysRepo;
         this.localityRepo = localityRepo;
         this.regionsRepo = regionsRepo;
@@ -48,6 +49,7 @@ public class Database implements CommandLineRunner {
             this.categories = categories;
             this.alertRiskTypeService = alertRiskTypeService;
             this.iParametres = iParametres;
+            this.groupesRepository = groupesRepository;
         }
 
 
@@ -292,8 +294,10 @@ public class Database implements CommandLineRunner {
                                         //System.err.println("latLong: " + latLong);
 
                                         //String value = "         → "+place.trim()+": "+name;
-                    *//*map.computeIfAbsent(departement, d -> Collections.synchronizedList(new ArrayList<>()))
-                            .add(commune);*//*
+                    */
+            /*map.computeIfAbsent(departement, d -> Collections.synchronizedList(new ArrayList<>()))
+                            .add(commune);*/
+            /*
                                         map.computeIfAbsent(departement, d -> new ConcurrentHashMap<>())
                                                 .computeIfAbsent(commune, c -> Collections.synchronizedList(new ArrayList<>()))
                                                 .add(localities);
@@ -398,9 +402,26 @@ public class Database implements CommandLineRunner {
                          * groupes1.getRoles().add(roles2);
                          * serviceGroupe.save(groupes1);
                          */
-
+                    List<Groupes> groupes = groupesRepository.findAll().stream().filter(groupe->groupe.getPermissions() == null || groupe.getPermissions().isEmpty()).toList();
+                    final Set<PermissionEnum> permissionEnums = Arrays.stream(PermissionEnum.values()).collect(Collectors.toSet());
+                    for (Groupes groupe : groupes) {
+                        RolesName role;
+                        try {
+                            role = RolesName.valueOf(groupe.getName());
+                        } catch (IllegalArgumentException e) {
+                            continue; // ignore si le nom ne correspond pas à un enum
+                        }
+                        Set<PermissionEnum> permissions = permissionEnums.stream().filter(permission -> Arrays.stream(permission.getRoles()) .anyMatch(r -> r == role) ) .collect(Collectors.toSet());
+                        initializePermissionsIfNeeded(groupe, permissions);
+                    }
                 } catch (Exception e) {
                 }
+
+        }
+        @Transactional
+        public void initializePermissionsIfNeeded(Groupes groupe, Set<PermissionEnum> permissions){
+            groupe.setPermissions(permissions);
+            groupesRepository.save(groupe);
 
         }
 }

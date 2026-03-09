@@ -1,5 +1,6 @@
 package org.ligot.afriyan.learn.controller;
 
+import jakarta.annotation.security.RolesAllowed;
 import org.ligot.afriyan.learn.dto.*;
 import org.ligot.afriyan.learn.service.QuizService;
 import org.springframework.http.HttpStatus;
@@ -21,12 +22,14 @@ public class QuizController {
     }
 
     @PostMapping
+    @RolesAllowed(value = {"CREATE_QUIZ"})
     public ResponseEntity<QuizDTO> createQuiz(@RequestBody QuizCreateDTO dto) {
         QuizDTO created = quizService.createQuiz(dto);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
+    @RolesAllowed(value = {"UPDATE_QUIZ"})
     public ResponseEntity<QuizDTO> updateQuiz(
             @PathVariable String id,
             @RequestBody QuizCreateDTO dto) {
@@ -47,24 +50,28 @@ public class QuizController {
     }
 
     @GetMapping("/formation/{formationId}")
+    @RolesAllowed(value = {"GET_QUIZ"})
     public ResponseEntity<QuizDTO> getQuizByFormationId(@PathVariable String formationId) {
         QuizDTO quiz = quizService.getQuizByFormationId(formationId);
         return ResponseEntity.ok(quiz);
     }
 
     @DeleteMapping("/{id}")
+    @RolesAllowed(value = {"UPDATE_QUIZ"})
     public ResponseEntity<Void> deleteQuiz(@PathVariable String id) {
         quizService.deleteQuiz(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/questions")
+    @RolesAllowed(value = {"CREATE_QUESTION"})
     public ResponseEntity<QuestionDTO> createQuestion(@RequestBody QuestionCreateDTO dto) {
         QuestionDTO created = quizService.createQuestion(dto);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     @PutMapping("/questions/{id}")
+    @RolesAllowed(value = {"UPDATE_QUESTION"})
     public ResponseEntity<QuestionDTO> updateQuestion(
             @PathVariable String id,
             @RequestBody QuestionCreateDTO dto) {
@@ -73,6 +80,7 @@ public class QuizController {
     }
 
     @DeleteMapping("/questions/{id}")
+    @RolesAllowed(value = {"UPDATE_QUESTION"})
     public ResponseEntity<Void> deleteQuestion(@PathVariable String id) {
         quizService.deleteQuestion(id);
         return ResponseEntity.noContent().build();

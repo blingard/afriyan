@@ -27,19 +27,19 @@ public class OurWorksController {
     }
 
     @PostMapping
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"CREATE_WORK"})
     public OurWorksDTO create(@RequestBody OurWorksDTO valeursDTO){
         return service.save(valeursDTO);
     }
 
     @GetMapping("/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"GET_WORK"})
     public Page<OurWorksDTO> listAll(@PathVariable int id){
         return service.getPage(id);
     }
 
     @DeleteMapping("/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
+    @RolesAllowed(value = {"DELETE_WORK"})
     public void delete(@PathVariable Long id){
         service.delete(id);
     }

@@ -44,14 +44,14 @@ public class SlidersImpl implements ISliders {
 
     private SlidersDTO findWithFile(Sliders centrePartenaire){
         SlidersDTO centrePartenaireDTO = mapper.toDTO(centrePartenaire);
-        try {
+        /*try {
             String[] elements = centrePartenaire.getPhoto().split(":");
             String imageBase64 = fileStorageService.convertImageToBase64(Constantes.SLIDERIMAGESUBPATH1+elements[0]);
             String image = "data:image/"+elements[1]+";base64,"+imageBase64;
             centrePartenaireDTO.setPhoto(image);
         }catch (Exception ex){
             centrePartenaireDTO.setPhoto("data:image/;base64,null");
-        }
+        }*/
         return centrePartenaireDTO;
     }
 

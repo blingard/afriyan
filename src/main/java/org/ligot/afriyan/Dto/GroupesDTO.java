@@ -5,8 +5,10 @@ import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.ligot.afriyan.init.PermissionEnum;
 
 
+import java.util.HashSet;
 import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,6 +20,7 @@ public class GroupesDTO {
     private String name;
     private String libelle;
     private String description;
+    private Set<PermissionEnum> permissions= new HashSet<>();
 
     public Long getId() {
         return id;
@@ -61,6 +64,14 @@ public class GroupesDTO {
 
     public Set<UtilisateurDTO> getUtilisateurs() {
         return utilisateurs;
+    }
+
+    public Set<PermissionEnum> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(Set<PermissionEnum> permissions) {
+        this.permissions = permissions;
     }
 
     public void setUtilisateurs(Set<UtilisateurDTO> utilisateurs) {

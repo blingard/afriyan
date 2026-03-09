@@ -4,6 +4,7 @@ import org.ligot.afriyan.learn.dto.*;
 import org.ligot.afriyan.learn.service.EnrollmentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/learn/enrollments")
+@PreAuthorize("isAuthenticated()")
 public class EnrollmentController {
 
     private final EnrollmentService enrollmentService;

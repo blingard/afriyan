@@ -16,10 +16,7 @@ public class UtilsService {
 
     public Utilisateur getUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Utilisateur utilisateur = repository.findByEmail(username).orElse(null);
-        if(utilisateur == null)
-            throw new RuntimeException("User with id = "+username+" don't exist");
-        return utilisateur;
+        return repository.findByUuid(username).orElseThrow(()->new RuntimeException("User with id = "+username+" don't exist"));
     }
 
 

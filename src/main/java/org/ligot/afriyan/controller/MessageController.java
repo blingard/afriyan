@@ -24,7 +24,7 @@ public class    MessageController {
     @PostMapping(value = "save") Map<String, String> saveMessage(@RequestBody MessageDTO messageDto) throws Exception {
         return message.save(messageDto);
     }
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT","GESTIONNAIRECENTRE"})
+    @RolesAllowed(value = {"SEND_ONE_SMS"})
     @PostMapping(value = "sendsms") void sendOneSMS(@RequestBody SendOneSMSDTO messageDto) throws Exception {
         message.sendOne(messageDto);
     }

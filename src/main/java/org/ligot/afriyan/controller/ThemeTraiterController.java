@@ -19,25 +19,28 @@ public class ThemeTraiterController {
         return service.getListActive();
     }
     @GetMapping("api/theme/admin")
+    @RolesAllowed(value = {"GET_THEME"})
     public List<ThemeTraiterDTO> findAll(){
         return service.getList();
     }
     @GetMapping("api/theme/{id}")
+    @RolesAllowed(value = {"GET_THEME"})
     public ThemeTraiterDTO findById(@PathVariable("id")Long id) throws Exception {
         return service.findById(id);
     }
     @PutMapping("api/theme/{id}")
+    @RolesAllowed(value = {"UPDATE_THEME"})
     public void enableAndDesable(@PathVariable("id")Long id){
         service.active(id);
     }
     @PostMapping("api/theme")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"CREATE_THEME"})
     public void create(@RequestBody ThemeTraiterDTO themeTraiterDTO){
         service.save(themeTraiterDTO);
     }
 
     @DeleteMapping("/api/theme/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
+    @RolesAllowed(value = {"DELETE_THEME"})
     public void delete(@PathVariable Long id){
         service.delete(id);
     }

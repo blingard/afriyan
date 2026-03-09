@@ -2,17 +2,26 @@ package org.ligot.afriyan.mapper;
 
 import org.ligot.afriyan.Dto.UtilisateurDTO;
 import org.ligot.afriyan.entities.Utilisateur;
+import org.ligot.afriyan.init.PermissionEnum;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
+
+import java.util.Set;
 
 @Mapper(componentModel = "spring")
 public interface UtilisateurMapper {
     Utilisateur create (UtilisateurDTO dto);
 
     @Mapping(source = "pwd", target = "pwd", qualifiedByName = "password")
-    UtilisateurDTO toDTO (Utilisateur entity);
+    @Mapping(source = ".", target = "permissions", qualifiedByName = "mapPermissions")
+    UtilisateurDTO toDTO(Utilisateur entity);
+
+    @Named("mapPermissions")
+    default Set<PermissionEnum> mapPermissions(Utilisateur entity) {
+        return entity.getEffectivePermission();
+    }
 
     @Named("password")
     default String setPWD(String pwd){

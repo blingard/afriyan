@@ -10,22 +10,23 @@ import org.ligot.afriyan.service.ICentrePartenaire;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @RestController
-public class CPController {
+public class USRAJController {
 
     private final ICentrePartenaire centrePartenaire;
 
-    public CPController(ICentrePartenaire centrePartenaire) {
+    public USRAJController(ICentrePartenaire centrePartenaire) {
         this.centrePartenaire = centrePartenaire;
     }
 
     @PostMapping("api/centrepartenaire/save")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"CREATE_USRAJ"})
     public ResponseEntity<?> saveCentre(
             @RequestParam(name = "file",required = false) MultipartFile file,
             @RequestParam( "jsonData") String jsonData) throws Exception {
@@ -35,36 +36,39 @@ public class CPController {
     }
 
     @PutMapping(value = "api/centrepartenaire/update/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"UPDATE_USRAJ"})
     public CentrePartenaireDTO updateCentre(@RequestBody @Valid CentrePartenaireDTO centrePartenaireDto, @PathVariable Long id) throws Exception {
         return centrePartenaire.update(centrePartenaireDto, id);
     }
 
     @PutMapping(value = "api/centrepartenaire/update/{id}/{idUser}")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"UPDATE_USRAJ_ADMIN"})
     public void updateCentre(@PathVariable("idUser") Long idUser, @PathVariable("id") Long id) throws Exception {
         centrePartenaire.updateUser(idUser, id);
     }
 
     @GetMapping(value = "api/centrepartenaire/list/{page}")
+    @RolesAllowed(value = {"GET_USRAJ"})
     public Page<CentrePartenaireDTO> listCentre(@PathVariable  int page) throws Exception {
         return centrePartenaire.list(page);
     }
 
     @GetMapping("api/centrepartenaire")
+    @RolesAllowed(value = {"GET_USRAJ"})
     public List<CentrePartenaireDTO> listAll() throws Exception {
         return centrePartenaire.listAll();
     }
 
 
     @GetMapping("api/centrepartenaire/localisation")
+    @RolesAllowed(value = {"GET_USRAJ"})
     @Operation(description = "Localisation des centre partenaire")
     public List<CentrePartenaireDTO> localiserCentre() throws Exception {
         return centrePartenaire.list();
     }
 
     @DeleteMapping(value = "api/centrepartenaire/delete/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"DELETE_USRAJ"})
     public void deleteCentre (@PathVariable Long id) throws Exception{
         centrePartenaire.delete(id);
     }
@@ -80,18 +84,18 @@ public class CPController {
     }
 
     @GetMapping(value = "api/centrepartenaire/getById/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ROOT","GESTIONNAIRECENTRE"})
+    @RolesAllowed(value = {"GET_USRAJ"})
     public CentrePartenaireDTO listByIdAdmin(@PathVariable Long id) throws Exception {
         return centrePartenaire.findById(id);
     }
     @GetMapping(value = "api/centrepartenaire/getByIdUser/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ROOT","GESTIONNAIRECENTRE"})
+    @PreAuthorize("isAuthenticated()")
     public CentrePartenaireDTO getById(@PathVariable Long id) throws Exception {
         return centrePartenaire.findByUserId(id);
     }
 
     @PutMapping("api/centrepartenaire/active/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
+    @RolesAllowed(value = {"UPDATE_USRAJ"})
     public void active(@PathVariable Long id) throws Exception {
         centrePartenaire.active(id);
     }

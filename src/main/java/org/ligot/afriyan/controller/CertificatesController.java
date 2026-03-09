@@ -7,6 +7,7 @@ import org.ligot.afriyan.Dto.PageDTO;
 import org.ligot.afriyan.service.ICertificates;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,13 +23,13 @@ public class CertificatesController {
 
 
     @GetMapping
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"GET_CERTIFICATE"})
     public PageDTO<CertificatesDTO> getAll(@RequestParam(name = "page", defaultValue = "0")int page) throws Exception {
         return service.getListAll(page);
     }
 
     @PostMapping("save")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"CREATE_CERTIFICATE"})
     public ResponseEntity<?> saveCertificates(
             @RequestBody @Valid CertificatesDTO certificatesDTO) throws Exception {
         service.save(certificatesDTO);
@@ -36,12 +37,13 @@ public class CertificatesController {
     }
 
     @PutMapping(value = "/update/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"UPDATE_CERTIFICATE"})
     void updateCentre(@RequestBody @Valid CertificatesDTO certificatesDTO, @PathVariable Long id) throws Exception {
         service.update(certificatesDTO, id);
     }
 
     @GetMapping(value = "{id}")
+    @RolesAllowed(value = {"GET_CERTIFICATE"})
     CertificatesDTO updateCentre(@PathVariable Long id) throws Exception {
         return service.findById(id);
     }
@@ -52,6 +54,7 @@ public class CertificatesController {
     }
 
     @PutMapping(value = "/change_status/{id}")
+    @RolesAllowed(value = {"UPDATE_CERTIFICATE"})
     void changeStatus(@PathVariable Long id) throws Exception {
         service.active(id);
     }

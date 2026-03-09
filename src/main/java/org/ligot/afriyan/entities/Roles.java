@@ -3,6 +3,10 @@ package org.ligot.afriyan.entities;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.ligot.afriyan.init.PermissionEnum;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Roles {
@@ -20,12 +24,14 @@ public class Roles {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "IDENTIFIANT")
     private Long id;
-    @Column(name = "NOM",unique = true,updatable = false)
+    @Column(name = "NOM", unique = true, updatable = false)
     private String nom;
     @Column(name = "DESCRIPTION")
     private String description;
     @Column(name = "FONCTION")
     private String fonction;
+
+
 
     public Long getId() {
         return id;
@@ -58,6 +64,7 @@ public class Roles {
     public void setFonction(String fonction) {
         this.fonction = fonction;
     }
+
 
     @Override
     public String toString() {

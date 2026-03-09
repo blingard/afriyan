@@ -16,12 +16,14 @@ import org.ligot.afriyan.echo.mapper.MaireMapper;
 import org.ligot.afriyan.echo.mapper.PrefetMapper;
 import org.ligot.afriyan.echo.repo.*;
 import org.ligot.afriyan.entities.*;
+import org.ligot.afriyan.init.PermissionEnum;
 import org.ligot.afriyan.init.RolesName;
 import org.ligot.afriyan.init.SaveListUtils;
 import org.ligot.afriyan.mapper.UtilisateurMapper;
 import org.ligot.afriyan.repository.*;
 import org.ligot.afriyan.service.IGroupes;
 import org.ligot.afriyan.service.IUtilisateur;
+import org.ligot.afriyan.service.KeycloakService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.*;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -64,8 +66,11 @@ public class UtilisateurService implements IUtilisateur {
     private final CrppMapper crppMapper;
     private final CommunityComityRepo communityComityRepo;
     private final CommunityComityMapper communityComityMapper;
+    private final IGroupesRepository iGroupesRepository;
+    private final KeycloakService keycloakService;
 
-    public UtilisateurService(IUtilisateurRepository repository, ICentrePartenaireRepository iCentrePartenaireRepository, IArticlesRepository iArticlesRepository, IGroupes groupesService, IDenonciationRepository iDenonciationRepository, @Qualifier("passwordEncoder") PasswordEncoder passwordEncoder, IForgetPasswordRepository iForgetPasswordRepository, UtilisateurMapper mapper, TwilioService twilioService, ExecutorService executorService, FileStorageService fileStorageService, DepartementsRepo departementsRepo, PrefetRepo prefetRepo, PrefetMapper prefetMapper, CommuneRepo communeRepo, MaireRepo maireRepo, MaireMapper maireMapper, LocalityRepo localityRepo, CrppRepository crppRepository, CrppMapper crppMapper, CommunityComityRepo communityComityRepo, CommunityComityMapper communityComityMapper) {
+    public UtilisateurService(IUtilisateurRepository repository, ICentrePartenaireRepository iCentrePartenaireRepository, IArticlesRepository iArticlesRepository, IGroupes groupesService, IDenonciationRepository iDenonciationRepository, @Qualifier("passwordEncoder") PasswordEncoder passwordEncoder, IForgetPasswordRepository iForgetPasswordRepository, UtilisateurMapper mapper, TwilioService twilioService, ExecutorService executorService, FileStorageService fileStorageService, DepartementsRepo departementsRepo, PrefetRepo prefetRepo, PrefetMapper prefetMapper, CommuneRepo communeRepo, MaireRepo maireRepo, MaireMapper maireMapper, LocalityRepo localityRepo, CrppRepository crppRepository, CrppMapper crppMapper, CommunityComityRepo communityComityRepo, CommunityComityMapper communityComityMapper,
+                              IGroupesRepository iGroupesRepository, KeycloakService keycloakService) {
         this.repository = repository;
         this.iCentrePartenaireRepository = iCentrePartenaireRepository;
         this.iArticlesRepository = iArticlesRepository;
@@ -88,11 +93,59 @@ public class UtilisateurService implements IUtilisateur {
         this.crppMapper = crppMapper;
         this.communityComityRepo = communityComityRepo;
         this.communityComityMapper = communityComityMapper;
+        this.iGroupesRepository = iGroupesRepository;
+        this.keycloakService = keycloakService;
+    }
+
+    @Override
+    @Transactional
+    public void removePermission(Long idUser, PermissionEnum permission) {
+        Utilisateur utilisateur = repository.findById(idUser).orElseThrow(()->new RuntimeException("User not found"));
+        if(utilisateur.getEffectivePermission().contains(permission)){
+            if(utilisateur.getPermissionsAdd() != null && utilisateur.getPermissionsAdd().contains(permission)){
+                utilisateur.getPermissionsAdd().remove(permission);
+            }
+            if(utilisateur.getPermissionsRemove() == null){
+                utilisateur.setPermissionRemove(new HashSet<>());
+            }
+            utilisateur.getPermissionsRemove().add(permission);
+            repository.save(utilisateur);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void addPermission(Long idUser, PermissionRequest permissions) {
+        Utilisateur utilisateur = repository.findById(idUser).orElseThrow(()->new RuntimeException("User not found"));
+        for (PermissionEnum permission : permissions.getPermission()){
+            if(utilisateur.getEffectivePermission().contains(permission)){
+                if(utilisateur.getPermissionsRemove() != null && utilisateur.getPermissionsRemove().contains(permission)){
+                    utilisateur.getPermissionsRemove().remove(permission);
+                }
+                if(utilisateur.getPermissionsAdd() == null){
+                    utilisateur.setPermissionsAdd(new HashSet<>());
+                }
+                utilisateur.getPermissionsAdd().add(permission);
+                repository.save(utilisateur);
+            }
+
+        }
+
+
+
     }
 
     @Override
     public UtilisateurDTO findById(Long id) throws Exception {
         Utilisateur utilisateur = repository.findById(id).orElse(null);
+        if(utilisateur == null)
+            throw new Exception("User with id = "+id+" don't exist");
+        return findWithFile(utilisateur);
+    }
+
+    @Override
+    public UtilisateurDTO findByUUID(String id) throws Exception {
+        Utilisateur utilisateur = repository.findByUuid(id).orElse(null);
         if(utilisateur == null)
             throw new Exception("User with id = "+id+" don't exist");
         return findWithFile(utilisateur);
@@ -118,7 +171,7 @@ public class UtilisateurService implements IUtilisateur {
         utilisateur.setStatus(Status.ACTIVE);
         utilisateur.setIsFirstConnexion(true);
         try {
-            saveIt(utilisateur);
+            saveIt(utilisateur, pwd);
             executorService.execute(()->{
                 String message = "Felicitation pour votre Inscription. Login:";
                 message = message+(utilisateur.getEmail()==null ? utilisateur.getCode() : utilisateur.getEmail());
@@ -188,7 +241,7 @@ public class UtilisateurService implements IUtilisateur {
                         utilisateurDTO.setCode(code);
                         utilisateurDTO.setGroupe(groupes);
                         utilisateurDTO.setDdn(parseYYYYMMDDDate(ddn));
-                        saveIt(utilisateurDTO);
+                        saveIt(utilisateurDTO, pwd);
                         executorService.execute(()->{
                             String message = "Felicitation pour votre Inscription. Login:";
                             message = message+(utilisateurDTO.getEmail()==null ? utilisateurDTO.getCode() : utilisateurDTO.getEmail());
@@ -267,7 +320,7 @@ public class UtilisateurService implements IUtilisateur {
         utilisateur.setStatus(Status.ACTIVE);
         utilisateur.setIsFirstConnexion(true);
         try {
-            saveIt(utilisateur);
+            saveIt(utilisateur, pwd);
             return mapper.toDTO(utilisateur);
         }catch (Exception ex){
             ex.printStackTrace();
@@ -299,7 +352,7 @@ public class UtilisateurService implements IUtilisateur {
         utilisateur.setStatus(Status.ACTIVE);
         utilisateur.setIsFirstConnexion(true);
         try {
-            utilisateur = saveIt(utilisateur);
+            utilisateur = saveIt(utilisateur, pwd);
             prefets.forEach(prefet1 -> {
                 prefet1.setActive(false);
                 prefetRepo.save(prefet1);
@@ -336,7 +389,7 @@ public class UtilisateurService implements IUtilisateur {
         utilisateur.setStatus(Status.ACTIVE);
         utilisateur.setIsFirstConnexion(true);
         try {
-            utilisateur = saveIt(utilisateur);
+            utilisateur = saveIt(utilisateur, pwd);
             maires.forEach(maire1 -> {
                 maire1.setActive(false);
                 maireRepo.save(maire1);
@@ -375,7 +428,7 @@ public class UtilisateurService implements IUtilisateur {
         System.err.println("getId = "+crppDTO.getUtilisateur().get(0).getCommunes().getId());
         System.err.println("getId = "+communes.getName());
         try {
-            utilisateur = saveIt(utilisateur);
+            utilisateur = saveIt(utilisateur, pwd);
             Optional<Crpp> crppOptional = crppRepository.findAllByCommune(communes);
             Crpp crpp = new Crpp();
             if(crppOptional.isPresent()){
@@ -414,7 +467,7 @@ public class UtilisateurService implements IUtilisateur {
         utilisateur.setStatus(Status.ACTIVE);
         utilisateur.setIsFirstConnexion(true);
         try {
-            utilisateur = saveIt(utilisateur);
+            utilisateur = saveIt(utilisateur, pwd);
             Optional<CommuneComity> optionalCommuneComity = communityComityRepo.findAllByLocality(localities);
             CommuneComity communeComity = new CommuneComity();
             if(optionalCommuneComity.isPresent()){
@@ -432,14 +485,18 @@ public class UtilisateurService implements IUtilisateur {
 
     @Override
     public List<UtilisateurDTO>  getUserCP(String name) throws Exception {
-        return repository.findByGroupe_Roles_NomAndTelephoneStartingWith(RolesName.GESTIONNAIRECENTRE.name(), name)
+        return repository.findUsersWithEffectivePermission(PermissionEnum.UPDATE_USRAJ)
                 .stream().map(mapper::toDTO).toList();
     }
 
 
-    private Utilisateur saveIt(Utilisateur utilisateur)throws Exception{
+    private Utilisateur saveIt(Utilisateur utilisateur, String pwd)throws Exception{
         try {
             checkIfUserExist(utilisateur);
+            utilisateur = repository.save(utilisateur);
+            String uuid = keycloakService.createUser(utilisateur.getEmail()==null ? utilisateur.getCode() : utilisateur.getEmail(),
+                    utilisateur.getEmail(), pwd, utilisateur.getPrenom(), utilisateur.getNom(), true);
+            utilisateur.setUuid(uuid);
             return repository.save(utilisateur);
         }catch (Exception ex){
             throw ex;
@@ -485,7 +542,7 @@ public class UtilisateurService implements IUtilisateur {
         utilisateur.setCommunes(communes);
         utilisateur.setLocation(utilisateurDTO.getLocation());
         try {
-            utilisateur = saveIt(utilisateur);
+            utilisateur = saveIt(utilisateur, utilisateurDTO.getPwd());
             executorService.execute(()->{
                 String message = "Felicitation pour votre Inscription. Pour vous connecter, utiliser le login ";
                     message = message+(utilisateurDTO.getEmail()==null ? utilisateurDTO.getCode() : utilisateurDTO.getEmail().trim());
@@ -665,13 +722,13 @@ public class UtilisateurService implements IUtilisateur {
 
     private UtilisateurDTO findWithFile(Utilisateur utilisateur){
         UtilisateurDTO utilisateurDTO = mapper.toDTO(utilisateur);
-        try {
+        /*try {
             String[] elements = utilisateur.getPhoto().split(":");
             String imageBase64 = fileStorageService.convertImageToBase64(Constantes.USERIMAGESUBPATH1+elements[0]);
             String image = "data:image/"+elements[1]+";base64,"+imageBase64;
             utilisateurDTO.setPhoto(image);
         }catch (Exception ex){
-        }
+        }*/
         return utilisateurDTO;
     }
 
@@ -728,7 +785,7 @@ public class UtilisateurService implements IUtilisateur {
     }
 
     @Override
-    public UtilisateurDTO login(String login) throws Exception {
+    public UtilisateurDTO login(String login) {
         Optional<Utilisateur> user = repository.findByEmail(login);
         if (user.isEmpty()) {
             user = repository.findByCode(login);

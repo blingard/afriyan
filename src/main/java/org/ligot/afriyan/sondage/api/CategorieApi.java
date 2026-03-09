@@ -23,31 +23,34 @@ public class CategorieApi {
     }
 
     @GetMapping("/api/categorie")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"CREATE_CATEGORIE"})
     public ResponseEntity<PageDTO<CategoriesDTO>> listByPage(@RequestParam(name = "page", defaultValue = "0")int page) {
         return ResponseEntity.ok(service.getListAll(page));
     }
     @GetMapping("/api/categorie/list")
+    @RolesAllowed(value = {"GET_CATEGORIE"})
     public ResponseEntity<List<CategoriesDTO>> listAllActive() {
         return ResponseEntity.ok(service.listAllActive());
     }
     @PutMapping("/api/categorie/active/{id}")
+    @RolesAllowed(value = {"UPDATE_CATEGORIE"})
     public void activeOrDesable(@PathVariable("id") String id) throws Exception{
         service.active(id);
     }
 
     @GetMapping("/api/categorie/{id}")
+    @RolesAllowed(value = {"GET_CATEGORIE"})
     public ResponseEntity<CategoriesDTO> findByIdAnomyne(@PathVariable("id") String id){
         return ResponseEntity.ok(service.findById(id));
     }
 
     @PostMapping("/api/categorie/save")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"CREATE_CATEGORIE"})
     public void save(@RequestBody @Valid CategoriesDTO categoriesDTO) {
             service.save(categoriesDTO);
     }
     @PutMapping("/api/categorie/update/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"UPDATE_CATEGORIE"})
     public void update(@PathVariable("id") String id, @RequestBody @Valid CategoriesDTO categoriesDTO) {
         service.update(categoriesDTO, id);
     }

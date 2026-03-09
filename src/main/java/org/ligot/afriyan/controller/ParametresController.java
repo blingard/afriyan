@@ -25,6 +25,7 @@ public class ParametresController {
     }
 
     @GetMapping("/api/parametres")
+    @RolesAllowed(value = {"GET_PARAMETER"})
     public ResponseEntity<PageDTO<ParametresDto>> listByPage(@RequestParam(name = "page", defaultValue = "0")int page) throws Exception{
         return ResponseEntity.ok(service.findAllByPage(page));
     }
@@ -86,7 +87,7 @@ public class ParametresController {
     }
 
     @PutMapping("api/parametres/active/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
+    @RolesAllowed(value = {"UPDATE_PARAMETER"})
     public void activeOrDesable(@PathVariable Long id) throws Exception {
         service.desable(id);
     }

@@ -1,5 +1,6 @@
 package org.ligot.afriyan.controller;
 
+import jakarta.annotation.security.RolesAllowed;
 import org.ligot.afriyan.Dto.PublicationsDTO;
 import org.ligot.afriyan.service.IPublications;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,21 +15,25 @@ public class PublicationsController {
     IPublications publications;
 
     @PostMapping(value = "/save")
+    @RolesAllowed(value = {"CREATE_PUBLICATION"})
     PublicationsDTO savePublications(@RequestBody PublicationsDTO publicationsDto) throws Exception {
         return publications.save(publicationsDto);
     }
 
     @PutMapping(value = "/update/{id}")
+    @RolesAllowed(value = {"UPDATE_PUBLICATION"})
     PublicationsDTO updatePublications(@RequestBody PublicationsDTO publicationsDto, @PathVariable Long id) throws Exception {
         return publications.update(publicationsDto, id);
     }
 
     @GetMapping(value = "/list/{page}")
+    @RolesAllowed(value = {"GET_PUBLICATION"})
     Page<PublicationsDTO> listPublications(@PathVariable  int page) throws Exception {
         return publications.list(page);
     }
 
     @DeleteMapping(value = "/delete/{id}")
+    @RolesAllowed(value = {"DELETE_PUBLICATION"})
     void deletePublications (@PathVariable long id) throws Exception{
         publications.delete(id);
     }

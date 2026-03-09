@@ -1,20 +1,12 @@
 package org.ligot.afriyan.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import org.ligot.afriyan.Dto.AProposDTO;
-import org.ligot.afriyan.Dto.CentrePartenaireDTO;
 import org.ligot.afriyan.service.IAPropos;
-import org.ligot.afriyan.service.ICentrePartenaire;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RestController
 public class AProposController {
@@ -27,7 +19,7 @@ public class AProposController {
 
 
     @PostMapping("api/apropos/save")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"CREATE_ABOUT"})
     public ResponseEntity<?> saveCentre(
             @RequestBody @Valid AProposDTO aProposDTO) throws Exception {
         service.save(aProposDTO);
@@ -35,12 +27,13 @@ public class AProposController {
     }
 
     @PutMapping(value = "api/apropos/update/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"UPDATE_ABOUT"})
     void updateCentre(@RequestBody @Valid AProposDTO aProposDTO, @PathVariable Long id) throws Exception {
         service.update(id, aProposDTO);
     }
 
     @GetMapping(value = "api/apropos/{id}")
+    @RolesAllowed(value = {"GET_ABOUT"})
     AProposDTO updateCentre(@PathVariable Long id) throws Exception {
         return service.get(id);
     }

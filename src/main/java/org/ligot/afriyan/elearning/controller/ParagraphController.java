@@ -25,39 +25,40 @@ public class ParagraphController {
     }
 
     @GetMapping("api/paragraph/{id}")
+    @RolesAllowed(value = {"GET_PARAGRAPH"})
     public ResponseEntity<ParagraphsDTO> getParagraphe(@PathVariable("id") Long id)throws Exception{
         return new ResponseEntity<>(services.getById(id), HttpStatus.OK);
     }
 
     @GetMapping("api/paragraph/admin/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"GET_PARAGRAPH_ADMIN"})
     public ResponseEntity<ParagraphsDTO> getParagrapheAdmin(@PathVariable("id") Long id)throws Exception{
         return new ResponseEntity<>(services.getByIdAdmin(id), HttpStatus.OK);
     }
 
     @PutMapping("api/paragraph/enable/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
+    @RolesAllowed(value = {"UPDATE_PARAGRAPH"})
     public ResponseEntity<?> enable(@PathVariable("id")Long id) throws Exception{
         services.enable(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("api/paragraph/disable/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
+    @RolesAllowed(value = {"UPDATE_PARAGRAPH"})
     public ResponseEntity<?> disable(@PathVariable("id")Long id) throws Exception{
         services.disable(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("api/paragraph/update/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"UPDATE_PARAGRAPH"})
     public ResponseEntity<?> update(@PathVariable("id")Long id, @RequestBody ParagraphsDTO paragraphsDTO) throws Exception{
         services.update(id, paragraphsDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(value = "api/paragraph/{idChapter}")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"CREATE_PARAGRAPH"})
     public ResponseEntity<?> create(
             @PathVariable("idChapter") Long idChapter,
             @RequestParam(name = "file",required = false) MultipartFile file,

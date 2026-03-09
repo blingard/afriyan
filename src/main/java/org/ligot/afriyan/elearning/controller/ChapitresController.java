@@ -23,42 +23,45 @@ public class ChapitresController {
     }
 
     @GetMapping("api/chapter/admin/{id}")
+    @RolesAllowed(value = {"GET_CHAPTER_ADMIN"})
     public ResponseEntity<ChapitresDTO> findChapterAdmin(@PathVariable("id") Long id)throws Exception{
         return new ResponseEntity<>(services.getByIdAdmin(id), HttpStatus.OK);
     }
 
     @GetMapping("api/chapter/admin/chap/{id}")
+    @RolesAllowed(value = {"GET_PARAGRAPH_ADMIN"})
     public ResponseEntity<List<ParagraphsDTO>> findChapterAdminP(@PathVariable("id") Long id)throws Exception{
         return new ResponseEntity<>(services.getByIdAdminP(id), HttpStatus.OK);
     }
     @GetMapping("api/chapter/{id}")
+    @RolesAllowed(value = {"GET_CHAPTER"})
     public ResponseEntity<ChapitresDTO> findChapter(@PathVariable("id") Long id)throws Exception{
         return new ResponseEntity<>(services.getById(id), HttpStatus.OK);
     }
 
     @PutMapping("api/chapter/enable/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
+    @RolesAllowed(value = {"UPDATE_CHAPTER"})
     public ResponseEntity<?> enable(@PathVariable("id")Long id) throws Exception{
         services.enable(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("api/chapter/disable/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ROOT"})
+    @RolesAllowed(value = {"UPDATE_CHAPTER"})
     public ResponseEntity<?> disable(@PathVariable("id")Long id) throws Exception{
         services.disable(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(value = "api/chapter/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"CREATE_CHAPTER"})
     public ResponseEntity<?> create(@PathVariable("id")Long id, @RequestBody ChapitresDTO chapitresDTO) throws Exception{
         services.save(id, chapitresDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("api/chapter/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"UPDATE_CHAPTER"})
     public ResponseEntity<?> update(@PathVariable("id")Long id, @RequestBody ChapitresDTO chapitresDTO) throws Exception{
         services.update(id, chapitresDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);

@@ -15,23 +15,24 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import org.ligot.afriyan.init.PermissionEnum;
 
 @Entity
 @AllArgsConstructor
-@Table(name = "users",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = "code"),
-                @UniqueConstraint(columnNames = "email")
-        })
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "code"),
+        @UniqueConstraint(columnNames = "email")
+})
 public class Utilisateur implements Serializable, Comparable<Utilisateur> {
-
 
     @Id
     @Column(name = "IDENTIFIANT")
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
-    @Column(name="CODE", nullable = false, unique = true)
+    @Column(name = "CODE", nullable = false, unique = true)
     protected String code;
 
     @Column(name = "NOM")
@@ -49,11 +50,10 @@ public class Utilisateur implements Serializable, Comparable<Utilisateur> {
     @Column(name = "telephone", unique = true)
     protected String telephone;
 
+    protected String uuid;
+
     @ElementCollection
-    @CollectionTable(
-            name = "user_phone_numbers",
-            joinColumns = @JoinColumn(name = "user_id")
-    )
+    @CollectionTable(name = "user_phone_numbers", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "phone_number")
     private List<String> phoneNumbers;
 
@@ -63,7 +63,7 @@ public class Utilisateur implements Serializable, Comparable<Utilisateur> {
     @Column(name = "LOCATION")
     protected String location;
 
-    @Column(name="ANONYMAT")
+    @Column(name = "ANONYMAT")
     protected String anonymat;
 
     @Column(name = "SEXE")
@@ -78,7 +78,7 @@ public class Utilisateur implements Serializable, Comparable<Utilisateur> {
     @Size(max = 50)
     protected String email;
 
-    @Column(name="PASSWORD", nullable = false)
+    @Column(name = "PASSWORD", nullable = false)
     protected String pwd;
 
     @Column(name = "DATECREATION")
@@ -94,6 +94,17 @@ public class Utilisateur implements Serializable, Comparable<Utilisateur> {
     @ManyToOne(fetch = FetchType.EAGER)
     private Communes communes;
 
+    @ElementCollection(targetClass = PermissionEnum.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_permissions_add", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "permission_add", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Set<PermissionEnum> permissionsAdd = new HashSet<>();
+
+    @ElementCollection(targetClass = PermissionEnum.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_permissions_remove", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "permission_remove", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Set<PermissionEnum> permissionsRemove = new HashSet<>();
 
     public Utilisateur(Long id) {
         this.id = id;
@@ -257,6 +268,53 @@ public class Utilisateur implements Serializable, Comparable<Utilisateur> {
 
     public void setCommunes(Communes communes) {
         this.communes = communes;
+    }
+
+    public Set<PermissionEnum> getPermissionAdd() {
+        return permissionsAdd;
+    }
+
+    public void setPermissionAdd(Set<PermissionEnum> permissionsAdd) {
+        this.permissionsAdd = permissionsAdd;
+    }
+
+    public Set<PermissionEnum> getPermissionRemove() {
+        return permissionsRemove;
+    }
+
+    public void setPermissionRemove(Set<PermissionEnum> permissionsRemove) {
+        this.permissionsRemove = permissionsRemove;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public Set<PermissionEnum> getPermissionsAdd() {
+        return permissionsAdd;
+    }
+
+    public void setPermissionsAdd(Set<PermissionEnum> permissionsAdd) {
+        this.permissionsAdd = permissionsAdd;
+    }
+
+    public Set<PermissionEnum> getPermissionsRemove() {
+        return permissionsRemove;
+    }
+
+    public void setPermissionsRemove(Set<PermissionEnum> permissionsRemove) {
+        this.permissionsRemove = permissionsRemove;
+    }
+
+    public Set<PermissionEnum> getEffectivePermission(){
+        Set<PermissionEnum> effectivePermissions = new HashSet<>(groupe.getPermissions());
+        effectivePermissions.addAll(permissionsAdd);
+        effectivePermissions.removeAll(permissionsRemove);
+        return effectivePermissions;
     }
 
     @Override

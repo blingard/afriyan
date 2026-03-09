@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.ArrayUtils;
+import org.ligot.afriyan.init.PermissionEnum;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,13 +18,14 @@ public class Groupes {
         this.id = id;
     }
 
-    public Groupes(Long id, Set<Roles> roles, String name, String libelle, String description, Set<Utilisateur> utilisateurs) {
+    public Groupes(Long id, Set<Roles> roles, String name, String libelle, String description, Set<Utilisateur> utilisateurs, Set<PermissionEnum> permissions) {
         this.id = id;
         this.roles = roles;
         this.name = name;
         this.libelle = libelle;
         this.description = description;
         this.utilisateurs = utilisateurs;
+        this.permissions = permissions;
     }
 
     @Id
@@ -51,6 +53,12 @@ public class Groupes {
     @OneToMany
     @JoinColumn(name = "UTILISATEURS", referencedColumnName = "IDENTIFIANT")
     private Set<Utilisateur> utilisateurs = new HashSet<>();
+
+    @ElementCollection(targetClass = PermissionEnum.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "role_permissions", joinColumns = @JoinColumn(name = "role_id"))
+    @Column(name = "permission", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Set<PermissionEnum> permissions = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -98,6 +106,14 @@ public class Groupes {
 
     public void setUtilisateurs(Set<Utilisateur> utilisateurs) {
         this.utilisateurs = utilisateurs;
+    }
+
+    public Set<PermissionEnum> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(Set<PermissionEnum> permissions) {
+        this.permissions = permissions;
     }
 
     @Override

@@ -70,9 +70,6 @@ public class AlertValidationService {
     @Transactional
     public void submitAlert(AlertsDTO alertsDTO) {
         final Utilisateur utilisateur = utilsService.getUser();
-        hasRole(utilisateur.getGroupe(), new RolesName[]{
-                RolesName.COMMUNITY_COMMITTEE, RolesName.CCPR_COMMITTEE, RolesName.MAIRE,
-                RolesName.LOCAL_AUTHORITY, RolesName.ADMIN, RolesName.ROOT, RolesName.SUPERADMIN});
         AlertRiskType riskType = alertRiskTypeRepository.findAllById(alertsDTO.getRiskType().getId()).orElseThrow(()->new RuntimeException("Alert risk type n'existe pas"));
         Localities localities = localityRepo.findById(alertsDTO.getLocalities().getId()).orElseThrow(()->new RuntimeException("Locality n'existe pas"));
         Alerts alert = mapper.create(alertsDTO);
@@ -101,18 +98,7 @@ public class AlertValidationService {
             }
         });
     }
-    private void hasRole(Groupes groupes, RolesName[] rolesName){
-        if(groupes==null)
-            throw new RuntimeException("Vous n'etes pas authorise.");
-        if(groupes.getRoles()==null)
-            throw new RuntimeException("Vous n'etes pas authorise.");
-        if(groupes.getRoles().isEmpty())
-            throw new RuntimeException("Vous n'etes pas authorise.");
-        List<RolesName> rolesNameList = groupes.getRoles().stream().map(roles -> RolesName.valueOf(roles.getNom())).toList();
-        rolesNameList.stream()
-                .filter(rolesName1 -> Arrays.stream(rolesName).toList().contains(rolesName1))
-                .findFirst().orElseThrow(()-> new RuntimeException("Vous n'etes pas authorise."));
-    }
+
     private RolesName getPriorityRole(Groupes groupes){
         if(groupes==null)
             throw new RuntimeException("Vous n'etes pas authorise.");
@@ -146,9 +132,6 @@ public class AlertValidationService {
     public Alerts validateAlert(UUID alertId, boolean approved, String comments) {
         Utilisateur utilisateur = utilsService.getUser();
         RolesName role = getPriorityRole(utilisateur.getGroupe());
-        hasRole(utilisateur.getGroupe(), new RolesName[]{
-                RolesName.CCPR_COMMITTEE, RolesName.MAIRE,
-                RolesName.LOCAL_AUTHORITY, RolesName.ADMIN, RolesName.ROOT, RolesName.SUPERADMIN});
         Alerts alert = alertRepository.findById(alertId)
                 .orElseThrow(() -> new RuntimeException("Alerte non trouvée"));
         if(alert.getStatus().equals(AlertStatus.REJECTED) || alert.getStatus().equals(AlertStatus.RESOLVED) ||

@@ -22,7 +22,7 @@ public class MenusApi {
     }
 
     @GetMapping("/api/menu")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"GET_MENU"})
     public ResponseEntity<PageDTO<MenusDTO>> listByPage(@RequestParam(name = "page", defaultValue = "0")int page) {
         return ResponseEntity.ok(service.getAllRootMenu(page));
     }
@@ -31,6 +31,7 @@ public class MenusApi {
         return ResponseEntity.ok(service.listAllMenuActivePath(frontType));
     }
     @GetMapping("/api/menu/find/{id}")
+    @RolesAllowed(value = {"GET_MENU"})
     public ResponseEntity<MenusDTO> findById(@PathVariable("id") String id) {
         return ResponseEntity.ok(service.findById(id));
     }

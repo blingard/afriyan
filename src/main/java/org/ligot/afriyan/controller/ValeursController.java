@@ -17,6 +17,7 @@ public class ValeursController {
     }
 
     @GetMapping("api/valeur")
+    @RolesAllowed(value = {"GET_VALEUR"})
     public List<ValeursDTO> findAll(){
         return service.getList();
     }
@@ -26,37 +27,37 @@ public class ValeursController {
     }
 
     @PostMapping("api/valeur")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"CREATE_VALEUR"})
     public ValeursDTO create(@RequestBody ValeursDTO valeursDTO) throws Exception {
         return service.save(valeursDTO);
     }
 
     @GetMapping("api/valeur/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"GET_VALEUR"})
     public Page<ValeursDTO> listAll(@PathVariable int id) throws Exception {
         return service.getPage(id);
     }
 
     @DeleteMapping("api/valeur/{id}")
-    @RolesAllowed(value = {"SUPERADMIN"})
+    @RolesAllowed(value = {"DELETE_VALEUR"})
     public void delete(@PathVariable Long id) throws Exception {
         service.delete(id);
     }
 
     @GetMapping("api/valeur/find-by-id/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"GET_VALEUR"})
     public ValeursDTO findById(@PathVariable Long id) throws Exception {
         return service.findById(id);
     }
 
     @PutMapping("api/valeur/{id}")
-    @RolesAllowed(value = {"SUPERADMIN","ADMIN","ROOT"})
+    @RolesAllowed(value = {"UPDATE_VALEUR"})
     public void update(@PathVariable Long id, @RequestBody ValeursDTO valeursDTO) throws Exception {
         service.update(valeursDTO, id);
     }
 
     @PutMapping("api/valeur/active/{id}")
-    /*@RolesAllowed(value = {"SUPERADMIN"})*/
+    @RolesAllowed(value = {"UPDATE_VALEUR"})
     public void active(@PathVariable Long id) throws Exception {
         service.active(id);
     }
