@@ -67,8 +67,8 @@ public class FormationsServiceImpl implements FormationsService {
     }
 
     @Override
-    @org.springframework.cache.annotation.CacheEvict(value = { "elearningFormationsActive", "elearningFormationsPage",
-            "elearningFormationsByCategory" }, allEntries = true)
+    @org.springframework.cache.annotation.CacheEvict(value = { "elearningFormationsActivetest", "elearningFormationsPagetest",
+            "elearningFormationsByCategorytest" }, allEntries = true)
     public void create(FormationsDTO formationsDTO) throws Exception {
         formationsDTO.setStatus(Boolean.FALSE.booleanValue());
         repo.save(mapper.toEntity(formationsDTO));
@@ -76,9 +76,9 @@ public class FormationsServiceImpl implements FormationsService {
 
     @Override
     @org.springframework.cache.annotation.Caching(evict = {
-            @org.springframework.cache.annotation.CacheEvict(value = "elearningFormations", key = "#idFormation"),
-            @org.springframework.cache.annotation.CacheEvict(value = { "elearningFormationsActive",
-                    "elearningFormationsPage", "elearningFormationsByCategory" }, allEntries = true)
+            @org.springframework.cache.annotation.CacheEvict(value = "elearningFormationstest", key = "#idFormation"),
+            @org.springframework.cache.annotation.CacheEvict(value = { "elearningFormationsActivetest",
+                    "elearningFormationsPagetest", "elearningFormationsByCategorytest" }, allEntries = true)
     })
     public void update(Long idFormation, FormationsDTO formationsDTO) throws Exception {
         Formations formations = getById(idFormation);
@@ -87,7 +87,7 @@ public class FormationsServiceImpl implements FormationsService {
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "elearningFormations", key = "#idFormation")
+    @org.springframework.cache.annotation.Cacheable(value = "elearningFormationstest", key = "#idFormation")
     public FormationsDTO findById(Long idFormation) throws Exception {
         FormationsDTO formationsDTO = findByIdUser(idFormation);
         formationsDTO.setQuizz(null);
@@ -95,7 +95,7 @@ public class FormationsServiceImpl implements FormationsService {
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "elearningFormations", key = "#idFormation")
+    @org.springframework.cache.annotation.Cacheable(value = "elearningFormationstest", key = "#idFormation")
     public FormationsDTO findByIdUser(Long idFormation) throws Exception {
         Formations formations = getById(idFormation);
         if (!formations.isStatus())
@@ -390,13 +390,13 @@ public class FormationsServiceImpl implements FormationsService {
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "elearningFormations", key = "#idFormation")
+    @org.springframework.cache.annotation.Cacheable(value = "elearningFormationstest", key = "#idFormation")
     public FormationsDTO findByIdAdmin(Long idFormation) throws Exception {
         return mapper.toDTO(getById(idFormation));
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "elearningFormations", key = "#idFormation + '-detail'")
+    @org.springframework.cache.annotation.Cacheable(value = "elearningFormationstest", key = "#idFormation + '-detail'")
     public FormationsDTO findByIdAdminWithDetail(Long idFormation) throws Exception {
         Formations formations = getById(idFormation);
         /*
@@ -418,7 +418,7 @@ public class FormationsServiceImpl implements FormationsService {
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "elearningFormationsPage", key = "{#page, #size}")
+    @org.springframework.cache.annotation.Cacheable(value = "elearningFormationsPagetest", key = "{#page, #size}")
     public Page<FormationsDTO> findAll(int page, int size) throws Exception {
         Page<Formations> formations = repo.findAll(PageRequest.of(page, size));
         return new PageImpl<>(
@@ -428,7 +428,7 @@ public class FormationsServiceImpl implements FormationsService {
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "elearningFormationsPage", key = "{#page, #size, 'admin'}")
+    @org.springframework.cache.annotation.Cacheable(value = "elearningFormationsPagetest", key = "{#page, #size, 'admin'}")
     public Page<FormationsDTO> findAllFormationOnlyAdmin(int page, int size) throws Exception {
         Page<Formations> formations = repo.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id")));
         return new PageImpl<>(
@@ -438,13 +438,13 @@ public class FormationsServiceImpl implements FormationsService {
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "elearningFormationsActive")
+    @org.springframework.cache.annotation.Cacheable(value = "elearningFormationsActivetest")
     public List<FormationsDTO> findAll() throws Exception {
         return repo.findAll().stream().map(mapper::toDTO).collect(Collectors.toList());
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "elearningFormationsActive")
+    @org.springframework.cache.annotation.Cacheable(value = "elearningFormationsActivetest")
     public List<FormationsDTO> findAllActive() throws Exception {
         List<FormationsDTO> formationsDTOS = repo.findAll().stream().map(mapper::toDTO).filter(FormationsDTO::isStatus)
                 .collect(Collectors.toList());
@@ -474,7 +474,7 @@ public class FormationsServiceImpl implements FormationsService {
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "elearningFormationsActive", key = "'lite'")
+    @org.springframework.cache.annotation.Cacheable(value = "elearningFormationsActivetest", key = "'lite'")
     public List<FormationsDTO> findAllActiveLite() throws Exception {
         List<FormationsDTO> formationsDTOS = repo.findAll().stream().map(mapper::toDTO).filter(FormationsDTO::isStatus)
                 .collect(Collectors.toList());
@@ -505,7 +505,7 @@ public class FormationsServiceImpl implements FormationsService {
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "elearningFormations", key = "#id + '-lite'")
+    @org.springframework.cache.annotation.Cacheable(value = "elearningFormationstest", key = "#id + '-lite'")
     public FormationsDTO findByIdActiveFormationsLite(Long id) throws Exception {
         Formations formations = repo.findFormationsByIdAndStatusIsTrue(id)
                 .orElseThrow(() -> new Exception("Formation non trouvee"));
@@ -533,7 +533,7 @@ public class FormationsServiceImpl implements FormationsService {
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "elearningFormationsByCategory", key = "#categorie")
+    @org.springframework.cache.annotation.Cacheable(value = "elearningFormationsByCategorytest", key = "#categorie")
     public List<FormationsDTO> findAllActiveByCategoryLite(String categorie) {
         Categories categories = iCategoriesRepository.findById(UUID.fromString(categorie))
                 .orElseThrow(() -> new RuntimeException("Categorie non trouve"));
@@ -564,7 +564,7 @@ public class FormationsServiceImpl implements FormationsService {
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "elearningFormationsByCategory", key = "#categorieCode")
+    @org.springframework.cache.annotation.Cacheable(value = "elearningFormationsByCategorytest", key = "#categorieCode")
     public List<FormationsDTO> findAllActiveByCategoryLiteByCode(String categorieCode) {
         Categories categories = iCategoriesRepository.findByCode(categorieCode)
                 .orElseThrow(() -> new RuntimeException("Categorie non trouve"));
@@ -594,9 +594,9 @@ public class FormationsServiceImpl implements FormationsService {
 
     @Override
     @org.springframework.cache.annotation.Caching(evict = {
-            @org.springframework.cache.annotation.CacheEvict(value = "elearningFormations", key = "#id"),
-            @org.springframework.cache.annotation.CacheEvict(value = { "elearningFormationsActive",
-                    "elearningFormationsPage", "elearningFormationsByCategory" }, allEntries = true)
+            @org.springframework.cache.annotation.CacheEvict(value = "elearningFormationstest", key = "#id"),
+            @org.springframework.cache.annotation.CacheEvict(value = { "elearningFormationsActivetest",
+                    "elearningFormationsPagetest", "elearningFormationsByCategorytest" }, allEntries = true)
     })
     public void enable(Long id) throws Exception {
         Formations formations = getById(id);
@@ -621,9 +621,9 @@ public class FormationsServiceImpl implements FormationsService {
 
     @Override
     @org.springframework.cache.annotation.Caching(evict = {
-            @org.springframework.cache.annotation.CacheEvict(value = "elearningFormations", key = "#idFormation"),
-            @org.springframework.cache.annotation.CacheEvict(value = { "elearningFormationsActive",
-                    "elearningFormationsPage", "elearningFormationsByCategory" }, allEntries = true)
+            @org.springframework.cache.annotation.CacheEvict(value = "elearningFormationstest", key = "#idFormation"),
+            @org.springframework.cache.annotation.CacheEvict(value = { "elearningFormationsActivetest",
+                    "elearningFormationsPagetest", "elearningFormationsByCategorytest" }, allEntries = true)
     })
     public void addQuizz(Long idFormation, Long idQuizz) throws Exception {
         Formations formations = repo.findById(idFormation)
@@ -639,9 +639,9 @@ public class FormationsServiceImpl implements FormationsService {
 
     @Override
     @org.springframework.cache.annotation.Caching(evict = {
-            @org.springframework.cache.annotation.CacheEvict(value = "elearningFormations", key = "#id"),
-            @org.springframework.cache.annotation.CacheEvict(value = { "elearningFormationsActive",
-                    "elearningFormationsPage", "elearningFormationsByCategory" }, allEntries = true)
+            @org.springframework.cache.annotation.CacheEvict(value = "elearningFormationstest", key = "#id"),
+            @org.springframework.cache.annotation.CacheEvict(value = { "elearningFormationsActivetest",
+                    "elearningFormationsPagetest", "elearningFormationsByCategorytest" }, allEntries = true)
     })
     public void disable(Long id) throws Exception {
         Formations formations = getById(id);

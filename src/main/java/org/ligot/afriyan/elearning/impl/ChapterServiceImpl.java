@@ -43,9 +43,9 @@ public class ChapterServiceImpl implements ChapterService {
 
     @Override
     @org.springframework.cache.annotation.Caching(evict = {
-            @org.springframework.cache.annotation.CacheEvict(value = "elearningFormations", key = "#idFormation"),
-            @org.springframework.cache.annotation.CacheEvict(value = { "elearningFormationsActive",
-                    "elearningFormationsPage", "elearningFormationsByCategory" }, allEntries = true)
+            @org.springframework.cache.annotation.CacheEvict(value = "elearningFormationstest", key = "#idFormation"),
+            @org.springframework.cache.annotation.CacheEvict(value = { "elearningFormationsActivetest",
+                    "elearningFormationsPagetest", "elearningFormationsByCategorytest" }, allEntries = true)
     })
     public void save(Long idFormation, ChapitresDTO chapitresDTO) throws Exception {
         Formations formations = formationsRepo.findById(idFormation)
@@ -67,9 +67,9 @@ public class ChapterServiceImpl implements ChapterService {
 
     @Override
     @org.springframework.cache.annotation.Caching(evict = {
-            @org.springframework.cache.annotation.CacheEvict(value = "elearningChapters", key = "#id"),
-            @org.springframework.cache.annotation.CacheEvict(value = { "elearningFormationsActive",
-                    "elearningFormationsPage", "elearningFormationsByCategory" }, allEntries = true)
+            @org.springframework.cache.annotation.CacheEvict(value = "elearningChapterstest", key = "#id"),
+            @org.springframework.cache.annotation.CacheEvict(value = { "elearningFormationsActivetest",
+                    "elearningFormationsPagetest", "elearningFormationsByCategorytest" }, allEntries = true)
     })
     public void update(Long id, ChapitresDTO chapitresDTO) throws Exception {
         Chapitres chapitres = findById(id);
@@ -80,7 +80,7 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
-    @org.springframework.cache.annotation.CacheEvict(value = "elearningChapters", key = "#id")
+    @org.springframework.cache.annotation.CacheEvict(value = "elearningChapterstest", key = "#id")
     public void enable(Long id) throws Exception {
         Chapitres chapitres = findById(id);
         chapitres.setStatus(Boolean.TRUE.booleanValue());
@@ -88,7 +88,7 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
-    @org.springframework.cache.annotation.CacheEvict(value = "elearningChapters", key = "#id")
+    @org.springframework.cache.annotation.CacheEvict(value = "elearningChapterstest", key = "#id")
     public void disable(Long id) throws Exception {
         Chapitres chapitres = findById(id);
         chapitres.setStatus(Boolean.FALSE.booleanValue());
@@ -96,7 +96,7 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "elearningChapters", key = "#id")
+    @org.springframework.cache.annotation.Cacheable(value = "elearningChapterstest", key = "#id")
     public ChapitresDTO getById(Long id) throws Exception {
         ChapitresDTO chapitresDTO = mapper.toDTO(findById(id));
         if (!chapitresDTO.isStatus())
@@ -130,7 +130,7 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "elearningChapters", key = "#id + '-admin'")
+    @org.springframework.cache.annotation.Cacheable(value = "elearningChapterstest", key = "#id + '-admin'")
     public ChapitresDTO getByIdAdmin(Long id) throws Exception {
         ChapitresDTO chapitresDTO = mapper.toDTO(findById(id));
         List<ParagraphsDTO> paragraphsDTOS = new ArrayList<>(0);

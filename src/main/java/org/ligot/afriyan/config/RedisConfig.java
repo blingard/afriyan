@@ -56,24 +56,24 @@ public class RedisConfig {
 
                 return RedisCacheManager.builder(factory)
                                 .cacheDefaults(config)
-                                .withCacheConfiguration("centrePartenaire", config.entryTtl(Duration.ofHours(2)))
-                                .withCacheConfiguration("centrePartenaireByUserId",
+                                .withCacheConfiguration("centrePartenairetest", config.entryTtl(Duration.ofHours(2)))
+                                .withCacheConfiguration("centrePartenaireByUserIdtest",
                                                 config.entryTtl(Duration.ofHours(2)))
-                                .withCacheConfiguration("centrePartenaireProches",
+                                .withCacheConfiguration("centrePartenaireProchestest",
                                                 config.entryTtl(Duration.ofMinutes(30)))
-                                .withCacheConfiguration("articles", config.entryTtl(Duration.ofHours(2)))
-                                .withCacheConfiguration("articlesByType", config.entryTtl(Duration.ofHours(1)))
-                                .withCacheConfiguration("articlesByCategory", config.entryTtl(Duration.ofHours(1)))
-                                .withCacheConfiguration("articlesTop6", config.entryTtl(Duration.ofMinutes(30)))
-                                .withCacheConfiguration("articlesPage", config.entryTtl(Duration.ofMinutes(30)))
-                                .withCacheConfiguration("articlesActive", config.entryTtl(Duration.ofHours(1)))
-                                .withCacheConfiguration("elearningFormations", config.entryTtl(Duration.ofHours(2)))
-                                .withCacheConfiguration("elearningChapters", config.entryTtl(Duration.ofHours(2)))
-                                .withCacheConfiguration("elearningParagraphs", config.entryTtl(Duration.ofHours(2)))
-                                .withCacheConfiguration("elearningFormationsPage", config.entryTtl(Duration.ofHours(1)))
-                                .withCacheConfiguration("elearningFormationsActive",
+                                .withCacheConfiguration("articlestest", config.entryTtl(Duration.ofHours(2)))
+                                .withCacheConfiguration("articlesByTypetest", config.entryTtl(Duration.ofHours(1)))
+                                .withCacheConfiguration("articlesByCategorytest", config.entryTtl(Duration.ofHours(1)))
+                                .withCacheConfiguration("articlesTop6test", config.entryTtl(Duration.ofMinutes(30)))
+                                .withCacheConfiguration("articlesPagetest", config.entryTtl(Duration.ofMinutes(30)))
+                                .withCacheConfiguration("articlesActivetest", config.entryTtl(Duration.ofHours(1)))
+                                .withCacheConfiguration("elearningFormationstest", config.entryTtl(Duration.ofHours(2)))
+                                .withCacheConfiguration("elearningChapterstest", config.entryTtl(Duration.ofHours(2)))
+                                .withCacheConfiguration("elearningParagraphstest", config.entryTtl(Duration.ofHours(2)))
+                                .withCacheConfiguration("elearningFormationsPagetest", config.entryTtl(Duration.ofHours(1)))
+                                .withCacheConfiguration("elearningFormationsActivetest",
                                                 config.entryTtl(Duration.ofHours(1)))
-                                .withCacheConfiguration("elearningFormationsByCategory",
+                                .withCacheConfiguration("elearningFormationsByCategorytest",
                                                 config.entryTtl(Duration.ofHours(1)))
                                 .build();
         }

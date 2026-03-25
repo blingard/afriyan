@@ -47,7 +47,7 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "centrePartenaire", key = "#id")
+    @org.springframework.cache.annotation.Cacheable(value = "centrePartenairetest", key = "#id")
     public CentrePartenaireDTO findById(Long id) throws Exception {
         CentrePartenaire centrePartenaire = repository.findById(id).orElse(null);
         if (centrePartenaire == null) {
@@ -107,7 +107,7 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "centrePartenairesPage", key = "#page")
+    @org.springframework.cache.annotation.Cacheable(value = "centrePartenairesPagetest", key = "#page")
     public Page<CentrePartenaireDTO> list(int page) throws Exception {
         Page<CentrePartenaire> pages = repository.findAll(PageRequest.of(page, PAGE_SIZE));
         return new PageImpl<>(pages.map(this::findWithFile).toList(), PageRequest.of(page, PAGE_SIZE),
@@ -115,7 +115,7 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "centrePartenairesActive")
+    @org.springframework.cache.annotation.Cacheable(value = "centrePartenairesActivetest")
     public List<CentrePartenaireDTO> list() throws Exception {
         return repository.findCentrePartenaireByStatus(Status.ACTIVE).stream().map(this::findWithFile).toList();
     }
@@ -132,7 +132,7 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "centrePartenaireProches", key = "{#userLat, #userLon}")
+    @org.springframework.cache.annotation.Cacheable(value = "centrePartenaireProchestest", key = "{#userLat, #userLon}")
     public List<CentrePartenaireDTO> trouverCPProches(double userLat, double userLon) {
         boolean isTrue = true;
         double rayon = 10.0D;
@@ -158,7 +158,7 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "centrePartenairesAll")
+    @org.springframework.cache.annotation.Cacheable(value = "centrePartenairesAlltest")
     public List<CentrePartenaireDTO> listAll() {
         return repository.findAll().stream().map(this::findWithFile).toList();
     }
@@ -166,10 +166,10 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
     @Override
     @Transactional
     @org.springframework.cache.annotation.Caching(put = {
-            @org.springframework.cache.annotation.CachePut(value = "centrePartenaire", key = "#id")
+            @org.springframework.cache.annotation.CachePut(value = "centrePartenairetest", key = "#id")
     }, evict = {
-            @org.springframework.cache.annotation.CacheEvict(value = { "centrePartenairesAll",
-                    "centrePartenairesActive", "centrePartenaireProches", "centrePartenairesPage" }, allEntries = true)
+            @org.springframework.cache.annotation.CacheEvict(value = { "centrePartenairesAlltest",
+                    "centrePartenairesActivetest", "centrePartenaireProchestest", "centrePartenairesPagetest" }, allEntries = true)
     })
     public CentrePartenaireDTO update(CentrePartenaireDTO centrePartenaireDTO, Long id) throws Exception {
         CentrePartenaire centrePartenaire = repository.findById(id).orElse(null);
@@ -205,7 +205,7 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "centrePartenaireByUserId", key = "#id")
+    @org.springframework.cache.annotation.Cacheable(value = "centrePartenaireByUserIdtest", key = "#id")
     public CentrePartenaireDTO findByUserId(Long id) throws Exception {/*
                                                                         * UtilisateurDTO userDTO =
                                                                         * utilisateur.findById(id);
@@ -221,9 +221,9 @@ public class CentrePartenaireImpl implements ICentrePartenaire {
     }
 
     @Override
-    @org.springframework.cache.annotation.CacheEvict(value = { "centrePartenaire", "centrePartenairesAll",
-            "centrePartenairesActive", "centrePartenaireProches", "centrePartenairesPage",
-            "centrePartenaireByUserId" }, allEntries = true)
+    @org.springframework.cache.annotation.CacheEvict(value = { "centrePartenairetest", "centrePartenairesAlltest",
+            "centrePartenairesActivetest", "centrePartenaireProchestest", "centrePartenairesPagetest",
+            "centrePartenaireByUserIdtest" }, allEntries = true)
     public void active(Long id) {
         CentrePartenaire centrePartenaire = repository.findById(id).orElse(null);
         if (centrePartenaire != null) {

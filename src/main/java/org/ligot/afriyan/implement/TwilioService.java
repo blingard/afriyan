@@ -59,7 +59,7 @@ public class TwilioService {
                             .addHeader("Content-Type", "application/json")
                             .build();
 
-                    Response response = client.newCall(request).execute();
+                    /*Response response = client.newCall(request).execute();
 
 
                     if (response.isSuccessful()) {
@@ -67,7 +67,7 @@ public class TwilioService {
                     } else {
                         mapStatus.put(phone, "FAILED");
                         System.err.println("Echec de l'envoi vers " + phone + ": " + response.body().string());
-                    }
+                    }*/
                 } else {
                     throw new Exception("Le numero de telephone 237" + phone.trim() + " n'est pas valide");
                 }
@@ -133,14 +133,14 @@ public class TwilioService {
                         .addHeader("Content-Type", "application/json")
                         .build();
 
-                Response response = client.newCall(request).execute();
+                /*Response response = client.newCall(request).execute();
 
                 if (response.isSuccessful()) {
                     mapStatus.put(toNumber, "SENT");
                 } else {
                     mapStatus.put(toNumber, "FAILED");
                     System.err.println("Echec de l'envoi vers " + fullNumber + ": " + response.body().string());
-                }
+                }*/
             } else {
                 throw new Exception("Le numero de telephone 237" + toNumber.trim() + " n'est pas valide");
             }
