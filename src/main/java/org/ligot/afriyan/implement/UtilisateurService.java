@@ -120,7 +120,7 @@ public class UtilisateurService implements IUtilisateur {
     public void addPermission(Long idUser, PermissionRequest permissions) {
         Utilisateur utilisateur = repository.findById(idUser).orElseThrow(()->new RuntimeException("User not found"));
         for (PermissionEnum permission : permissions.getPermission()){
-            if(utilisateur.getEffectivePermission().contains(permission)){
+            if(!utilisateur.getEffectivePermission().contains(permission)){
                 if(utilisateur.getPermissionsRemove() != null && utilisateur.getPermissionsRemove().contains(permission)){
                     utilisateur.getPermissionsRemove().remove(permission);
                 }

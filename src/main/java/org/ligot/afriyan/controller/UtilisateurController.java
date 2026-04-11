@@ -143,7 +143,7 @@ public class UtilisateurController {
         service.changePassword(changePwd);
     }
 
-    @PutMapping("public/user/reset-password/{id}")
+    @PutMapping("user/reset-password/{id}")
     @RolesAllowed(value = {"UPDATE_USER"})
     public void resetPassword(@PathVariable Long id) throws Exception {
         service.resetPassword(id);
@@ -162,7 +162,7 @@ public class UtilisateurController {
         return service.statusListSave();
     }
 
-    @DeleteMapping("/user/remove/{userId}/permission")
+    @DeleteMapping("/user/remove/{userId}/permission/{permission}")
     @RolesAllowed("PERMISSION_ROLE_MANAGE_PERMISSIONS")
     public void removePermission(@PathVariable Long userId, @PathVariable PermissionEnum permission){
         service.removePermission(userId, permission);
