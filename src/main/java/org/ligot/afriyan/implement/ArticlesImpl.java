@@ -55,8 +55,6 @@ public class ArticlesImpl implements IArticles {
     }
 
     @Override
-    @org.springframework.cache.annotation.CacheEvict(value = { "articlesByType", "articlesByCategory", "articlesActive",
-            "articlesPage", "articlesTop6" }, allEntries = true)
     public ArticlesDTO save(MultipartFile file, ArticlesDTO articlesDTO) throws Exception {
         getUser();
         Categories categories = iCategories.findCategoriesById(articlesDTO.getCategories().getId());
@@ -73,8 +71,6 @@ public class ArticlesImpl implements IArticles {
     }
 
     @Override
-    @org.springframework.cache.annotation.CacheEvict(value = { "articlesByType", "articlesByCategory", "articlesActive",
-            "articlesPage", "articlesTop6" }, allEntries = true)
     public ArticlesDTO save(ArticlesDTO articlesDTO) throws Exception {
         Categories categories = iCategories.findCategoriesById(articlesDTO.getCategories().getId());
         if (Objects.equals(categories.isStatus(), Boolean.FALSE.booleanValue()))
@@ -105,13 +101,11 @@ public class ArticlesImpl implements IArticles {
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "articlesByType", key = "#typeDonne")
     public List<ArticlesDTO> getList(TypeDonne typeDonne) {
         return repository.findAllByTypeDonne(typeDonne).stream().map(this::findWithFile).collect(Collectors.toList());
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "articlesByCategory", key = "{#typeDonne, #menuId}")
     public List<ArticlesDTO> getList(TypeDonne typeDonne, String menuId) {
         Categories categories = iCategories.findCategoriesByMenuId(menuId);
         return repository.findAllByTypeDonneAndCategoriesAndStatusTrue(typeDonne, categories).stream()
@@ -119,7 +113,6 @@ public class ArticlesImpl implements IArticles {
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "articlesByCategory", key = "{#typeDonne, #categorieId}")
     public List<ArticlesDTO> getListAdmin(TypeDonne typeDonne, String categorieId) {
         Categories categories = iCategories.findCategoriesById(UUID.fromString(categorieId));
         return repository.findAllByTypeDonneAndCategoriesAndStatusTrue(typeDonne, categories).stream()
@@ -127,14 +120,12 @@ public class ArticlesImpl implements IArticles {
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "articlesActive", key = "#typeDonne")
     public List<ArticlesDTO> getListActive(TypeDonne typeDonne) {
         return repository.findAllByStatusTrueAndTypeDonne(typeDonne).stream()
                 .map(articles -> this.findWithFile(articles, typeDonne)).toList();
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "articles", key = "#id")
     public ArticlesDTO findById(Long id) throws Exception {
         Articles articles = repository.findById(id).orElse(null);
         if (articles == null)
@@ -143,7 +134,6 @@ public class ArticlesImpl implements IArticles {
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "articles", key = "#id")
     public ArticlesDTO findByIdActive(Long id) throws Exception {
         Articles articles = repository.findById(id).orElse(null);
         if (articles == null)
@@ -154,7 +144,6 @@ public class ArticlesImpl implements IArticles {
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "articlesPage", key = "{#lenght, #typeDonne}")
     public Page<ArticlesDTO> getPage(int lenght, TypeDonne typeDonne) {
         if (lenght < 0)
             lenght = 0;
@@ -166,12 +155,6 @@ public class ArticlesImpl implements IArticles {
     }
 
     @Override
-    @org.springframework.cache.annotation.Caching(put = {
-            @org.springframework.cache.annotation.CachePut(value = "articles", key = "#id")
-    }, evict = {
-            @org.springframework.cache.annotation.CacheEvict(value = { "articlesByType", "articlesByCategory",
-                    "articlesActive", "articlesPage", "articlesTop6" }, allEntries = true)
-    })
     public ArticlesDTO update(ArticlesDTO articlesDTO, Long id) throws Exception {
         Articles article = repository.findById(id).orElse(null);
         if (article == null) {
@@ -184,8 +167,6 @@ public class ArticlesImpl implements IArticles {
     }
 
     @Override
-    @org.springframework.cache.annotation.CacheEvict(value = { "articles", "articlesByType", "articlesByCategory",
-            "articlesActive", "articlesPage", "articlesTop6" }, allEntries = true)
     public void delete(Long id) {
         Articles articles = repository.findById(id).orElse(null);
         if (articles != null)
@@ -193,15 +174,12 @@ public class ArticlesImpl implements IArticles {
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "articlesTop6", key = "#typeDonne")
     public List<ArticlesDTO> get6TopDesc(TypeDonne typeDonne) {
         return repository.findTop6ByTypeDonneAndStatusIsTrue(typeDonne, Sort.by("id").descending()).stream()
                 .map(this::findWithFile).toList();
     }
 
     @Override
-    @org.springframework.cache.annotation.CacheEvict(value = { "articles", "articlesByType", "articlesByCategory",
-            "articlesActive", "articlesPage", "articlesTop6" }, allEntries = true)
     public void active(Long id, TypeDonne typeDonne) {
         Articles articles = repository.findById(id).orElse(null);
         if (articles != null && articles.getType().equals(typeDonne)) {

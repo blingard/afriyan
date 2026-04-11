@@ -33,11 +33,6 @@ public class ParagraphServiceImpl implements ParagraphService {
     }
 
     @Override
-    @org.springframework.cache.annotation.Caching(evict = {
-            @org.springframework.cache.annotation.CacheEvict(value = "elearningChapters", key = "#idChapter"),
-            @org.springframework.cache.annotation.CacheEvict(value = { "elearningFormationsActive",
-                    "elearningFormationsPage", "elearningFormationsByCategory" }, allEntries = true)
-    })
     public void save(Long idChapter, ParagraphsDTO paragraphsDTO, MultipartFile file) throws Exception {
         Chapitres chapitres = chapterRepo.findById(idChapter).orElseThrow(() -> new Exception("Module not found"));
         Paragraphs paragraphs = switch (paragraphsDTO.getType()) {
@@ -59,12 +54,6 @@ public class ParagraphServiceImpl implements ParagraphService {
     }
 
     @Override
-    @org.springframework.cache.annotation.Caching(evict = {
-            @org.springframework.cache.annotation.CacheEvict(value = "elearningParagraphs", key = "#id"),
-            @org.springframework.cache.annotation.CacheEvict(value = "elearningChapters", allEntries = true),
-            @org.springframework.cache.annotation.CacheEvict(value = { "elearningFormationsActive",
-                    "elearningFormationsPage", "elearningFormationsByCategory" }, allEntries = true)
-    })
     public void update(Long id, ParagraphsDTO paragraphsDTO) throws Exception {
         Paragraphs paragraphs = findById(id);
         if (!paragraphs.isStatus())
@@ -76,7 +65,6 @@ public class ParagraphServiceImpl implements ParagraphService {
     }
 
     @Override
-    @org.springframework.cache.annotation.CacheEvict(value = "elearningParagraphs", key = "#id")
     public void enable(Long id) throws Exception {
         Paragraphs paragraphs = findById(id);
         paragraphs.setStatus(Boolean.TRUE.booleanValue());
@@ -84,7 +72,6 @@ public class ParagraphServiceImpl implements ParagraphService {
     }
 
     @Override
-    @org.springframework.cache.annotation.CacheEvict(value = "elearningParagraphs", key = "#id")
     public void disable(Long id) throws Exception {
         Paragraphs paragraphs = findById(id);
         paragraphs.setStatus(Boolean.FALSE.booleanValue());
@@ -92,7 +79,6 @@ public class ParagraphServiceImpl implements ParagraphService {
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "elearningParagraphs", key = "#id")
     public ParagraphsDTO getById(Long id) throws Exception {
         return mapper.toDTO(findById(id));
     }

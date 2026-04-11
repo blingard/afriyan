@@ -16,8 +16,17 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Sort;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 public class RedisConfig {
@@ -29,13 +38,16 @@ public class RedisConfig {
                 mapper.findAndRegisterModules(); // Recherche et enregistre modules (JavaTime, Jdk8)
 
                 // Désactivation de l'écriture des dates en timestamps pour plus de lisibilité
-                mapper.configure(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+                mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
                 // Tolérance sur les propriétés inconnues
-                mapper.configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-                                false);
+                mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
                 // Configuration de la visibilité pour accéder aux champs privés sans getters
                 mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+
+                // Enregistrement des Mixins pour supporter Page et Sort de Spring Data
+                mapper.addMixIn(PageImpl.class, PageImplMixin.class);
+                mapper.addMixIn(Sort.class, SortMixin.class);
 
                 // Activation du typage par défaut pour la désérialisation des structures
                 // polymorphes
@@ -56,25 +68,30 @@ public class RedisConfig {
 
                 return RedisCacheManager.builder(factory)
                                 .cacheDefaults(config)
-                                .withCacheConfiguration("centrePartenaire", config.entryTtl(Duration.ofHours(2)))
-                                .withCacheConfiguration("centrePartenaireByUserId",
-                                                config.entryTtl(Duration.ofHours(2)))
-                                .withCacheConfiguration("centrePartenaireProches",
-                                                config.entryTtl(Duration.ofMinutes(30)))
-                                .withCacheConfiguration("articles", config.entryTtl(Duration.ofHours(2)))
-                                .withCacheConfiguration("articlesByType", config.entryTtl(Duration.ofHours(1)))
-                                .withCacheConfiguration("articlesByCategory", config.entryTtl(Duration.ofHours(1)))
-                                .withCacheConfiguration("articlesTop6", config.entryTtl(Duration.ofMinutes(30)))
-                                .withCacheConfiguration("articlesPage", config.entryTtl(Duration.ofMinutes(30)))
-                                .withCacheConfiguration("articlesActive", config.entryTtl(Duration.ofHours(1)))
-                                .withCacheConfiguration("elearningFormations", config.entryTtl(Duration.ofHours(2)))
-                                .withCacheConfiguration("elearningChapters", config.entryTtl(Duration.ofHours(2)))
-                                .withCacheConfiguration("elearningParagraphs", config.entryTtl(Duration.ofHours(2)))
-                                .withCacheConfiguration("elearningFormationsPage", config.entryTtl(Duration.ofHours(1)))
-                                .withCacheConfiguration("elearningFormationsActive",
-                                                config.entryTtl(Duration.ofHours(1)))
-                                .withCacheConfiguration("elearningFormationsByCategory",
-                                                config.entryTtl(Duration.ofHours(1)))
                                 .build();
+        }
+
+        /**
+         * Mixin pour la désérialisation de PageImpl
+         */
+        @JsonIgnoreProperties(ignoreUnknown = true, value = {"pageable"})
+        abstract static class PageImplMixin {
+                @JsonCreator
+                public PageImplMixin(@JsonProperty("content") List<?> content,
+                                     @JsonProperty("number") int number,
+                                     @JsonProperty("size") int size,
+                                     @JsonProperty("totalElements") long totalElements) {
+                }
+        }
+
+        /**
+         * Mixin pour la désérialisation de Sort
+         */
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        abstract static class SortMixin {
+                @JsonCreator
+                public static Sort by(@JsonProperty("orders") List<Sort.Order> orders) {
+                        return Sort.by(orders);
+                }
         }
 }
