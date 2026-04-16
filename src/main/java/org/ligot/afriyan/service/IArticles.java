@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface IArticles {
     ArticlesDTO save(MultipartFile file, ArticlesDTO articlesDTO) throws Exception;
+    void updateFile(MultipartFile file, Long id) throws Exception;
     ArticlesDTO save(ArticlesDTO articlesDTO) throws Exception;
     List<ArticlesDTO> getList(TypeDonne typeDonne);
     List<ArticlesDTO> getList(TypeDonne typeDonne, String menuId);

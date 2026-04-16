@@ -71,6 +71,15 @@ public class ArticlesImpl implements IArticles {
     }
 
     @Override
+    public void updateFile(MultipartFile file, Long id) throws Exception {
+        getUser();
+        Articles articles = repository.findById(id).orElseThrow(()-> new RuntimeException("data not found"));
+        String name = fileStorageService.storeParagraphFileImage(file, Constantes.ARTICLEIMAGESUBPATH);
+        articles.setPhote(name);
+        repository.save(articles);
+    }
+
+    @Override
     public ArticlesDTO save(ArticlesDTO articlesDTO) throws Exception {
         Categories categories = iCategories.findCategoriesById(articlesDTO.getCategories().getId());
         if (Objects.equals(categories.isStatus(), Boolean.FALSE.booleanValue()))

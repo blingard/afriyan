@@ -46,7 +46,7 @@ public class ArticlesController {
     }
 
     @PostMapping("api/article")
-    @RolesAllowed(value = {"GET_ARTICLE"})
+    @RolesAllowed(value = {"CREATE_ARTICLE"})
     public ArticlesDTO create(@RequestParam(name = "file",required = false) MultipartFile file,
                               @RequestParam( "jsonData") String jsonData)throws Exception{
         ArticlesDTO articlesDTO = new ObjectMapper().readValue(jsonData, ArticlesDTO.class);
@@ -79,6 +79,13 @@ public class ArticlesController {
     @RolesAllowed(value = {"UPDATE_ARTICLE"})
     public void update(@PathVariable Long id, @RequestBody ArticlesDTO valeursDTO) throws Exception {
         service.update(valeursDTO, id);
+    }
+
+    @PutMapping("api/article/update-file/{id}")
+    @RolesAllowed(value = {"UPDATE_ARTICLE"})
+    public void update(@RequestParam(name = "file",required = false) MultipartFile file,
+                              @PathVariable Long id)throws Exception{
+        service.updateFile(file, id);
     }
 
     @PutMapping("api/article/active/{id}")

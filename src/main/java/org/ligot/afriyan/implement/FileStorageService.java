@@ -13,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStream;
 import java.time.Duration;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Service de stockage de fichiers utilisant MinIO comme backend.
@@ -27,6 +29,7 @@ public class FileStorageService {
 
     // Préfixes MinIO par type de fichier
     private static final String PREFIX_CARROUSEL = "carrousel/";
+    private static final String PREFIX_GALLERY = "gallery/";
     private static final String PREFIX_DEFAULT = "uploads/";
 
     public FileStorageService(IMediatechRepository repository, MinioService minioService) {
@@ -133,23 +136,6 @@ public class FileStorageService {
         return minioService.getFileUrl(objectName, expiry);
     }
 
-    /**
-     * Convertit un fichier MinIO en chaîne Base64.
-     * Pratique pour les réponses JSON embarquant des images petites.
-     *
-     * @param objectName chemin de l'objet dans MinIO
-     * @return chaîne Base64 ou null en cas d'erreur
-     */
-    public String convertImageToBase64(String objectName) {
-        try (InputStream is = minioService.downloadFile(objectName)) {
-            byte[] bytes = is.readAllBytes();
-            // log.info("Conversion Base64 pour : {}", objectName);
-            return Base64.getEncoder().encodeToString(bytes);
-        } catch (Exception e) {
-            // log.warn("Impossible de convertir en Base64 : {}", objectName, e);
-            return null;
-        }
-    }
 
     // -------------------------------------------------------------------------
     // Suppression
@@ -186,5 +172,17 @@ public class FileStorageService {
         if (filename == null || !filename.contains("."))
             return "";
         return filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
+    }
+
+    public Map<String, String> saveGallery(MultipartFile file) throws Exception {
+        Map<String, String> data = new HashMap<>();
+        String fileName = validateAndGetName(file);
+        String objectName = PREFIX_CARROUSEL + fileName;
+        data.put("name", objectName);
+        String[] extensions = objectName.split("\\.");
+        data.put("extension", extensions[extensions.length-1]);
+        String path = minioService.uploadFile(file, objectName);
+        data.put("path", path);
+        return data;
     }
 }

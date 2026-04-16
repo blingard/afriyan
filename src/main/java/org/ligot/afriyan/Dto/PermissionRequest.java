@@ -32,4 +32,11 @@ public class PermissionRequest {
     public void setPermission(Set<PermissionEnum> permission) {
         this.permission = permission;
     }
+
+    @Override
+    public String toString() {
+        return "PermissionRequest{" +
+                "permission=" + permission +
+                '}';
+    }
 }
