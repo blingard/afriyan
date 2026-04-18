@@ -2,52 +2,24 @@ package org.ligot.afriyan.controller;
 
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.ligot.afriyan.echo.service.CronService;
 
 import java.io.IOException;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController
 public class HearthCheck {
 
+    private final CronService cronService;
 
-    public class Donnees{
-        String original;
-        String thumbnail;
-        String thumbnailHeight;
-        String thumbnailWidth;
-
-        public Donnees(String original, String thumbnail, String thumbnailHeight, String thumbnailWidth) {
-            this.original = original;
-            this.thumbnail = thumbnail;
-            this.thumbnailHeight = thumbnailHeight;
-            this.thumbnailWidth = thumbnailWidth;
-        }
-
-        public String getOriginal() {
-            return original;
-        }
-
-        public String getThumbnail() {
-            return thumbnail;
-        }
-
-        public String getThumbnailHeight() {
-            return thumbnailHeight;
-        }
-
-        public String getThumbnailWidth() {
-            return thumbnailWidth;
-        }
+    public HearthCheck(CronService cronService) {
+        this.cronService = cronService;
     }
 
     @GetMapping("/public/healthckeck")

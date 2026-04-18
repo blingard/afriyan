@@ -11,6 +11,9 @@ public class Sliders {
     private String photo;
     private String title;
 
+    @Column(length = -1)
+    private String content;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private FrontType frontType;
@@ -20,11 +23,12 @@ public class Sliders {
     public Sliders() {
     }
 
-    public Sliders(Long id, String message, String photo, String title, FrontType frontType, boolean status) {
+    public Sliders(Long id, String message, String photo, String title, String content, FrontType frontType, boolean status) {
         this.id = id;
         this.message = message;
         this.photo = photo;
         this.title = title;
+        this.content = content;
         this.frontType = frontType;
         this.status = status;
     }
@@ -75,5 +79,13 @@ public class Sliders {
 
     public void setFrontType(FrontType frontType) {
         this.frontType = frontType;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }

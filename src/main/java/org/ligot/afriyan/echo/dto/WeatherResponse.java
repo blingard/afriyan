@@ -49,4 +49,14 @@ public class WeatherResponse {
     public void setWeather(List<WeatherDTO> weather) {
         this.weather = weather;
     }
+
+    @Override
+    public String toString() {
+        return "WeatherResponse{" +
+                "current_condition=" + current_condition +
+                ", nearest_area=" + nearest_area +
+                ", request=" + request +
+                ", weather=" + weather +
+                '}';
+    }
 }

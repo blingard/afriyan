@@ -1,36 +1,28 @@
 package org.ligot.afriyan.Dto;
 
+import lombok.Builder;
 import org.ligot.afriyan.entities.FrontType;
 
-public class SlidersDTO {
+@Builder
+public class SlidersSmartDTO {
     private Long id;
     private String message;
     private String photo;
     private String title;
-    private String content;
 
     private FrontType frontType;
-    private boolean status;
+    private boolean hasContent;
 
-    public SlidersDTO() {
+    public SlidersSmartDTO() {
     }
 
-    public SlidersDTO(Long id, String message, String photo, String title, String content, FrontType frontType, boolean status) {
+    public SlidersSmartDTO(Long id, String message, String photo, String title, FrontType frontType, boolean hasContent) {
         this.id = id;
         this.message = message;
         this.photo = photo;
         this.title = title;
-        this.content = content;
         this.frontType = frontType;
-        this.status = status;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
+        this.hasContent = hasContent;
     }
 
     public Long getId() {
@@ -65,19 +57,19 @@ public class SlidersDTO {
         this.title = title;
     }
 
-    public boolean isStatus() {
-        return status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
-
     public FrontType getFrontType() {
         return frontType;
     }
 
     public void setFrontType(FrontType frontType) {
         this.frontType = frontType;
+    }
+
+    public boolean isHasContent() {
+        return hasContent;
+    }
+
+    public void setHasContent(boolean hasContent) {
+        this.hasContent = hasContent;
     }
 }

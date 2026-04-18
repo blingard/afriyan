@@ -34,4 +34,16 @@ public class WeatherController {
         return service.getWeathers(today, weatherTime, dep);
     }
 
+
+    @GetMapping("public/weather/list")
+    public Set<WeatherRecord> listAllPublic(@RequestParam(name = "date", required = false)String date,
+                                      @RequestParam(name = "dep")UUID dep,
+                                      @RequestParam(name = "weatherTime", required = true) WeatherTime weatherTime) throws Exception {
+        LocalDate today = LocalDate.now();
+        if(date!=null){
+            today =LocalDate.parse(date);
+        }
+        return service.getWeathersPublic(today, weatherTime, dep);
+    }
+
 }

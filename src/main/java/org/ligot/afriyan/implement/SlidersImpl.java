@@ -2,10 +2,7 @@ package org.ligot.afriyan.implement;
 
 import jakarta.transaction.Transactional;
 import org.ligot.afriyan.Constantes;
-import org.ligot.afriyan.Dto.CentrePartenaireDTO;
-import org.ligot.afriyan.Dto.PageDTO;
-import org.ligot.afriyan.Dto.ServiceDTO;
-import org.ligot.afriyan.Dto.SlidersDTO;
+import org.ligot.afriyan.Dto.*;
 import org.ligot.afriyan.entities.CentrePartenaire;
 import org.ligot.afriyan.entities.FrontType;
 import org.ligot.afriyan.entities.Sliders;
@@ -44,14 +41,6 @@ public class SlidersImpl implements ISliders {
 
     private SlidersDTO findWithFile(Sliders centrePartenaire){
         SlidersDTO centrePartenaireDTO = mapper.toDTO(centrePartenaire);
-        /*try {
-            String[] elements = centrePartenaire.getPhoto().split(":");
-            String imageBase64 = fileStorageService.convertImageToBase64(Constantes.SLIDERIMAGESUBPATH1+elements[0]);
-            String image = "data:image/"+elements[1]+";base64,"+imageBase64;
-            centrePartenaireDTO.setPhoto(image);
-        }catch (Exception ex){
-            centrePartenaireDTO.setPhoto("data:image/;base64,null");
-        }*/
         return centrePartenaireDTO;
     }
 
@@ -88,11 +77,11 @@ public class SlidersImpl implements ISliders {
     }
 
     @Override
-    public List<SlidersDTO> findToUse(FrontType frontType) throws Exception {
+    public List<SlidersSmartDTO> findToUse(FrontType frontType) throws Exception {
         List<Sliders> sliders = repository.findSlidersByStatusIsTrueAndFrontType(frontType);
         if(sliders.isEmpty())
             throw new Exception("Sliders not found");
-        return sliders.stream().map(this::findWithFile).toList();
+        return sliders.stream().map(mapper::toDTOSmart).toList();
     }
 
 
@@ -108,6 +97,14 @@ public class SlidersImpl implements ISliders {
         Sliders certificates = repository.findById(id).orElseThrow(()->new Exception("Sliders not found"));
         certificates.setStatus(!certificates.isStatus());
         repository.save(certificates);
+    }
+
+    @Override
+    public void updateFileSlide(MultipartFile file, Long id) throws Exception {
+        Sliders sliders = repository.findById(id).orElseThrow(()->new Exception("Sliders not found"));
+        String name = fileStorageService.storeParagraphFileImage(file, Constantes.SLIDERIMAGESUBPATH);
+        sliders.setPhoto(name);
+        repository.save(sliders);
     }
 
 }

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "api/alert-type")
 public class AlertTypeController {
     private final AlertRiskTypeService service;
 
@@ -19,28 +18,33 @@ public class AlertTypeController {
         this.service = service;
     }
 
-    @PostMapping("create")
+    @PostMapping("api/alert-type/create")
     @RolesAllowed(value = {"CREATE_ALERT_TYPE"})
     public void create(@Valid @RequestBody AlertRiskTypeDTO alertRiskTypeDTO) throws Exception {
         service.save(alertRiskTypeDTO);
     }
 
-    @GetMapping
+    @GetMapping("api/alert-type")
     @RolesAllowed(value = {"GET_ALERT_TYPE"})
     public ResponseEntity<PageDTO<AlertRiskTypeDTO>> listByPage(@RequestParam(name = "page", defaultValue = "0")int page) {
         return ResponseEntity.ok(service.getAllByPage(page));
     }
 
-    @GetMapping("user/{id}")
+    @GetMapping("api/alert-type/user/{id}")
     @RolesAllowed(value = {"GET_ALERT_TYPE"})
     public ResponseEntity<AlertRiskTypeDTO> byId(@PathVariable(name = "id", required = true)String id) {
         return ResponseEntity.ok(service.findActiveById(id));
     }
 
-    @GetMapping("admin/{id}")
+    @GetMapping("api/alert-type/admin/{id}")
     @RolesAllowed(value = {"GET_ALERT_TYPE_ADMIN"})
     public ResponseEntity<AlertRiskTypeDTO> byIdAdmin(@PathVariable(name = "id", required = true)String id) {
         return ResponseEntity.ok(service.findById(id));
+    }
+
+    @GetMapping("public/alert-type/active-list")
+    public ResponseEntity<List<AlertRiskTypeDTO>> getAllActivePublic() {
+        return ResponseEntity.ok(service.getAllActivePublic());
     }
 
     @GetMapping("admin/active-list")
@@ -49,13 +53,13 @@ public class AlertTypeController {
         return ResponseEntity.ok(service.getAllActive());
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("api/alert-type/update/{id}")
     @RolesAllowed(value = {"UPDATE_ALERT_TYPE"})
     public void update(@PathVariable("id") String id, @RequestBody @Valid AlertRiskTypeDTO alertRiskTypeDTO) {
         service.update(alertRiskTypeDTO, id);
     }
 
-    @PutMapping("/enable/{id}")
+    @PutMapping("api/alert-type/enable/{id}")
     @RolesAllowed(value = {"UPDATE_ALERT_TYPE"})
     public void enable(@PathVariable("id") String id) {
         service.active(id);

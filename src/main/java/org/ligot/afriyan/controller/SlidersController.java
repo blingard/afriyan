@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import org.ligot.afriyan.Dto.CentrePartenaireDTO;
 import org.ligot.afriyan.Dto.PageDTO;
 import org.ligot.afriyan.Dto.SlidersDTO;
+import org.ligot.afriyan.Dto.SlidersSmartDTO;
 import org.ligot.afriyan.entities.FrontType;
 import org.ligot.afriyan.service.ISliders;
 import org.springframework.http.HttpStatus;
@@ -50,28 +51,41 @@ public class SlidersController {
 
     @PutMapping(value = "api/sliders/update/{id}")
     @RolesAllowed(value = {"UPDATE_SLIDER"})
-    void updateSlide(@RequestBody @Valid SlidersDTO slidersDTO, @PathVariable Long id) throws Exception {
+    public void updateSlide(@RequestBody @Valid SlidersDTO slidersDTO, @PathVariable Long id) throws Exception {
         service.update(slidersDTO, id);
     }
 
+    @PutMapping(value = "api/sliders/update/file/{id}")
+    @RolesAllowed(value = {"UPDATE_SLIDER"})
+    public void updateFileSlide(
+            @RequestParam(name = "file",required = false) MultipartFile file,
+            @PathVariable Long id) throws Exception {
+        service.updateFileSlide(file, id);
+    }
+
     @GetMapping(value = "api/sliders/{id}")
-    SlidersDTO updateCentre(@PathVariable Long id) throws Exception {
+    public SlidersDTO updateCentre(@PathVariable Long id) throws Exception {
+        return service.findById(id);
+    }
+
+    @GetMapping(value = "public/sliders/{id}")
+    public SlidersDTO findPublic(@PathVariable Long id) throws Exception {
         return service.findById(id);
     }
 
     @GetMapping(value = "public/api/sliders/to_use")
-    List<SlidersDTO> toUse() throws Exception {
+    public List<SlidersDTO> toUse() throws Exception {
         return service.findToUse();
     }
 
     @GetMapping(value = "public/api/sliders/by/front/{frontType}")
-    List<SlidersDTO> toUse(@PathVariable("frontType")FrontType frontType) throws Exception {
+    public List<SlidersSmartDTO> toUse(@PathVariable("frontType")FrontType frontType) throws Exception {
         return service.findToUse(frontType);
     }
 
     @PutMapping(value = "/api/sliders/change_status/{id}")
     @RolesAllowed(value = {"UPDATE_SLIDER"})
-    void changeStatus(@PathVariable Long id) throws Exception {
+    public void changeStatus(@PathVariable Long id) throws Exception {
         service.active(id);
     }
 

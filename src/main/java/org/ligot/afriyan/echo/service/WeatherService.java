@@ -4,13 +4,12 @@ import kong.unirest.GenericType;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import org.ligot.afriyan.echo.WeatherTime;
-import org.ligot.afriyan.echo.dto.WeatherPrevisionDTO;
 import org.ligot.afriyan.echo.dto.WeatherRecord;
 import org.ligot.afriyan.echo.dto.WeatherResponse;
 import org.ligot.afriyan.echo.entities.*;
 import org.ligot.afriyan.echo.mapper.WeatherMapper;
-import org.ligot.afriyan.echo.mapper.WeatherPrevisionMapper;
 import org.ligot.afriyan.echo.repo.*;
+import org.ligot.afriyan.entities.Departements;
 import org.ligot.afriyan.entities.Groupes;
 import org.ligot.afriyan.entities.Roles;
 import org.ligot.afriyan.entities.Utilisateur;
@@ -19,8 +18,8 @@ import org.ligot.afriyan.init.RolesName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -42,21 +41,27 @@ public class WeatherService {
 
     private final WeatherRepository weatherRepository;
     private final MaireRepo maireRepo;
+    private final DepartementsRepo departementsRepo;
     private final PrefetRepo prefetRepo;
     private final UtilsService utilsService;
     private final CommuneRepo communeRepo;
 
-    public WeatherService(WeatherMapper weatherMapper, WeatherRepository weatherRepository, MaireRepo maireRepo, PrefetRepo prefetRepo, UtilsService utilsService, CommuneRepo communeRepo) {
+    public WeatherService(WeatherMapper weatherMapper, WeatherRepository weatherRepository, MaireRepo maireRepo, DepartementsRepo departementsRepo, PrefetRepo prefetRepo, UtilsService utilsService, CommuneRepo communeRepo) {
         this.weatherMapper = weatherMapper;
         this.weatherRepository = weatherRepository;
         this.maireRepo = maireRepo;
+        this.departementsRepo = departementsRepo;
         this.prefetRepo = prefetRepo;
         this.utilsService = utilsService;
         this.communeRepo = communeRepo;
     }
 
+    @Transactional
     public void saveWeather(String latitude, String longitude, Communes communes){
         try {
+            System.err.println(WEATHER_API_URL);
+            System.err.println("latitude: " +latitude);
+            System.err.println("longitude: " +longitude);
             HttpResponse<WeatherResponse> response = Unirest.get(WEATHER_API_URL)
                     .routeParam("latitude", latitude)
                     .routeParam("longitude", longitude)
@@ -104,6 +109,7 @@ public class WeatherService {
                     }
                 }
             }
+            System.err.println("DONE");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -154,6 +160,17 @@ public class WeatherService {
                 throw new RuntimeException("Vous n'etes pas authorise.");
         }
 
+    }
+
+    public Set<WeatherRecord> getWeathersPublic(LocalDate today, WeatherTime weatherTime, UUID dep){
+        Departement departement = departementsRepo.findById(dep).orElseThrow(()->new RuntimeException("Departement non trouve"));
+        List<Communes> communes = communeRepo.findAllByDepartement_Id(departement.getId());
+        Set<WeatherRecord> weatherRecordSet = new HashSet<>();
+        communes.forEach(commune ->{
+            List<Weather>  weathers = weatherRepository.findAllByCommunes_IdAndDateAndWeatherTime(commune.getId(), today, weatherTime);
+            weatherRecordSet.addAll(weathers.stream().map(weatherMapper::toDTO).collect(Collectors.toSet()));
+        });
+        return weatherRecordSet;
     }
 
     private RolesName getPriorityRole(Groupes groupes){

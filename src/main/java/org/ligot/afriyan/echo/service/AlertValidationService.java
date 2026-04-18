@@ -295,6 +295,19 @@ public class AlertValidationService {
         }
     }
 
+    public PageDTO<AlertsDTO> listAllPublic(int page, int size, String idRiskType) {
+        AlertRiskType riskType = alertRiskTypeRepository.findAllById(UUID.fromString(idRiskType)).orElseThrow(()->new RuntimeException("Alert risk type n'existe pas"));
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Alerts> alerts = alertRepository.findAlertsByRiskTypeAndStatus(riskType, AlertStatus.ALERT_ACTIVE, pageRequest);
+        return new PageDTO<>(
+                new PageImpl<>(
+                        alerts.stream().map(mapper::toDTO).collect(Collectors.toList()),
+                        pageRequest,
+                        alerts.getTotalElements()
+                )
+        );
+    }
+
     public long count(String type) {
         Utilisateur utilisateur = utilsService.getUser();
         RolesName role = getPriorityRole(utilisateur.getGroupe());
@@ -311,6 +324,11 @@ public class AlertValidationService {
             }
             default -> throw new RuntimeException("Vous n'etes pas authorise.");
         }
+    }
+
+    public long countPublic(String type) {
+        AlertRiskType riskType = alertRiskTypeRepository.findAllById(UUID.fromString(type)).orElseThrow(()->new RuntimeException("Alert risk type n'existe pas"));
+        return alertRepository.countAlertsByRiskTypeAndStatus(riskType, AlertStatus.ALERT_ACTIVE);
     }
 
 

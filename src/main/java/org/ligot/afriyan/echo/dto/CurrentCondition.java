@@ -233,4 +233,32 @@ public class CurrentCondition {
     public void setWindspeedMiles(String windspeedMiles) {
         this.windspeedMiles = windspeedMiles;
     }
+
+    @Override
+    public String toString() {
+        return "CurrentCondition{" +
+                "feelsLikeC='" + feelsLikeC + '\'' +
+                ", feelsLikeF='" + feelsLikeF + '\'' +
+                ", cloudcover='" + cloudcover + '\'' +
+                ", humidity='" + humidity + '\'' +
+                ", localObsDateTime='" + localObsDateTime + '\'' +
+                ", observation_time='" + observation_time + '\'' +
+                ", precipInches='" + precipInches + '\'' +
+                ", precipMM='" + precipMM + '\'' +
+                ", pressure='" + pressure + '\'' +
+                ", pressureInches='" + pressureInches + '\'' +
+                ", temp_C='" + temp_C + '\'' +
+                ", temp_F='" + temp_F + '\'' +
+                ", uvIndex='" + uvIndex + '\'' +
+                ", visibility='" + visibility + '\'' +
+                ", visibilityMiles='" + visibilityMiles + '\'' +
+                ", weatherCode='" + weatherCode + '\'' +
+                ", weatherDesc=" + weatherDesc +
+                ", weatherIconUrl=" + weatherIconUrl +
+                ", winddir16Point='" + winddir16Point + '\'' +
+                ", winddirDegree='" + winddirDegree + '\'' +
+                ", windspeedKmph='" + windspeedKmph + '\'' +
+                ", windspeedMiles='" + windspeedMiles + '\'' +
+                '}';
+    }
 }

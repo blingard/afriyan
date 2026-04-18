@@ -47,14 +47,13 @@ public class CronService {
         return (dateToCheck.isEqual(startDate) || dateToCheck.isAfter(startDate))
                 && (dateToCheck.isEqual(endDate) || dateToCheck.isBefore(endDate));
     }
-    @Scheduled(cron = "0 0 1 * * *")//create
-    @Transactional
+    //@Scheduled(cron = "0 0 1 * * *")//create
     public void runEveryDayAt7AM() {
         int page = 0;
         final int size = 100;
         Page<Localities> localitiesPage = localityRepo.findAll(PageRequest.of(page, size));
         while(!localitiesPage.isEmpty()){
-            localitiesPage.getContent().parallelStream().forEach(localities -> {
+            localitiesPage.getContent().stream().forEach(localities -> {
                 weatherService.saveWeather(localities.getLatitude(), localities.getLongitude(), localities.getCommune());
             });
             page = page +1;

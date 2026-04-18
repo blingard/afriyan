@@ -99,6 +99,10 @@ public class AlertRiskTypeService {
         return repository.findAllByState(true).stream().map(mapper::toDTO).toList();
     }
 
+    public List<AlertRiskTypeDTO> getAllActivePublic(){
+        return repository.findAllByState(true).stream().map(mapper::toDTO).toList();
+    }
+
     public void active(String id){
         UUID uuid = convertToUUID(id);
         AlertRiskType riskType = repository.findAllById(uuid).orElseThrow(()->new RuntimeException("Alert type n'existe pas"));
