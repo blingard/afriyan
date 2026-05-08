@@ -2,6 +2,7 @@ package org.ligot.afriyan.controller;
 
 import jakarta.annotation.security.RolesAllowed;
 import org.ligot.afriyan.Dto.ArticlesDTO;
+import org.ligot.afriyan.Dto.PageDTO;
 import org.ligot.afriyan.entities.TypeDonne;
 import org.ligot.afriyan.service.IArticles;
 import org.springframework.data.domain.Page;
@@ -26,7 +27,7 @@ public class TemoignageController {
         return service.getListActive(TypeDonne.TEMOIGNAGE);
     }
 
-    @PostMapping("api/temoignage")
+    @PostMapping("public/api/temoignage")
     @RolesAllowed(value = {""})
     public ArticlesDTO create(@RequestBody ArticlesDTO valeursDTO) throws Exception {
         return service.save(valeursDTO);
@@ -34,7 +35,7 @@ public class TemoignageController {
 
     @GetMapping("api/temoignage/{id}")
     @RolesAllowed(value = {"GET_TEMOIGNAGE"})
-    public Page<ArticlesDTO> listAll(@PathVariable int id){
+    public PageDTO<ArticlesDTO> listAll(@PathVariable int id){
         return service.getPage(id, TypeDonne.TEMOIGNAGE);
     }
 

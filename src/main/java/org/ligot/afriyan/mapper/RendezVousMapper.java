@@ -12,6 +12,14 @@ public interface RendezVousMapper {
 
     RendezVous create (RendezVousDTO dto);
     @Mapping(source = "utilisateur.pwd", target = "utilisateur.pwd", ignore = true)
+    @Mapping(source = "utilisateur.groupe", target = "utilisateur.groupe", ignore = true)
+    @Mapping(source = "utilisateur.communes", target = "utilisateur.communes", ignore = true)
+    @Mapping(source = "centrePartenaire.createur", target = "centrePartenaire.createur", ignore = true)
+    @Mapping(source = "centrePartenaire.serviceOfferts", target = "centrePartenaire.serviceOfferts", ignore = true)
+    @Mapping(source = "centrePartenaire.locality", target = "centrePartenaire.locality", ignore = true)
+    @Mapping(source = "serviceEntity.produits", target = "serviceEntity.produits", ignore = true)
+    @Mapping(source = "serviceEntity.centrePartenaire", target = "serviceEntity.centrePartenaire", ignore = true)
+    @Mapping(source = "produit.service", target = "produit.service", ignore = true)
     RendezVousDTO toDTO (RendezVous entity);
 
     @Mapping(source = "id", target = "id", ignore = true)

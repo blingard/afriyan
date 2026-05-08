@@ -3,6 +3,7 @@ package org.ligot.afriyan.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.security.RolesAllowed;
 import org.ligot.afriyan.Dto.ArticlesDTO;
+import org.ligot.afriyan.Dto.PageDTO;
 import org.ligot.afriyan.entities.TypeDonne;
 import org.ligot.afriyan.service.IArticles;
 import org.springframework.data.domain.Page;
@@ -35,6 +36,12 @@ public class ArticlesController {
         return service.getListAdmin(TypeDonne.ARTICLE, categoriesId);
     }
 
+    @GetMapping("api/article/get-by-categorie/{categoriesId}/{page}")
+    @RolesAllowed(value = {"GET_ARTICLE"})
+    public PageDTO<ArticlesDTO> findAllArticleByCategorieAdmin(@PathVariable String categoriesId, @PathVariable int page){
+        return service.getListAdmin(TypeDonne.ARTICLE, categoriesId, page);
+    }
+
     @GetMapping("api/article/active")
     @RolesAllowed(value = {"GET_ARTICLE"})
     public List<ArticlesDTO> findAllActive(){
@@ -53,10 +60,10 @@ public class ArticlesController {
         return service.save(file, articlesDTO);
     }
 
-    @GetMapping("/api/article/{id}")
+    @GetMapping("/api/article/{page}")
     @RolesAllowed(value = {"GET_ARTICLE"})
-    public Page<ArticlesDTO> listAll(@PathVariable int id){
-        return service.getPage(id, TypeDonne.ARTICLE);
+    public PageDTO<ArticlesDTO> listAll(@PathVariable int page){
+        return service.getPage(page, TypeDonne.ARTICLE);
     }
 
     @DeleteMapping("/api/article/{id}")

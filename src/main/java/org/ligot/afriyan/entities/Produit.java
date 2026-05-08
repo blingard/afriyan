@@ -33,6 +33,7 @@ public class Produit {
 	@ManyToOne(optional = false)
     @JsonIgnoreProperties({"produits"})
 	private ServiceEntity service;
+    private boolean active;
 
 
     public Long getId() {
@@ -89,5 +90,13 @@ public class Produit {
 
     public void setDatCreation(Date datCreation) {
         this.datCreation = datCreation;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

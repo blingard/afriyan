@@ -84,9 +84,21 @@ public class ChapitresServiceImpl implements ChapitresService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<ChapitresDTO> getActiveChapitresByModuleId(String moduleId) {
+        UUID id = UUID.fromString(moduleId);
+        return chapitresRepository.findByModuleIdOrderByOrdre(id).stream()
+                .filter(Chapitres::isActive)
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void deleteChapitre(String idChap) {
         UUID id = UUID.fromString(idChap);
-        chapitresRepository.deleteById(id);
+        Chapitres chapitres = chapitresRepository.findById(id).orElseThrow(()->new RuntimeException("non trouve"));
+        chapitres.setActive(!chapitres.isActive());
+        chapitresRepository.save(chapitres);
     }
 
     @Override
@@ -113,6 +125,7 @@ public class ChapitresServiceImpl implements ChapitresService {
         dto.setModuleId(chapitre.getModule().getId());
         dto.setDateCreation(chapitre.getDateCreation());
         dto.setDateModification(chapitre.getDateModification());
+        dto.setActive(chapitre.isActive());
         return dto;
     }
 }

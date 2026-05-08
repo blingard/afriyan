@@ -1,9 +1,5 @@
 package org.ligot.afriyan.learn.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -24,11 +20,12 @@ public class QuizDTO {
     private List<QuestionDTO> questions;
     private Integer nombreQuestions;
     private Integer pointsTotaux;
+    private boolean active;
 
     public QuizDTO() {
     }
 
-    public QuizDTO(UUID id, String titre, String description, String type, Integer scoreMinimum, Integer dureeLimite, Integer nombreTentativesMax, UUID moduleId, UUID formationId, Date dateCreation, Date dateModification, List<QuestionDTO> questions, Integer nombreQuestions, Integer pointsTotaux) {
+    public QuizDTO(UUID id, String titre, String description, String type, Integer scoreMinimum, Integer dureeLimite, Integer nombreTentativesMax, UUID moduleId, UUID formationId, Date dateCreation, Date dateModification, List<QuestionDTO> questions, Integer nombreQuestions, Integer pointsTotaux, boolean active) {
         this.id = id;
         this.titre = titre;
         this.description = description;
@@ -43,6 +40,15 @@ public class QuizDTO {
         this.questions = questions;
         this.nombreQuestions = nombreQuestions;
         this.pointsTotaux = pointsTotaux;
+        this.active = active;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public UUID getId() {

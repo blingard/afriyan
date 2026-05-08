@@ -18,25 +18,26 @@ public interface FormationService {
     
     Page<FormationDTO> getAllFormations(int page, int size);
 
-    List<FormationDTO> getPublishedFormations();
+    List<FormationDTOSmart> getPublishedFormations();
 
-    FormationDTO getPublishedFormationsByIdComplete(String id);
-    
+    FormationDTOSmart getPublishedFormationsByIdComplete(String id, String code);
+    FormationDTOSmart getPublishedFormationsByIdCompleted(String id);
+
     Page<FormationDTO> getPublishedFormations(int page, int size);
     
-    List<FormationDTO> getFormationsByCreator(Long userId);
+    List<FormationDTOSmart> getFormationsByCreator(Long userId);
     
     Page<FormationDTO> getFormationsByCreator(Long userId, int page, int size);
     
-    List<FormationDTO> searchFormations(String keyword);
+    List<FormationDTOSmart> searchFormations(String keyword);
     
     Page<FormationDTO> searchFormations(String keyword, int page, int size);
     
-    List<FormationDTO> getFormationsByLevel(FormationLevel niveau);
+    List<FormationDTOSmart> getFormationsByLevel(FormationLevel niveau);
     
     Page<FormationDTO> getFormationsByLevel(FormationLevel niveau, int page, int size);
-    
-    FormationDTO publishFormation(String id);
+
+    FormationDTOSmart publishFormation(String id);
     
     FormationDTO archiveFormation(String id);
     

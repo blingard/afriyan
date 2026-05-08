@@ -2,45 +2,51 @@ package org.ligot.afriyan.controller;
 
 import jakarta.annotation.security.RolesAllowed;
 import org.ligot.afriyan.Dto.ProduitDTO;
+import org.ligot.afriyan.Dto.ProduitRequest;
 import org.ligot.afriyan.service.IProduit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/produit")
 public class ProduitController {
 
     @Autowired
     IProduit produit;
 
-    @PostMapping(value = "/save")
+    @PostMapping(value = "api/produit/save")
     @RolesAllowed(value = {"CREATE_PRODUIT"})
-    ProduitDTO saveProduit(@RequestBody ProduitDTO produitDto) throws Exception {
-        return produit.save(produitDto);
+    public ProduitDTO saveProduit(@RequestBody ProduitRequest produitRequest) throws Exception {
+        return produit.save(produitRequest);
     }
 
-    @PutMapping(value = "/update/{id}")
+    @PutMapping(value = "api/produit/update/{id}")
     @RolesAllowed(value = {"UPDATE_PRODUIT"})
-    ProduitDTO updateProduit(@RequestBody ProduitDTO produitDto, @PathVariable Long id) throws Exception {
+    public ProduitDTO updateProduit(@RequestBody ProduitDTO produitDto, @PathVariable Long id) throws Exception {
         return produit.update(produitDto, id);
     }
 
-    @GetMapping(value = "/list/{page}")
+    @GetMapping(value = "api/produit/list/{page}")
     @RolesAllowed(value = {"GET_PRODUIT"})
-    Page<ProduitDTO> listProduit(@PathVariable  int page) throws Exception {
+    public Page<ProduitDTO> listProduit(@PathVariable  int page) throws Exception {
         return produit.list(page);
     }
 
-    @DeleteMapping(value = "/delete/{id}")
+    @DeleteMapping(value = "api/produit/delete/{id}")
     @RolesAllowed(value = {"DELETE_PRODUIT"})
-    void deleteProduit (@PathVariable long id) throws Exception{
+    public void deleteProduit (@PathVariable long id) throws Exception{
+        //produit.delete(id);
+    }
+
+    @PutMapping(value = "api/produit/change-status/{id}")
+    @RolesAllowed(value = {"UPDATE_PRODUIT"})
+    public void changeStatus (@PathVariable long id) throws Exception{
         produit.delete(id);
     }
 
-    @GetMapping(value = "/getById/{id}")
+    @GetMapping(value = "api/produit/getById/{id}")
     @RolesAllowed(value = {"GET_PRODUIT"})
-    ProduitDTO listById(@PathVariable Long id) throws Exception {
+    public ProduitDTO listById(@PathVariable Long id) throws Exception {
         return produit.findById(id);
     }
 

@@ -11,7 +11,9 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface ProduitMapper {
 
+    @Mapping(source = "service", target = "service", ignore = true)
     Produit create (ProduitDTO dto);
+    @Mapping(source = "service", target = "service", ignore = true)
     ProduitDTO toDTO (Produit entity);
     @Mapping(source = "id", target = "id", ignore = true)
     @Mapping(source = "service", target = "service", ignore = true)

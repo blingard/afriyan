@@ -32,6 +32,9 @@ public class Formation implements Serializable {
     @Column(name = "image_couverture", columnDefinition = "TEXT", nullable = false)
     private String imageCouverture;
 
+    @Column
+    private String code;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private FormationLevel niveau; // Débutant, Intermédiaire, Avancé
@@ -77,11 +80,12 @@ public class Formation implements Serializable {
     public Formation() {
     }
 
-    public Formation(UUID id, String titre, String description, String imageCouverture, FormationLevel niveau, Integer dureeEstimee, FormationStatus status, Boolean withFinalQuiz, List<Modules> modules, Quiz quizFinal, List<UserFormationEnrollment> enrollments, Date dateCreation, Date dateModification, Long createdBy, Categories categories) {
+    public Formation(UUID id, String titre, String description, String imageCouverture, String code, FormationLevel niveau, Integer dureeEstimee, FormationStatus status, Boolean withFinalQuiz, List<Modules> modules, Quiz quizFinal, List<UserFormationEnrollment> enrollments, Categories categories, Date dateCreation, Date dateModification, Long createdBy) {
         this.id = id;
         this.titre = titre;
         this.description = description;
         this.imageCouverture = imageCouverture;
+        this.code = code;
         this.niveau = niveau;
         this.dureeEstimee = dureeEstimee;
         this.status = status;
@@ -89,10 +93,10 @@ public class Formation implements Serializable {
         this.modules = modules;
         this.quizFinal = quizFinal;
         this.enrollments = enrollments;
+        this.categories = categories;
         this.dateCreation = dateCreation;
         this.dateModification = dateModification;
         this.createdBy = createdBy;
-        this.categories = categories;
     }
 
     public UUID getId() {
@@ -211,5 +215,13 @@ public class Formation implements Serializable {
     }
     public void setCategories(Categories categories) {
         this.categories = categories;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }

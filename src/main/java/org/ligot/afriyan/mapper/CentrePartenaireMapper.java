@@ -2,6 +2,7 @@ package org.ligot.afriyan.mapper;
 
 import org.ligot.afriyan.Dto.ArticlesDTO;
 import org.ligot.afriyan.Dto.CentrePartenaireDTO;
+import org.ligot.afriyan.Dto.CentrePartenaireSMARTDTO;
 import org.ligot.afriyan.Dto.ProduitDTO;
 import org.ligot.afriyan.entities.Articles;
 import org.ligot.afriyan.entities.CentrePartenaire;
@@ -16,6 +17,7 @@ public interface CentrePartenaireMapper {
     CentrePartenaire create (CentrePartenaireDTO dto);
     @Mapping(source = "createur.pwd", target = "createur.pwd", ignore = true)
     CentrePartenaireDTO toDTO (CentrePartenaire entity);
+    CentrePartenaireSMARTDTO toDTOSmart (CentrePartenaire entity);
 
     @Mapping(source = "id", target = "id", ignore = true)
     @Mapping(source = "status", target = "status", ignore = true)

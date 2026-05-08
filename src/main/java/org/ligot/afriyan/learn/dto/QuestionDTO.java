@@ -20,10 +20,12 @@ public class QuestionDTO {
     private Date dateModification;
     private List<QuestionOptionDTO> options;
 
+    private boolean active;
+
     public QuestionDTO() {
     }
 
-    public QuestionDTO(UUID id, String intitule, String explication, Integer points, Integer ordre, String imageUrl, UUID quizId, Date dateCreation, Date dateModification, List<QuestionOptionDTO> options) {
+    public QuestionDTO(UUID id, String intitule, String explication, Integer points, Integer ordre, String imageUrl, UUID quizId, Date dateCreation, Date dateModification, List<QuestionOptionDTO> options, boolean active) {
         this.id = id;
         this.intitule = intitule;
         this.explication = explication;
@@ -34,6 +36,15 @@ public class QuestionDTO {
         this.dateCreation = dateCreation;
         this.dateModification = dateModification;
         this.options = options;
+        this.active = active;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public UUID getId() {

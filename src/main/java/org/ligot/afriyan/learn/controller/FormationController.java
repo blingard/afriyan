@@ -15,7 +15,6 @@ import jakarta.annotation.security.RolesAllowed;
 import java.util.List;
 
 @RestController
-@RequestMapping("public/api/learn/formations")
 public class FormationController {
 
     private final FormationService formationService;
@@ -26,7 +25,7 @@ public class FormationController {
         this.utilsService = utilsService;
     }
 
-    @PostMapping
+    @PostMapping("/api/learn/formations")
     @RolesAllowed(value = {"CREATE_FORMATION"})
     public ResponseEntity<FormationDTO> createFormation(
             @RequestBody FormationCreateDTO dto) {
@@ -35,7 +34,7 @@ public class FormationController {
         return new ResponseEntity<>(null, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/api/learn/formations/{id}")
     @RolesAllowed(value = {"UPDATE_FORMATION"})
     public ResponseEntity<FormationDTO> updateFormation(
             @PathVariable String id,
@@ -44,14 +43,14 @@ public class FormationController {
         return ResponseEntity.ok(updated);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/api/learn/formations/{id}")
     @RolesAllowed(value = {"GET_FORMATION"})
     public ResponseEntity<FormationDTO> getFormationById(@PathVariable String id) {
         FormationDTO formation = formationService.getFormationById(id);
         return ResponseEntity.ok(formation);
     }
 
-    @GetMapping
+    @GetMapping("/api/learn/formations")
     @RolesAllowed(value = {"GET_FORMATION"})
     public ResponseEntity<Page<FormationDTO>> getAllFormations(
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -61,19 +60,27 @@ public class FormationController {
         return ResponseEntity.ok(formations);
     }
 
-    @GetMapping("/published")
-    public ResponseEntity<List<FormationDTO>> getPublishedFormations() {
-        List<FormationDTO> formations = formationService.getPublishedFormations();
+    @GetMapping("api/learn/formations/published")
+    public ResponseEntity<List<FormationDTOSmart>> getPublishedFormations() {
+        List<FormationDTOSmart> formations = formationService.getPublishedFormations();
         return ResponseEntity.ok(formations);
     }
 
-    @GetMapping("/published/{id}")
-    public ResponseEntity<FormationDTO> getPublishedFormationsByIdComplete(@PathVariable String id) {
-        FormationDTO formations = formationService.getPublishedFormationsByIdComplete(id);
+    @GetMapping("/api/learn/formations/published/{id}")
+    public ResponseEntity<FormationDTOSmart> getPublishedFormationsByIdComplete(@PathVariable String id, @RequestParam(value = "code", required = false) String code) {
+        if(code != null && code.length() != 12)
+            code = null;
+        FormationDTOSmart formations = formationService.getPublishedFormationsByIdComplete(id, code);
         return ResponseEntity.ok(formations);
     }
 
-    @GetMapping("/published/page")
+    @GetMapping("/api/learn/formations/publish/{id}")
+    public ResponseEntity<FormationDTOSmart> getPublishedFormationsByIdComplete(@PathVariable String id) {
+        FormationDTOSmart formations = formationService.getPublishedFormationsByIdCompleted(id);
+        return ResponseEntity.ok(formations);
+    }
+
+    @GetMapping("/api/learn/formations/published/page")
     @RolesAllowed(value = {"GET_FORMATION"})
     public ResponseEntity<Page<FormationDTO>> getPublishedFormationsPage(
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -82,15 +89,15 @@ public class FormationController {
         return ResponseEntity.ok(formations);
     }
 
-    @GetMapping("/my-formations")
+    @GetMapping("/api/learn/formations/my-formations")
     @RolesAllowed(value = {"GET_FORMATION"})
-    public ResponseEntity<List<FormationDTO>> getMyFormations(Authentication authentication) {
+    public ResponseEntity<List<FormationDTOSmart>> getMyFormations(Authentication authentication) {
         Long userId = getUserIdFromAuth(authentication);
-        List<FormationDTO> formations = formationService.getFormationsByCreator(userId);
+        List<FormationDTOSmart> formations = formationService.getFormationsByCreator(userId);
         return ResponseEntity.ok(formations);
     }
 
-    @GetMapping("/my-formations/page")
+    @GetMapping("/api/learn/formations/my-formations/page")
     @RolesAllowed(value = {"GET_FORMATION"})
     public ResponseEntity<Page<FormationDTO>> getMyFormationsPage(
             Authentication authentication,
@@ -101,14 +108,14 @@ public class FormationController {
         return ResponseEntity.ok(formations);
     }
 
-    @GetMapping("/search")
+    @GetMapping("public/api/learn/formations/search")
     @RolesAllowed(value = {"GET_FORMATION"})
-    public ResponseEntity<List<FormationDTO>> searchFormations(@RequestParam String keyword) {
-        List<FormationDTO> formations = formationService.searchFormations(keyword);
+    public ResponseEntity<List<FormationDTOSmart>> searchFormations(@RequestParam String keyword) {
+        List<FormationDTOSmart> formations = formationService.searchFormations(keyword);
         return ResponseEntity.ok(formations);
     }
 
-    @GetMapping("/search/page")
+    @GetMapping("/api/learn/formations/search/page")
     @RolesAllowed(value = {"GET_FORMATION"})
     public ResponseEntity<Page<FormationDTO>> searchFormationsPage(
             @RequestParam String keyword,
@@ -118,14 +125,14 @@ public class FormationController {
         return ResponseEntity.ok(formations);
     }
 
-    @GetMapping("/level/{niveau}")
+    @GetMapping("public/api/learn/formations/level/{niveau}")
     @RolesAllowed(value = {"GET_FORMATION"})
-    public ResponseEntity<List<FormationDTO>> getFormationsByLevel(@PathVariable FormationLevel niveau) {
-        List<FormationDTO> formations = formationService.getFormationsByLevel(niveau);
+    public ResponseEntity<List<FormationDTOSmart>> getFormationsByLevel(@PathVariable FormationLevel niveau) {
+        List<FormationDTOSmart> formations = formationService.getFormationsByLevel(niveau);
         return ResponseEntity.ok(formations);
     }
 
-    @GetMapping("/level/{niveau}/page")
+    @GetMapping("/api/learn/formations/level/{niveau}/page")
     @RolesAllowed(value = {"GET_FORMATION"})
     public ResponseEntity<Page<FormationDTO>> getFormationsByLevelPage(
             @PathVariable FormationLevel niveau,
@@ -135,24 +142,24 @@ public class FormationController {
         return ResponseEntity.ok(formations);
     }
 
-    @PutMapping("/{id}/publish")
+    @PutMapping("/api/learn/formations/{id}/publish")
     @RolesAllowed(value = {"UPDATE_FORMATION"})
-    public ResponseEntity<FormationDTO> publishFormation(@PathVariable String id) {
-        FormationDTO formation = formationService.publishFormation(id);
+    public ResponseEntity<FormationDTOSmart> publishFormation(@PathVariable String id) {
+        FormationDTOSmart formation = formationService.publishFormation(id);
         return ResponseEntity.ok(formation);
     }
 
-    @PutMapping("/{id}/archive")
+    @PutMapping("/api/learn/formations/{id}/archive")
     @RolesAllowed(value = {"UPDATE_FORMATION"})
     public ResponseEntity<FormationDTO> archiveFormation(@PathVariable String id) {
         FormationDTO formation = formationService.archiveFormation(id);
         return ResponseEntity.ok(formation);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/api/learn/formations/{id}")
     @RolesAllowed(value = {"UPDATE_FORMATION"})
     public ResponseEntity<Void> deleteFormation(@PathVariable String id) {
-        formationService.deleteFormation(id);
+        //formationService.deleteFormation(id);
         return ResponseEntity.noContent().build();
     }
 

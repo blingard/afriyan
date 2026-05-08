@@ -8,12 +8,11 @@ import lombok.NoArgsConstructor;
 import org.ligot.afriyan.echo.dto.LocalitiesDTO;
 import org.ligot.afriyan.entities.Status;
 
-import java.util.List;
 import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
-public class CentrePartenaireDTO {
+public class CentrePartenaireSMARTDTO {
     private Long id;
     private String nom;
     private String libelle;
@@ -28,9 +27,7 @@ public class CentrePartenaireDTO {
     private String type;
     private String nomCommune;
     private String photo;
-    @JsonIgnoreProperties({"groupe", "communes", "permissions"})
-    @NotNull
-    private UtilisateurDTO createur;
+
     @JsonIgnoreProperties({"centrePartenaire", "dateCreation"})
     private Set<ServiceDTO> serviceOfferts;
     private Status status;
@@ -162,14 +159,6 @@ public class CentrePartenaireDTO {
 
     public void setPhoto(String photo) {
         this.photo = photo;
-    }
-
-    public UtilisateurDTO getCreateur() {
-        return createur;
-    }
-
-    public void setCreateur(UtilisateurDTO createur) {
-        this.createur = createur;
     }
 
     public Set<ServiceDTO> getServiceOfferts() {

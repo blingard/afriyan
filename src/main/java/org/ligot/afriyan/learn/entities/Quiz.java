@@ -60,6 +60,8 @@ public class Quiz implements Serializable {
     @UpdateTimestamp
     @Column(name = "date_modification")
     private Date dateModification;
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private boolean active;
 
     public enum QuizType {
         MODULE_QUIZ,    // Quiz de fin de module
@@ -69,7 +71,7 @@ public class Quiz implements Serializable {
     public Quiz() {
     }
 
-    public Quiz(UUID id, String titre, String description, QuizType type, Integer scoreMinimum, Integer dureeLimite, Integer nombreTentativesMax, Modules module, Formation formation, List<Question> questions, List<UserQuizAttempt> attempts, Date dateCreation, Date dateModification) {
+    public Quiz(UUID id, String titre, String description, QuizType type, Integer scoreMinimum, Integer dureeLimite, Integer nombreTentativesMax, Modules module, Formation formation, List<Question> questions, List<UserQuizAttempt> attempts, Date dateCreation, Date dateModification, boolean active) {
         this.id = id;
         this.titre = titre;
         this.description = description;
@@ -83,6 +85,7 @@ public class Quiz implements Serializable {
         this.attempts = attempts;
         this.dateCreation = dateCreation;
         this.dateModification = dateModification;
+        this.active = active;
     }
 
     public UUID getId() {
@@ -187,5 +190,13 @@ public class Quiz implements Serializable {
 
     public void setDateModification(Date dateModification) {
         this.dateModification = dateModification;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

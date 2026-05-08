@@ -23,11 +23,12 @@ public class ModuleDTO {
     private Date dateModification;
     private List<ChapitresDTO> chapitres = new ArrayList<>();
     private QuizDTO quiz;
+    private boolean active;
 
     public ModuleDTO() {
     }
 
-    public ModuleDTO(UUID id, String titre, String description, Integer ordre, Integer dureeEstimee, Boolean withQuiz, UUID formationId, Date dateCreation, Date dateModification, List<ChapitresDTO> chapitres, QuizDTO quiz) {
+    public ModuleDTO(UUID id, String titre, String description, Integer ordre, Integer dureeEstimee, Boolean withQuiz, UUID formationId, Date dateCreation, Date dateModification, List<ChapitresDTO> chapitres, QuizDTO quiz, boolean active) {
         this.id = id;
         this.titre = titre;
         this.description = description;
@@ -39,6 +40,7 @@ public class ModuleDTO {
         this.dateModification = dateModification;
         this.chapitres = chapitres;
         this.quiz = quiz;
+        this.active = active;
     }
 
     public UUID getId() {
@@ -126,5 +128,13 @@ public class ModuleDTO {
     }
     public void setChapitres(List<ChapitresDTO> chapitres) {
         this.chapitres = chapitres;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

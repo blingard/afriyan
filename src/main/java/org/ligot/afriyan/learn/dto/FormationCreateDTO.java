@@ -15,6 +15,8 @@ public class FormationCreateDTO {
     private String titre;
     @NotBlank
     private String description;
+
+    private boolean hasCode;
     @NotNull
     private CategoriesDTO categories;
     @NotBlank
@@ -29,14 +31,15 @@ public class FormationCreateDTO {
     public FormationCreateDTO() {
     }
 
-    public FormationCreateDTO(String titre, CategoriesDTO categories, String description, String imageCouverture, FormationLevel niveau, Integer dureeEstimee, Boolean withFinalQuiz) {
+    public FormationCreateDTO(String titre, String description, boolean hasCode, @NotNull CategoriesDTO categories, String imageCouverture, @NotNull FormationLevel niveau, @NotNull Integer dureeEstimee, @NotNull Boolean withFinalQuiz) {
         this.titre = titre;
         this.description = description;
+        this.hasCode = hasCode;
+        this.categories = categories;
         this.imageCouverture = imageCouverture;
         this.niveau = niveau;
         this.dureeEstimee = dureeEstimee;
         this.withFinalQuiz = withFinalQuiz;
-        this.categories = categories;
     }
 
     public String getTitre() {
@@ -91,5 +94,13 @@ public class FormationCreateDTO {
     }
     public void setCategories(CategoriesDTO categories) {
         this.categories = categories;
+    }
+
+    public boolean isHasCode() {
+        return hasCode;
+    }
+
+    public void setHasCode(boolean hasCode) {
+        this.hasCode = hasCode;
     }
 }

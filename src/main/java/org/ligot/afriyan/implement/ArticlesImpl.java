@@ -3,7 +3,7 @@ package org.ligot.afriyan.implement;
 import jakarta.transaction.Transactional;
 import org.ligot.afriyan.Constantes;
 import org.ligot.afriyan.Dto.ArticlesDTO;
-import org.ligot.afriyan.Dto.UtilisateurDTO;
+import org.ligot.afriyan.Dto.PageDTO;
 import org.ligot.afriyan.entities.*;
 import org.ligot.afriyan.mapper.ArticlesMapper;
 import org.ligot.afriyan.mapper.UtilisateurMapper;
@@ -40,10 +40,12 @@ public class ArticlesImpl implements IArticles {
     private final UtilsService utilsService;
 
     private final FileStorageService fileStorageService;
+    private final LexicalImageExtractorService lexicalImageExtractorService;
 
     public ArticlesImpl(IArticlesRepository repository, ArticlesMapper mapper, IUserConnect iUserConnect,
                         ICategories iCategories, IUtilisateur utilisateur, UtilisateurMapper utilisateurMapper,
-                        UtilsService utilsService, FileStorageService fileStorageService) {
+                        UtilsService utilsService, FileStorageService fileStorageService,
+                        LexicalImageExtractorService lexicalImageExtractorService) {
         this.repository = repository;
         this.mapper = mapper;
         this.iUserConnect = iUserConnect;
@@ -52,6 +54,7 @@ public class ArticlesImpl implements IArticles {
         this.utilisateurMapper = utilisateurMapper;
         this.utilsService = utilsService;
         this.fileStorageService = fileStorageService;
+        this.lexicalImageExtractorService = lexicalImageExtractorService;
     }
 
     @Override
@@ -67,8 +70,18 @@ public class ArticlesImpl implements IArticles {
         articles.setStatus(false);
         articles.setPhote(name);
         articles.setCategories(categories);
-        return mapper.toDTO(repository.save(articles));
+        // Sauvegarder d'abord pour obtenir l'ID
+        articles = repository.save(articles);
+        // Extraire les images base64 du contenu Lexical et les uploader vers MinIO
+        if (articles.getContenu() != null && !articles.getContenu().isBlank()) {
+            String processedContent = lexicalImageExtractorService.extractAndUploadImages(
+                    articles.getContenu(), articles.getId());
+            articles.setContenu(processedContent);
+            articles = repository.save(articles);
+        }
+        return mapper.toDTO(articles);
     }
+
 
     @Override
     public void updateFile(MultipartFile file, Long id) throws Exception {
@@ -79,7 +92,7 @@ public class ArticlesImpl implements IArticles {
         repository.save(articles);
     }
 
-    @Override
+   @Override
     public ArticlesDTO save(ArticlesDTO articlesDTO) throws Exception {
         Categories categories = iCategories.findCategoriesById(articlesDTO.getCategories().getId());
         if (Objects.equals(categories.isStatus(), Boolean.FALSE.booleanValue()))
@@ -89,7 +102,16 @@ public class ArticlesImpl implements IArticles {
         articles.setDate(new Date());
         articles.setStatus(false);
         articles.setCategories(categories);
-        return mapper.toDTO(repository.save(articles));
+        // Sauvegarder d'abord pour obtenir l'ID
+        articles = repository.save(articles);
+        // Extraire les images base64 du contenu Lexical et les uploader vers MinIO
+        if (articles.getContenu() != null && !articles.getContenu().isBlank()) {
+            String processedContent = lexicalImageExtractorService.extractAndUploadImages(
+                    articles.getContenu(), articles.getId());
+            articles.setContenu(processedContent);
+            articles = repository.save(articles);
+        }
+        return mapper.toDTO(articles);
     }
 
     private Utilisateur getUser() throws Exception {
@@ -99,6 +121,19 @@ public class ArticlesImpl implements IArticles {
     private ArticlesDTO findWithFile(Articles articles) {
         ArticlesDTO articlesDTO = mapper.toDTO(articles);
         return articlesDTO;
+    }
+
+    private ArticlesDTO findWithOutContent(Articles articles) {
+        ArticlesDTO articlesDTO = mapper.toDTOWithOutContent(articles);
+        return articlesDTO;
+    }
+
+    private ArticlesDTO findWithOutContent(Articles articles, TypeDonne typeDonne) {
+        if (Objects.equals(typeDonne, TypeDonne.ARTICLE)) {
+            return findWithOutContent(articles);
+        } else {
+            return mapper.toDTOWithOutContent(articles);
+        }
     }
 
     private ArticlesDTO findWithFile(Articles articles, TypeDonne typeDonne) {
@@ -111,27 +146,39 @@ public class ArticlesImpl implements IArticles {
 
     @Override
     public List<ArticlesDTO> getList(TypeDonne typeDonne) {
-        return repository.findAllByTypeDonne(typeDonne).stream().map(this::findWithFile).collect(Collectors.toList());
+        return repository.findAllByTypeDonne(typeDonne).stream().map(this::findWithOutContent).collect(Collectors.toList());
     }
 
     @Override
     public List<ArticlesDTO> getList(TypeDonne typeDonne, String menuId) {
         Categories categories = iCategories.findCategoriesByMenuId(menuId);
         return repository.findAllByTypeDonneAndCategoriesAndStatusTrue(typeDonne, categories).stream()
-                .map(this::findWithFile).collect(Collectors.toList());
+                .map(this::findWithOutContent).collect(Collectors.toList());
     }
 
     @Override
     public List<ArticlesDTO> getListAdmin(TypeDonne typeDonne, String categorieId) {
         Categories categories = iCategories.findCategoriesById(UUID.fromString(categorieId));
         return repository.findAllByTypeDonneAndCategoriesAndStatusTrue(typeDonne, categories).stream()
-                .map(this::findWithFile).collect(Collectors.toList());
+                .map(this::findWithOutContent).collect(Collectors.toList());
+    }
+
+    @Override
+    public PageDTO<ArticlesDTO> getListAdmin(TypeDonne typeDonne, String categorieId, int page) {
+        Categories categories = iCategories.findCategoriesById(UUID.fromString(categorieId));
+        Page<Articles> articlesPage = repository.findAllByTypeDonneAndCategoriesAndStatusTrue(typeDonne, categories, PageRequest.of(page, 5));
+        return new PageDTO<ArticlesDTO>(
+                new PageImpl<>(
+                        articlesPage.getContent().stream().map(this::findWithOutContent).collect(Collectors.toList()),
+                        articlesPage.getPageable(),
+                        articlesPage.getTotalElements())
+        );
     }
 
     @Override
     public List<ArticlesDTO> getListActive(TypeDonne typeDonne) {
         return repository.findAllByStatusTrueAndTypeDonne(typeDonne).stream()
-                .map(articles -> this.findWithFile(articles, typeDonne)).toList();
+                .map(articles -> this.findWithOutContent(articles, typeDonne)).toList();
     }
 
     @Override
@@ -143,24 +190,29 @@ public class ArticlesImpl implements IArticles {
     }
 
     @Override
+    @Transactional
     public ArticlesDTO findByIdActive(Long id) throws Exception {
         Articles articles = repository.findById(id).orElse(null);
         if (articles == null)
             throw new Exception("data not found");
+        if(!articles.isStatus())
+            throw new RuntimeException("Article not disponible");
         articles.setLue(articles.getLue() + 1);
         repository.save(articles);
         return findWithFile(articles);
     }
 
     @Override
-    public Page<ArticlesDTO> getPage(int lenght, TypeDonne typeDonne) {
-        if (lenght < 0)
-            lenght = 0;
-        Page<Articles> page = repository.findAllByTypeDonne(typeDonne, PageRequest.of(lenght, 15));
-        return new PageImpl<>(
-                page.getContent().stream().map(this::findWithFile).collect(Collectors.toList()),
-                PageRequest.of(lenght, 15),
-                page.getSize());
+    public PageDTO<ArticlesDTO> getPage(int page, TypeDonne typeDonne) {
+        if (page < 0)
+            page = 0;
+        Page<Articles> articlesPage = repository.findAllByTypeDonne(typeDonne, PageRequest.of(page, 5));
+        return new PageDTO<ArticlesDTO>(
+                new PageImpl<>(
+                        articlesPage.getContent().stream().map(this::findWithOutContent).collect(Collectors.toList()),
+                        articlesPage.getPageable(),
+                        articlesPage.getTotalElements())
+        );
     }
 
     @Override
@@ -171,6 +223,12 @@ public class ArticlesImpl implements IArticles {
         }
         articlesDTO.setId(id);
         mapper.update(articlesDTO, article);
+        // Extraire les images base64 du contenu Lexical et les uploader vers MinIO
+        if (article.getContenu() != null && !article.getContenu().isBlank()) {
+            String processedContent = lexicalImageExtractorService.extractAndUploadImages(
+                    article.getContenu(), article.getId());
+            article.setContenu(processedContent);
+        }
         return mapper.toDTO(repository.save(article));
 
     }
@@ -185,7 +243,7 @@ public class ArticlesImpl implements IArticles {
     @Override
     public List<ArticlesDTO> get6TopDesc(TypeDonne typeDonne) {
         return repository.findTop6ByTypeDonneAndStatusIsTrue(typeDonne, Sort.by("id").descending()).stream()
-                .map(this::findWithFile).toList();
+                .map(this::findWithOutContent).toList();
     }
 
     @Override

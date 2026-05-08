@@ -16,6 +16,9 @@ public interface QuestionOptionRepository extends JpaRepository<QuestionOption, 
     @Query("SELECT qo FROM QuestionOption qo WHERE qo.question.id = :questionId ORDER BY qo.ordre ASC")
     List<QuestionOption> findByQuestionIdOrderByOrdre(@Param("questionId") UUID questionId);
 
+    @Query("SELECT qo FROM QuestionOption qo WHERE qo.question.id = :questionId AND qo.active = :active ORDER BY qo.ordre ASC")
+    List<QuestionOption> findActiveByQuestionIdOrderByOrdre(@Param("questionId") UUID questionId, @Param("active") boolean active);
+
     @Query("SELECT qo FROM QuestionOption qo WHERE qo.question.id = :questionId AND qo.isCorrect = true")
     Optional<QuestionOption> findCorrectAnswerByQuestionId(@Param("questionId") UUID questionId);
 

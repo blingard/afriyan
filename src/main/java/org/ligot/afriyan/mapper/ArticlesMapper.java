@@ -10,6 +10,9 @@ import org.mapstruct.MappingTarget;
 public interface ArticlesMapper {
 
     ArticlesDTO toDTO(Articles articles);
+
+    @Mapping(source = "contenu", target = "contenu", ignore = true)
+    ArticlesDTO toDTOWithOutContent(Articles articles);
     Articles create(ArticlesDTO articlesDTO);
     @Mapping(source = "status", target = "status", ignore = true)
     @Mapping(source = "lue", target = "lue", ignore = true)

@@ -15,6 +15,9 @@ public interface ChapitresRepository extends JpaRepository<Chapitres, UUID> {
     @Query("SELECT c FROM LearnChapitres c WHERE c.module.id = :moduleId ORDER BY c.ordre ASC")
     List<Chapitres> findByModuleIdOrderByOrdre(@Param("moduleId") UUID moduleId);
 
+    @Query("SELECT c FROM LearnChapitres c WHERE c.module.id = :moduleId AND c.active = :active ORDER BY c.ordre ASC")
+    List<Chapitres> findByModuleIdOrderByOrdreActive(@Param("moduleId") UUID moduleId, @Param("active") boolean active);
+
     @Query("SELECT COUNT(c) FROM LearnChapitres c WHERE c.module.id = :moduleId")
     Long countByModuleId(@Param("moduleId") UUID moduleId);
 }

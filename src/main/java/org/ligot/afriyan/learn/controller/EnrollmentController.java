@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/learn/enrollments")
@@ -51,6 +52,13 @@ public class EnrollmentController {
     public ResponseEntity<UserFormationEnrollmentDTO> getMyEnrollmentForFormation(
             @PathVariable String formationId) {
         UserFormationEnrollmentDTO enrollment = enrollmentService.getUserEnrollmentForFormation(formationId);
+        return ResponseEntity.ok(enrollment);
+    }
+
+    @GetMapping("/formation/code/{formationId}/my-enrollment")
+    public ResponseEntity<Map<String, String>> getMyEnrollmentForFormationCode(
+            @PathVariable String formationId) {
+        Map<String, String> enrollment = enrollmentService.getUserEnrollmentForFormationCode(formationId);
         return ResponseEntity.ok(enrollment);
     }
 

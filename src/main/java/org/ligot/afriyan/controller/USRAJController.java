@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import org.ligot.afriyan.Dto.CentrePartenaireDTO;
+import org.ligot.afriyan.Dto.CentrePartenaireSMARTDTO;
 import org.ligot.afriyan.elearning.dto.ParagraphsDTO;
 import org.ligot.afriyan.service.ICentrePartenaire;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 public class USRAJController {
@@ -59,6 +61,12 @@ public class USRAJController {
         return centrePartenaire.listAll();
     }
 
+    @GetMapping("api/centrepartenaire/user")
+    @RolesAllowed(value = {"GET_USRAJ"})
+    public List<CentrePartenaireSMARTDTO> listAllUser() throws Exception {
+        return centrePartenaire.listAllUser();
+    }
+
 
     @GetMapping("api/centrepartenaire/localisation")
     @RolesAllowed(value = {"GET_USRAJ"})
@@ -74,8 +82,8 @@ public class USRAJController {
     }
 
     @GetMapping("public/api/centrepartenaire/proches/{latitude}/{longitude}")
-    public List<CentrePartenaireDTO> getCentrePartenaireProches(@PathVariable double latitude, @PathVariable double longitude) {
-        return centrePartenaire.trouverCPProches(latitude, longitude);
+    public List<CentrePartenaireSMARTDTO> getCentrePartenaireProches(@PathVariable double latitude, @PathVariable double longitude) {
+        return centrePartenaire.trouverCPProchesPublic(latitude, longitude);
     }
 
     @GetMapping("api/centrepartenaire/proches/{latitude}/{longitude}")
@@ -85,8 +93,8 @@ public class USRAJController {
     }
 
     @GetMapping(value = "public/api/centrepartenaire/getById/{id}")
-    public CentrePartenaireDTO listById(@PathVariable Long id) throws Exception {
-        return centrePartenaire.findById(id);
+    public CentrePartenaireSMARTDTO listById(@PathVariable Long id) throws Exception {
+        return centrePartenaire.findByIdClient(id);
     }
 
     @GetMapping(value = "api/centrepartenaire/getById/{id}")
@@ -95,9 +103,9 @@ public class USRAJController {
         return centrePartenaire.findById(id);
     }
     @GetMapping(value = "api/centrepartenaire/getByIdUser/{id}")
-    @PreAuthorize("isAuthenticated()")
-    public CentrePartenaireDTO getById(@PathVariable Long id) throws Exception {
-        return centrePartenaire.findByUserId(id);
+    @RolesAllowed(value = {"UPDATE_USRAJ"})
+    public Set<CentrePartenaireSMARTDTO> getById(@PathVariable Long id) throws Exception {
+        return centrePartenaire.usrajAdmin();
     }
 
     @PutMapping("api/centrepartenaire/active/{id}")

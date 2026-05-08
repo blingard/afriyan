@@ -10,6 +10,9 @@ import org.mapstruct.MappingTarget;
 public interface CertificatesMapper {
 
     CertificatesDTO toDTO(Certificates certificates);
+
+    @Mapping(source = "contenu", target = "contenu", ignore = true)
+    CertificatesDTO toDTOSmart(Certificates certificates);
     Certificates create(CertificatesDTO articlesDTO);
 
     @Mapping(source = "id", target = "id", ignore = true)

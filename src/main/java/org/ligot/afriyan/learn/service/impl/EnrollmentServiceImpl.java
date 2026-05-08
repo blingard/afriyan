@@ -137,6 +137,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     @Transactional(readOnly = true)
     public List<UserFormationEnrollmentDTO> getUserEnrollments() {
         return enrollmentRepository.findByUserId(utilsService.getUser().getId()).stream()
+                .filter(userFormationEnrollment -> userFormationEnrollment.getStatus()== UserFormationEnrollment.EnrollmentStatus.IN_PROGRESS || userFormationEnrollment.getStatus()== UserFormationEnrollment.EnrollmentStatus.COMPLETED)
                 .map(this::toEnrollmentDTO)
                 .collect(Collectors.toList());
     }
@@ -158,6 +159,14 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         UserFormationEnrollment enrollment = enrollmentRepository.findByUserIdAndFormationId(utilsService.getUser().getId(), id)
                 .orElseThrow(() -> new RuntimeException("Inscription non trouvée"));
         return toEnrollmentDTO(enrollment);
+    }
+
+    @Override
+    public Map<String, String> getUserEnrollmentForFormationCode(String formationId) {
+        UUID id = UUID.fromString(formationId);
+        UserFormationEnrollment enrollment = enrollmentRepository.findByUserIdAndFormationId(utilsService.getUser().getId(), id)
+                .orElseThrow(() -> new RuntimeException("Inscription non trouvée"));
+        return Map.of("code", enrollment.getFormation().getCode());
     }
 
     @Override
@@ -541,6 +550,20 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         dto.setCertificatUrl(enrollment.getCertificatUrl());
         dto.setDateInscription(enrollment.getDateInscription());
         dto.setDateModification(enrollment.getDateModification());
+        if(enrollment.getProgresses() == null || enrollment.getProgresses().isEmpty()){
+            dto.setProgresses(new ArrayList<>(0));
+        }else{
+            List<UserProgressDTO> userProgressDTOS = enrollment.getProgresses().stream().map(userProgress -> {
+                return new UserProgressDTO(userProgress.getId(), userProgress.getEnrollment().getId(),
+                        userProgress.getModule().getId(), userProgress.getModule().getTitre(),
+                        userProgress.getStatus().name(), userProgress.getProgressionPourcent(),
+                        userProgress.getDateDebut(), userProgress.getDateCompletion(),
+                        userProgress.getScoreQuiz(), userProgress.getQuizPassed(),
+                        userProgress.getDateCreation(), userProgress.getDateModification());
+            }).collect(Collectors.toList());
+            dto.setProgresses(userProgressDTOS);
+        }
+
         return dto;
     }
 

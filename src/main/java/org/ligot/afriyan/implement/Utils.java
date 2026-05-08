@@ -48,4 +48,16 @@ public class Utils {
         }
         return sb.toString();
     }
+    public static String genAlphaUpperCode12(){
+        StringBuilder sb = new StringBuilder();
+        String set = ALPHA_CAPS; // characters to choose from
+        int low = 0;
+        int high = set.length();
+        Random r = new Random();
+        for (int i= 0; i < 12; i++) {
+            int result = r.nextInt(high-low) + low;
+            sb.append(set.charAt(result));
+        }
+        return sb.toString();
+    }
 }

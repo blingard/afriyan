@@ -69,4 +69,14 @@ public interface MinioService {
      * @return file size in bytes
      */
     long getFileSize(String objectName) throws Exception;
+
+    /**
+     * Upload raw bytes to MinIO (used for base64-decoded image data)
+     *
+     * @param data        the byte array to upload
+     * @param objectName  the name of the object in MinIO
+     * @param contentType the MIME type of the data
+     * @return the public direct URL to access the file
+     */
+    String uploadBytes(byte[] data, String objectName, String contentType) throws Exception;
 }

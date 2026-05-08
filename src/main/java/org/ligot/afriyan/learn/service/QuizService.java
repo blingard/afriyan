@@ -11,8 +11,10 @@ public interface QuizService {
     QuizDTO updateQuiz(String id, QuizCreateDTO dto);
     
     QuizDTO getQuizById(String id);
-    
+
     QuizDTO getQuizByModuleId(String moduleId);
+
+    QuizUSerDTO getQuizUserByModuleId(String moduleId);
     
     QuizDTO getQuizByFormationId(String formationId);
     
@@ -35,4 +37,5 @@ public interface QuizService {
     UserQuizAttemptDTO getAttemptById(String attemptId);
     
     boolean canUserAttemptQuiz(String quizId);
+    boolean canUserAttemptQuizFormation(String formationId);
 }

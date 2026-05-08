@@ -100,6 +100,11 @@ public class UtilisateurService implements IUtilisateur {
     }
 
     @Override
+    public void save(Utilisateur utilisateur) {
+        repository.save(utilisateur);
+    }
+
+    @Override
     @Transactional
     public void removePermission(Long idUser, PermissionEnum permission) {
         Utilisateur utilisateur = repository.findById(idUser).orElseThrow(()->new RuntimeException("User not found"));

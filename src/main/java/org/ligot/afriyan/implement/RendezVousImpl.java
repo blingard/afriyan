@@ -1,10 +1,12 @@
 package org.ligot.afriyan.implement;
 
+import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 import org.ligot.afriyan.Dto.RendezVousDTO;
-import org.ligot.afriyan.entities.RendezVous;
-import org.ligot.afriyan.entities.StatusRdv;
+import org.ligot.afriyan.Dto.RendezVousRequest;
+import org.ligot.afriyan.entities.*;
 import org.ligot.afriyan.mapper.RendezVousMapper;
+import org.ligot.afriyan.repository.IProduitRepository;
 import org.ligot.afriyan.repository.IRendezVousRepository;
 import org.ligot.afriyan.service.IRendezVous;
 import org.springframework.data.domain.Page;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,10 +27,14 @@ public class RendezVousImpl implements IRendezVous {
     private final int PAGE_SIZE = 15;
     private final RendezVousMapper mapper;
     private final IRendezVousRepository repository;
+    private final IProduitRepository iProduitRepository;
+    private final UtilsService utilsService;
 
-    public RendezVousImpl(RendezVousMapper mapper, IRendezVousRepository repository) {
+    public RendezVousImpl(RendezVousMapper mapper, IRendezVousRepository repository, IProduitRepository iProduitRepository, UtilsService utilsService) {
         this.mapper = mapper;
         this.repository = repository;
+        this.iProduitRepository = iProduitRepository;
+        this.utilsService = utilsService;
     }
 
     @Override
@@ -41,6 +48,7 @@ public class RendezVousImpl implements IRendezVous {
 
     @Override
     public List<RendezVousDTO> findByUserId(Long id) throws Exception {
+        Utilisateur user = utilsService.getUser();
         return repository.findRendezVousByUtilisateur_Id(id).stream().map(this::trait).collect(Collectors.toList());
     }
 
@@ -57,8 +65,26 @@ public class RendezVousImpl implements IRendezVous {
     }
 
     @Override
-    public RendezVousDTO save(RendezVousDTO rendezVousDto) throws Exception{
-        return mapper.toDTO(repository.save(mapper.create(rendezVousDto)));
+    public void save(RendezVousRequest rendezVousDto) throws Exception{
+        Utilisateur utilisateur = utilsService.getUser();
+        Produit produit = iProduitRepository.findById(rendezVousDto.productId()).orElseThrow(()->new RuntimeException("Product not found"));
+        if(!produit.isActive())
+            throw new RuntimeException("le produit n'est pas actif");
+        ServiceEntity serviceEntity = produit.getService();
+        CentrePartenaire centrePartenaire = serviceEntity.getCentrePartenaire();
+        if(Objects.equals(centrePartenaire.getStatus(), Status.INACTIVE))
+            throw new RuntimeException("L'USRAJ n'est pas actif");
+        RendezVous rendezVous = new RendezVous();
+        rendezVous.setLibelle(rendezVousDto.libelle());
+        rendezVous.setDateRdv(rendezVousDto.dateRdv());
+        rendezVous.setHeureDebut(rendezVousDto.heureDebut());
+        rendezVous.setHeureFin(rendezVousDto.heureFin());
+        rendezVous.setUtilisateur(utilisateur);
+        rendezVous.setProduit(produit);
+        rendezVous.setCentrePartenaire(centrePartenaire);
+        rendezVous.setServiceEntity(serviceEntity);
+        rendezVous.setRdv(rendezVousDto.rdv());
+        repository.save(rendezVous);
     }
 
     @Override

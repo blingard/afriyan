@@ -12,16 +12,34 @@ public class QuestionOptionDTO {
     private Boolean isCorrect;
     private Integer ordre;
     private UUID questionId;
+    private boolean active;
 
     public QuestionOptionDTO() {
     }
 
-    public QuestionOptionDTO(UUID id, String texte, Boolean isCorrect, Integer ordre, UUID questionId) {
+    public QuestionOptionDTO(UUID id, String texte, Boolean isCorrect, Integer ordre, UUID questionId, boolean active) {
         this.id = id;
         this.texte = texte;
         this.isCorrect = isCorrect;
         this.ordre = ordre;
         this.questionId = questionId;
+        this.active = active;
+    }
+
+    public Boolean getCorrect() {
+        return isCorrect;
+    }
+
+    public void setCorrect(Boolean correct) {
+        isCorrect = correct;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public UUID getId() {

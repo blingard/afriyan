@@ -229,6 +229,37 @@ public class MinioServiceImpl implements MinioService {
         }
     }
 
+    @Override
+    public String uploadBytes(byte[] data, String objectName, String contentType) throws Exception {
+        if (data == null || data.length == 0) {
+            throw new IllegalArgumentException("Data cannot be null or empty");
+        }
+        if (objectName == null || objectName.isBlank()) {
+            throw new IllegalArgumentException("Object name cannot be null or empty");
+        }
+        if (contentType == null || contentType.isBlank()) {
+            contentType = "application/octet-stream";
+        }
+
+        try (InputStream inputStream = new java.io.ByteArrayInputStream(data)) {
+            minioClient.putObject(
+                    PutObjectArgs.builder()
+                            .bucket(minioProperties.getBucketName())
+                            .object(objectName)
+                            .stream(inputStream, data.length, -1)
+                            .contentType(contentType)
+                            .build());
+
+            String endpoint = minioProperties.getEndpoint();
+            if (endpoint.endsWith("/")) {
+                endpoint = endpoint.substring(0, endpoint.length() - 1);
+            }
+            return minioProperties.getFileurl() + "/" + minioProperties.getBucketName() + "/" + objectName;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload bytes: " + objectName, e);
+        }
+    }
+
     /**
      * Generate a unique file name with timestamp and UUID
      */

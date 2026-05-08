@@ -15,6 +15,9 @@ public interface QuestionRepository extends JpaRepository<Question, UUID> {
     @Query("SELECT q FROM Question q WHERE q.quiz.id = :quizId ORDER BY q.ordre ASC")
     List<Question> findByQuizIdOrderByOrdre(@Param("quizId") UUID quizId);
 
+    @Query("SELECT q FROM Question q WHERE q.quiz.id = :quizId AND q.active = :active ORDER BY q.ordre ASC")
+    List<Question> findActiveByQuizIdOrderByOrdre(@Param("quizId") UUID quizId, @Param("active") boolean active);
+
     @Query("SELECT COUNT(q) FROM Question q WHERE q.quiz.id = :quizId")
     Long countByQuizId(@Param("quizId") UUID quizId);
 

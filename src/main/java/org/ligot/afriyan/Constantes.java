@@ -15,4 +15,5 @@ public class Constantes {
     public final static String MEDIATECHIMAGESUBPATH1="mediatech/image/";
     public final static String USERIMAGESUBPATH="/user/image";
     public final static String USERIMAGESUBPATH1="user/image/";
+    public final static String LEXICALCONTENTIMAGESUBPATH="lexical/images";
 }

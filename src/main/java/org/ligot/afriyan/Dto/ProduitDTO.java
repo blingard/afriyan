@@ -1,5 +1,6 @@
 package org.ligot.afriyan.Dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -17,8 +18,9 @@ public class ProduitDTO {
     private Double prix;
 
     private Date dateCreation = new Date();
+    private boolean active;
 
-    @JsonIgnoreProperties({"produits", "centrePartenaire"})
+    @JsonIgnore
     private ServiceDTO service;
 
     public Long getId() {
@@ -75,5 +77,13 @@ public class ProduitDTO {
 
     public void setService(ServiceDTO service) {
         this.service = service;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

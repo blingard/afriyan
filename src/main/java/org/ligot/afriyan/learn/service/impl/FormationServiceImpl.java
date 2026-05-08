@@ -2,6 +2,7 @@ package org.ligot.afriyan.learn.service.impl;
 
 import org.ligot.afriyan.Dto.CategoriesDTO;
 import org.ligot.afriyan.entities.Categories;
+import org.ligot.afriyan.implement.Utils;
 import org.ligot.afriyan.implement.UtilsService;
 import org.ligot.afriyan.learn.dto.*;
 import org.ligot.afriyan.learn.entities.Chapitres;
@@ -18,10 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,6 +56,16 @@ public class FormationServiceImpl implements FormationService {
         formation.setCreatedBy(userId);
         formation.setDateCreation(new Date());
         formation.setCategories(category);
+        formation.setCode(null);
+        if(dto.isHasCode()){
+            String code;
+            Optional<Formation> optionalFormation = Optional.empty();
+            do{
+                code = Utils.genAlphaUpperCode12();
+                optionalFormation = formationRepository.findByCode(code);
+            }while (optionalFormation.isPresent());
+            formation.setCode(code);
+        }
 
         Formation saved = formationRepository.save(formation);
         return toDTO(saved);
@@ -102,16 +110,24 @@ public class FormationServiceImpl implements FormationService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<FormationDTO> getPublishedFormations() {
+    public List<FormationDTOSmart> getPublishedFormations() {
         return formationRepository.findPublishedFormations().stream()
-                .map(this::toDTO)
+                .map(this::toDTOSmart)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public FormationDTO getPublishedFormationsByIdComplete(String idFormation) {
+    public FormationDTOSmart getPublishedFormationsByIdComplete(String idFormation, String code) {
         UUID id = UUID.fromString(idFormation);
-        Formation formation = formationRepository.findById(id)
+        Formation formation = formationRepository.findByCodeAndIdAndStatus(code, id, Formation.FormationStatus.PUBLISHED)
+                .orElseThrow(() -> new RuntimeException("Formation non trouvée"));
+        return toDTOComplete(formation);
+    }
+
+    @Override
+    public FormationDTOSmart getPublishedFormationsByIdCompleted(String idFormation) {
+        UUID id = UUID.fromString(idFormation);
+        Formation formation = formationRepository.findByIdAndStatus(id, Formation.FormationStatus.PUBLISHED)
                 .orElseThrow(() -> new RuntimeException("Formation non trouvée"));
         return toDTOComplete(formation);
     }
@@ -128,9 +144,9 @@ public class FormationServiceImpl implements FormationService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<FormationDTO> getFormationsByCreator(Long userId) {
+    public List<FormationDTOSmart> getFormationsByCreator(Long userId) {
         return formationRepository.findByCreatedBy(userId).stream()
-                .map(this::toDTO)
+                .map(this::toDTOSmart)
                 .collect(Collectors.toList());
     }
 
@@ -146,9 +162,9 @@ public class FormationServiceImpl implements FormationService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<FormationDTO> searchFormations(String keyword) {
+    public List<FormationDTOSmart> searchFormations(String keyword) {
         return formationRepository.searchFormations(keyword).stream()
-                .map(this::toDTO)
+                .map(this::toDTOSmart)
                 .collect(Collectors.toList());
     }
 
@@ -164,9 +180,9 @@ public class FormationServiceImpl implements FormationService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<FormationDTO> getFormationsByLevel(FormationLevel niveau) {
+    public List<FormationDTOSmart> getFormationsByLevel(FormationLevel niveau) {
         return formationRepository.findByNiveauAndPublished(niveau).stream()
-                .map(this::toDTO)
+                .map(this::toDTOSmart)
                 .collect(Collectors.toList());
     }
 
@@ -181,14 +197,14 @@ public class FormationServiceImpl implements FormationService {
     }
 
     @Override
-    public FormationDTO publishFormation(String idP) {
+    public FormationDTOSmart publishFormation(String idP) {
         UUID id = UUID.fromString(idP);
         Formation formation = formationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Formation non trouvée"));
         formation.setStatus(Formation.FormationStatus.PUBLISHED);
         formation.setDateModification(new Date());
         Formation saved = formationRepository.save(formation);
-        return toDTO(saved);
+        return toDTOSmart(saved);
     }
 
     @Override
@@ -235,12 +251,43 @@ public class FormationServiceImpl implements FormationService {
 
         Long nombreInscrits = enrollmentRepository.countCompletedByFormationId(formation.getId());
         dto.setNombreInscrits(nombreInscrits != null ? nombreInscrits.intValue() : 0);
+        dto.setCode(formation.getCode());
 
         return dto;
     }
+    private FormationDTOSmart toDTOSmart(Formation formation) {
+        FormationDTOSmart dto = new FormationDTOSmart();
+        dto.setId(formation.getId());
+        dto.setTitre(formation.getTitre());
+        dto.setDescription(formation.getDescription());
+        dto.setImageCouverture(formation.getImageCouverture());
+        dto.setNiveau(formation.getNiveau());
+        dto.setDureeEstimee(formation.getDureeEstimee());
+        dto.setStatus(formation.getStatus().name());
+        dto.setWithFinalQuiz(formation.getWithFinalQuiz());
+        dto.setDateCreation(formation.getDateCreation());
+        dto.setDateModification(formation.getDateModification());
+        dto.setCreatedBy(formation.getCreatedBy());
+        Categories categories = formation.getCategories();
+        if (categories != null) {
+            CategoriesDTO categoriesDTO = new CategoriesDTO();
+            categoriesDTO.setId(categories.getId());
+            categoriesDTO.setCode(categories.getCode());
+            categoriesDTO.setDescription(categories.getDescription());
+            dto.setCategories(categoriesDTO);
+        }
 
-    private FormationDTO toDTOComplete(Formation formation) {
-        FormationDTO dto = new FormationDTO();
+        Long nombreModules = moduleRepository.countByFormationId(formation.getId());
+        dto.setNombreModules(nombreModules != null ? nombreModules.intValue() : 0);
+
+        Long nombreInscrits = enrollmentRepository.countCompletedByFormationId(formation.getId());
+        dto.setNombreInscrits(nombreInscrits != null ? nombreInscrits.intValue() : 0);
+        dto.setHasCode(!Objects.isNull(formation.getCode()));
+        return dto;
+    }
+
+    private FormationDTOSmart toDTOComplete(Formation formation) {
+        FormationDTOSmart dto = new FormationDTOSmart();
         dto.setId(formation.getId());
         dto.setTitre(formation.getTitre());
         dto.setDescription(formation.getDescription());
@@ -264,19 +311,25 @@ public class FormationServiceImpl implements FormationService {
         Long nombreModules = moduleRepository.countByFormationId(formation.getId());
         dto.setNombreModules(nombreModules != null ? nombreModules.intValue() : 0);
         moduleRepository.findByFormationIdOrderByOrdre(formation.getId()).forEach(module -> {
-            ModuleDTO moduleDTO = new ModuleDTO();
-            moduleDTO.setId(module.getId());
-            moduleDTO.setTitre(module.getTitre());
-            moduleDTO.setDescription(module.getDescription());
-            moduleDTO.setDureeEstimee(module.getDureeEstimee());
-            moduleDTO.setOrdre(module.getOrdre());
-            moduleDTO.setWithQuiz(module.getWithQuiz());
-            moduleDTO.setChapitres(chapitresService.getChapitresByModuleId(module.getId().toString()));
-            dto.getModules().add(moduleDTO);
+            if(module.isActive()){
+                ModuleDTO moduleDTO = new ModuleDTO();
+                moduleDTO.setId(module.getId());
+                moduleDTO.setTitre(module.getTitre());
+                moduleDTO.setDescription(module.getDescription());
+                moduleDTO.setDureeEstimee(module.getDureeEstimee());
+                moduleDTO.setOrdre(module.getOrdre());
+                moduleDTO.setWithQuiz(module.getWithQuiz());
+                List<ChapitresDTO> chapitresDTOS = chapitresService.getActiveChapitresByModuleId(module.getId().toString());
+                if(!chapitresDTOS.isEmpty()) {
+                    moduleDTO.setChapitres(chapitresDTOS);
+                    dto.getModules().add(moduleDTO);
+                }
+            }
         });
 
         Long nombreInscrits = enrollmentRepository.countCompletedByFormationId(formation.getId());
         dto.setNombreInscrits(nombreInscrits != null ? nombreInscrits.intValue() : 0);
+        dto.setHasCode(!Objects.isNull(formation.getCode()));
         return dto;
     }
 }

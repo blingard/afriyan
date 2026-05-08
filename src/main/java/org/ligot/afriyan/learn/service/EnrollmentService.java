@@ -3,6 +3,7 @@ package org.ligot.afriyan.learn.service;
 import org.ligot.afriyan.learn.dto.*;
 
 import java.util.List;
+import java.util.Map;
 
 public interface EnrollmentService {
     
@@ -15,7 +16,8 @@ public interface EnrollmentService {
     List<UserFormationEnrollmentDTO> getFormationEnrollments(String formationId);
     
     UserFormationEnrollmentDTO getUserEnrollmentForFormation(String formationId);
-    
+    Map<String, String> getUserEnrollmentForFormationCode(String formationId);
+
     UserFormationEnrollmentDTO restartFormation(String enrollmentId);
     
     UserFormationEnrollmentDTO abandonFormation(String enrollmentId);

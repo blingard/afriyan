@@ -29,15 +29,35 @@ public class QuestionOption implements Serializable {
     @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private boolean active;
+
     public QuestionOption() {
     }
 
-    public QuestionOption(UUID id, String texte, Boolean isCorrect, Integer ordre, Question question) {
+    public QuestionOption(UUID id, String texte, Boolean isCorrect, Integer ordre, Question question, boolean active) {
         this.id = id;
         this.texte = texte;
         this.isCorrect = isCorrect;
         this.ordre = ordre;
         this.question = question;
+        this.active = active;
+    }
+
+    public Boolean getCorrect() {
+        return isCorrect;
+    }
+
+    public void setCorrect(Boolean correct) {
+        isCorrect = correct;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public UUID getId() {

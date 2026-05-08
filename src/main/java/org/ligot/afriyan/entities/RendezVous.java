@@ -39,6 +39,9 @@ public class RendezVous {
     @JoinColumn(name = "SERVICEENTITY", referencedColumnName = "IDENTIFIANT")
     private ServiceEntity serviceEntity;
 
+    @ManyToOne
+    private Produit produit;
+
     @Column(name = "STATUS")
     @Enumerated(EnumType.STRING)
     private StatusRdv rdv;
@@ -91,20 +94,28 @@ public class RendezVous {
         this.utilisateur = utilisateur;
     }
 
-    public CentrePartenaire getCentrePartenaire() {
-        return centrePartenaire;
-    }
-
-    public void setCentrePartenaire(CentrePartenaire centrePartenaire) {
-        this.centrePartenaire = centrePartenaire;
-    }
-
     public StatusRdv getRdv() {
         return rdv;
     }
 
     public void setRdv(StatusRdv rdv) {
         this.rdv = rdv;
+    }
+
+    public Produit getProduit() {
+        return produit;
+    }
+
+    public void setProduit(Produit produit) {
+        this.produit = produit;
+    }
+
+    public CentrePartenaire getCentrePartenaire() {
+        return centrePartenaire;
+    }
+
+    public void setCentrePartenaire(CentrePartenaire centrePartenaire) {
+        this.centrePartenaire = centrePartenaire;
     }
 
     public ServiceEntity getServiceEntity() {

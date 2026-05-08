@@ -57,10 +57,15 @@ public class Modules implements Serializable {
     @Column(name = "date_modification")
     private Date dateModification;
 
+
+
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private boolean active;
+
     public Modules() {
     }
 
-    public Modules(UUID id, String titre, String description, Integer ordre, Integer dureeEstimee, Boolean withQuiz, Formation formation, Quiz quiz, List<Chapitres> chapitres, List<UserProgress> userProgresses, Date dateCreation, Date dateModification) {
+    public Modules(UUID id, String titre, String description, Integer ordre, Integer dureeEstimee, Boolean withQuiz, Formation formation, Quiz quiz, List<Chapitres> chapitres, List<UserProgress> userProgresses, Date dateCreation, Date dateModification, boolean active) {
         this.id = id;
         this.titre = titre;
         this.description = description;
@@ -73,6 +78,15 @@ public class Modules implements Serializable {
         this.userProgresses = userProgresses;
         this.dateCreation = dateCreation;
         this.dateModification = dateModification;
+        this.active = active;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public UUID getId() {

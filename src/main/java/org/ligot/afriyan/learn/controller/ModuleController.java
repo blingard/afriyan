@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("public/api/learn/modules")
 @CrossOrigin("*")
 public class ModuleController {
 
@@ -20,14 +19,14 @@ public class ModuleController {
         this.moduleService = moduleService;
     }
 
-    @PostMapping
+    @PostMapping("/api/learn/modules")
     @RolesAllowed(value = {"CREATE_MODULE"})
     public ResponseEntity<ModuleDTO> createModule(@RequestBody ModuleCreateDTO dto) {
         ModuleDTO created = moduleService.createModule(dto);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/api/learn/modules/{id}")
     @RolesAllowed(value = {"UPDATE_MODULE"})
     public ResponseEntity<ModuleDTO> updateModule(
             @PathVariable String id,
@@ -36,28 +35,28 @@ public class ModuleController {
         return ResponseEntity.ok(updated);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/api/learn/modules/{id}")
     @RolesAllowed(value = {"GET_MODULE"})
     public ResponseEntity<ModuleDTO> getModuleById(@PathVariable String id) {
         ModuleDTO module = moduleService.getModuleById(id);
         return ResponseEntity.ok(module);
     }
 
-    @GetMapping("/formation/{formationId}")
+    @GetMapping("/api/learn/modules/formation/{formationId}")
     @RolesAllowed(value = {"GET_MODULE"})
     public ResponseEntity<List<ModuleDTO>> getModulesByFormationId(@PathVariable String formationId) {
         List<ModuleDTO> modules = moduleService.getModulesByFormationId(formationId);
         return ResponseEntity.ok(modules);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/api/learn/modules/{id}")
     @RolesAllowed(value = {"DELETE_MODULE"})
     public ResponseEntity<Void> deleteModule(@PathVariable String id) {
         moduleService.deleteModule(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/formation/{formationId}/reorder")
+    @PutMapping("/api/learn/modules/formation/{formationId}/reorder")
     @RolesAllowed(value = {"UPDATE_MODULE"})
     public ResponseEntity<Void> reorderModules(
             @PathVariable String formationId,

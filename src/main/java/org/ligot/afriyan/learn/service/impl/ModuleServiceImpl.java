@@ -78,7 +78,9 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public void deleteModule(String id) {
-        moduleRepository.deleteById(UUID.fromString(id));
+        Modules modules = moduleRepository.findById(UUID.fromString(id)).orElseThrow(()->new RuntimeException("non trouve"));
+        modules.setActive(!modules.isActive());
+        moduleRepository.save(modules);
     }
 
     @Override
@@ -102,6 +104,7 @@ public class ModuleServiceImpl implements ModuleService {
         dto.setFormationId(module.getFormation().getId());
         dto.setDateCreation(module.getDateCreation());
         dto.setDateModification(module.getDateModification());
+        dto.setActive(module.isActive());
         return dto;
     }
 }

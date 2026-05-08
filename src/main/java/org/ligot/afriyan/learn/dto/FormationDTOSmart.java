@@ -1,9 +1,5 @@
 package org.ligot.afriyan.learn.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import org.ligot.afriyan.Dto.CategoriesDTO;
 import org.ligot.afriyan.learn.enumerations.FormationLevel;
 
@@ -13,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 
-public class FormationDTO {
+public class FormationDTOSmart {
     private UUID id;
     private String titre;
     private String description;
@@ -28,13 +24,13 @@ public class FormationDTO {
     private Long createdBy;
     private Integer nombreModules;
     private Integer nombreInscrits;
-    private String code;
+    private boolean hasCode;
     private List<ModuleDTO> modules = new ArrayList<>();
 
-    public FormationDTO() {
+    public FormationDTOSmart() {
     }
 
-    public FormationDTO(UUID id, String titre, String description, String imageCouverture, FormationLevel niveau, CategoriesDTO categories, Integer dureeEstimee, String status, Boolean withFinalQuiz, Date dateCreation, Date dateModification, Long createdBy, Integer nombreModules, Integer nombreInscrits, String code, List<ModuleDTO> modules) {
+    public FormationDTOSmart(UUID id, String titre, String description, String imageCouverture, FormationLevel niveau, CategoriesDTO categories, Integer dureeEstimee, String status, Boolean withFinalQuiz, Date dateCreation, Date dateModification, Long createdBy, Integer nombreModules, Integer nombreInscrits, boolean hasCode, List<ModuleDTO> modules) {
         this.id = id;
         this.titre = titre;
         this.description = description;
@@ -49,7 +45,7 @@ public class FormationDTO {
         this.createdBy = createdBy;
         this.nombreModules = nombreModules;
         this.nombreInscrits = nombreInscrits;
-        this.code = code;
+        this.hasCode = hasCode;
         this.modules = modules;
     }
 
@@ -171,11 +167,11 @@ public class FormationDTO {
         this.categories = categories;
     }
 
-    public String getCode() {
-        return code;
+    public boolean isHasCode() {
+        return hasCode;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setHasCode(boolean hasCode) {
+        this.hasCode = hasCode;
     }
 }

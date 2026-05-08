@@ -18,11 +18,12 @@ public class ChapitresDTO {
     private UUID moduleId;
     private Date dateCreation;
     private Date dateModification;
+    private boolean active;
 
     public ChapitresDTO() {
     }
 
-    public ChapitresDTO(UUID id, String titre, String contenu, Integer ordre, Integer dureeEstimee, String videoUrl, String documentUrl, UUID moduleId, Date dateCreation, Date dateModification) {
+    public ChapitresDTO(UUID id, String titre, String contenu, Integer ordre, Integer dureeEstimee, String videoUrl, String documentUrl, UUID moduleId, Date dateCreation, Date dateModification, boolean active) {
         this.id = id;
         this.titre = titre;
         this.contenu = contenu;
@@ -33,6 +34,7 @@ public class ChapitresDTO {
         this.moduleId = moduleId;
         this.dateCreation = dateCreation;
         this.dateModification = dateModification;
+        this.active = active;
     }
 
     public UUID getId() {
@@ -113,5 +115,13 @@ public class ChapitresDTO {
 
     public void setDateModification(Date dateModification) {
         this.dateModification = dateModification;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

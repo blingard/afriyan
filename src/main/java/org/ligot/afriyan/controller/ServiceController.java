@@ -3,55 +3,67 @@ package org.ligot.afriyan.controller;
 import jakarta.annotation.security.RolesAllowed;
 import org.ligot.afriyan.Dto.ServiceDTO;
 import org.ligot.afriyan.service.IServiceEntity;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
-@RequestMapping(path = "/service")
 public class ServiceController {
 
-    @Autowired
-    IServiceEntity serviceEntity;
+    private final IServiceEntity serviceEntity;
 
-    @PostMapping(value = "/save")
+    public ServiceController(IServiceEntity serviceEntity) {
+        this.serviceEntity = serviceEntity;
+    }
+
+    @PostMapping(value = "api/service/save")
     @RolesAllowed(value = {"CREATE_SERVICE"})
-    ServiceDTO saveService(@RequestBody ServiceDTO serviceEntityDto) throws Exception {
+    public ServiceDTO saveService(@RequestBody ServiceDTO serviceEntityDto) throws Exception {
         return serviceEntity.save(serviceEntityDto);
     }
 
-    @PutMapping(value = "/update/{id}")
+    @PutMapping(value = "api/service/update/{id}")
     @RolesAllowed(value = {"UPDATE_SERVICE"})
-    ServiceDTO updateService(@RequestBody ServiceDTO serviceEntityDto, @PathVariable Long id) throws Exception {
+    public ServiceDTO updateService(@RequestBody ServiceDTO serviceEntityDto, @PathVariable Long id) throws Exception {
         return serviceEntity.update(serviceEntityDto, id);
     }
 
-    @GetMapping(value = "/list/{page}")
+    @GetMapping(value = "api/service/list/{page}")
     @RolesAllowed(value = {"GET_SERVICE"})
-    Page<ServiceDTO> listService(@PathVariable  int page) throws Exception {
+    public Page<ServiceDTO> listService(@PathVariable  int page) throws Exception {
         return serviceEntity.list(page);
     }
 
-    @GetMapping(value = "/list-by-cp-id/{id}")
-    List<ServiceDTO> listServiceCP(@PathVariable  Long id) throws Exception {
+    @GetMapping(value = "api/service/list-by-cp-id/{id}")
+    public List<ServiceDTO> listServiceCP(@PathVariable  Long id) throws Exception {
         return serviceEntity.listServiceCP(id);
     }
 
-    @DeleteMapping(value = "/delete/{id}")
+    @DeleteMapping(value = "api/service/delete/{id}")
     @RolesAllowed(value = {"DELETE_SERVICE"})
-    void deleteService (@PathVariable long id) throws Exception{
+    public void deleteService (@PathVariable long id) throws Exception{
         serviceEntity.delete(id);
     }
 
-    @GetMapping(value = "/getById/{id}")
-    ServiceDTO listById(@PathVariable Long id) throws Exception {
+    @GetMapping(value = "api/service/getById/{id}")
+    public ServiceDTO listById(@PathVariable Long id) throws Exception {
         return serviceEntity.findById(id);
     }
 
-    @GetMapping()
-    List<ServiceDTO> listAll() throws Exception {
+    @GetMapping(value = "api/service/getById/one/{id}")
+    public ServiceDTO listByIdActive(@PathVariable Long id) throws Exception {
+        return serviceEntity.findByIdUser(id);
+    }
+
+    @GetMapping(value = "api/service/getById/user/{id}")
+    public Set<ServiceDTO> listByIdCPUser(@PathVariable Long id) throws Exception {
+        return serviceEntity.findListByIdUser(id);
+    }
+
+    @GetMapping("api/service")
+    public List<ServiceDTO> listAll() throws Exception {
         return serviceEntity.listAll();
     }
 

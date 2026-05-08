@@ -45,4 +45,8 @@ public interface FormationRepository extends JpaRepository<Formation, UUID> {
 
     @Query("SELECT f FROM Formation f WHERE f.niveau = :niveau AND f.status = 'PUBLISHED'")
     Page<Formation> findByNiveauAndPublished(@Param("niveau") FormationLevel niveau, Pageable pageable);
+
+    Optional<Formation> findByCode(String code);
+    Optional<Formation> findByCodeAndIdAndStatus(String code, UUID id, Formation.FormationStatus status);
+    Optional<Formation> findByIdAndStatus(UUID id, Formation.FormationStatus status);
 }

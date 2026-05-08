@@ -17,5 +17,6 @@ public interface IArticlesRepository extends JpaRepository<Articles, Long> {
     List<Articles> findAllByStatusTrueAndTypeDonne(TypeDonne typeDonne);
     List<Articles> findAllByTypeDonne(TypeDonne typeDonne);
     List<Articles> findAllByTypeDonneAndCategoriesAndStatusTrue(TypeDonne typeDonne, Categories categories);
+    Page<Articles> findAllByTypeDonneAndCategoriesAndStatusTrue(TypeDonne typeDonne, Categories categories, Pageable pageable);
     Page<Articles> findAllByTypeDonne(TypeDonne typeDonne, Pageable pageable);
 }

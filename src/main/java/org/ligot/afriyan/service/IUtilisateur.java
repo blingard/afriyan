@@ -15,6 +15,7 @@ import java.util.Map;
 
 
 public interface IUtilisateur {
+    void save(Utilisateur utilisateur);
     void removePermission(Long idUser, PermissionEnum permission);
     void addPermission(Long idUser, PermissionRequest permission);
     UtilisateurDTO findById(Long id) throws Exception ;

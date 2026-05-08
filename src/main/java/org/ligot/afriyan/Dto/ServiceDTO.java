@@ -17,10 +17,10 @@ public class ServiceDTO {
     private Long id;
     private String libelle;
     private String description;
-    @JsonIgnore
+    @JsonIgnoreProperties({"service"})
     private Set<ProduitDTO> produits = new HashSet<>();
     private Date dateCreation;
-    @JsonIgnoreProperties({"serviceOfferts"})
+    @JsonIgnoreProperties({"createur", "serviceOfferts"})
     private CentrePartenaireDTO centrePartenaire;
 
 

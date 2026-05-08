@@ -49,11 +49,16 @@ public class Chapitres implements Serializable {
     @Column(name = "date_modification")
     private Date dateModification;
 
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private boolean active;
+
+
+
     public UUID getId() {
         return id;
     }
 
-    public Chapitres(UUID id, String titre, String contenu, Integer ordre, Integer dureeEstimee, String videoUrl, String documentUrl, Modules module, Date dateCreation, Date dateModification) {
+    public Chapitres(UUID id, String titre, String contenu, Integer ordre, Integer dureeEstimee, String videoUrl, String documentUrl, Modules module, Date dateCreation, Date dateModification, boolean active) {
         this.id = id;
         this.titre = titre;
         this.contenu = contenu;
@@ -64,6 +69,7 @@ public class Chapitres implements Serializable {
         this.module = module;
         this.dateCreation = dateCreation;
         this.dateModification = dateModification;
+        this.active = active;
     }
 
     public void setId(UUID id) {
@@ -143,5 +149,13 @@ public class Chapitres implements Serializable {
     }
 
     public Chapitres() {
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

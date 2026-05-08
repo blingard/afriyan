@@ -37,7 +37,7 @@ public class CertificatesImpl implements ICertificates {
         Page<Certificates> certificatesPage = repository.findAll(pageable);
         return new PageDTO<>(
                 new PageImpl<>(
-                        certificatesPage.stream().map(mapper::toDTO).toList(),
+                        certificatesPage.stream().map(mapper::toDTOSmart).toList(),
                         pageable,
                         certificatesPage.getTotalElements()
                 )
@@ -56,6 +56,7 @@ public class CertificatesImpl implements ICertificates {
         if(certificates.isEmpty())
             throw new Exception("Certificate not found");
         return mapper.toDTO(certificates.get(0));
+
     }
 
 

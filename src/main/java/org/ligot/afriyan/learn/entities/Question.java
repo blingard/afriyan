@@ -53,10 +53,13 @@ public class Question implements Serializable {
     @Column(name = "date_modification")
     private Date dateModification;
 
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private boolean active;
+
     public Question() {
     }
 
-    public Question(UUID id, String intitule, String explication, Integer points, Integer ordre, String imageUrl, Quiz quiz, List<QuestionOption> options, List<UserQuizAnswer> userAnswers, Date dateCreation, Date dateModification) {
+    public Question(UUID id, String intitule, String explication, Integer points, Integer ordre, String imageUrl, Quiz quiz, List<QuestionOption> options, List<UserQuizAnswer> userAnswers, Date dateCreation, Date dateModification, boolean active) {
         this.id = id;
         this.intitule = intitule;
         this.explication = explication;
@@ -68,6 +71,15 @@ public class Question implements Serializable {
         this.userAnswers = userAnswers;
         this.dateCreation = dateCreation;
         this.dateModification = dateModification;
+        this.active = active;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public UUID getId() {

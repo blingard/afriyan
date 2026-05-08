@@ -26,8 +26,8 @@ import java.util.concurrent.Executors;
 @SpringBootApplication
 @org.springframework.cache.annotation.EnableCaching
 @OpenAPIDefinition(servers = {
-        // @Server(url = "http://localhost:8087/")//
-        @Server(url = "https://api.youthfp.cm/")//
+//        @Server(url = "http://localhost:8087/")//
+ @Server(url = "https://api.youthfp.cm/")//
 }, info = @Info(title = "AfriYan APIs", version = "1.0", contact = @Contact(name = "ELLA Belinga JP", email = "youthfp@youthfp.cm", url = "www.youthfp.cm"), description = "AfriYan Information", license = @License(name = "Licence API")))
 @SecurityScheme(name = "auth", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "bearer")
 @PropertySource(value = "file:./config/application.properties", ignoreResourceNotFound = false)

@@ -31,6 +31,8 @@ public class ServiceEntity {
     @JsonIgnoreProperties("serviceOfferts")
     private CentrePartenaire centrePartenaire;
 
+    //private boolean active;
+
     public ServiceEntity(Long id) {
         this.id = id;
     }

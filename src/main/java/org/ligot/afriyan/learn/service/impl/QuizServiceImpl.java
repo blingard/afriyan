@@ -118,6 +118,13 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
+    public QuizUSerDTO getQuizUserByModuleId(String moduleId) {
+        Quiz quiz = quizRepository.findByModuleId(UUID.fromString(moduleId))
+                .orElseThrow(() -> new RuntimeException("Quiz non trouvé pour ce module"));
+        return toQuizUserDTO(quiz);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public QuizDTO getQuizByFormationId(String formationId) {
         Quiz quiz = quizRepository.findByFormationId(UUID.fromString(formationId))
@@ -126,8 +133,11 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
+    @Transactional
     public void deleteQuiz(String id) {
-        quizRepository.deleteById(UUID.fromString(id));
+        Quiz quiz = quizRepository.findById(UUID.fromString(id)).orElseThrow(()->new RuntimeException("Quiz non trouve"));
+        quiz.setActive(!quiz.isActive());
+        quizRepository.save(quiz);
     }
 
     @Override
@@ -181,8 +191,11 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
+    @Transactional
     public void deleteQuestion(String id) {
-        questionRepository.deleteById(UUID.fromString(id));
+        Question question = questionRepository.findById(UUID.fromString(id)).orElseThrow(()->new RuntimeException("not found"));
+        question.setActive(!question.isActive());
+        questionRepository.save(question);
     }
 
     @Override
@@ -349,6 +362,25 @@ public class QuizServiceImpl implements QuizService {
         return attemptCount == null || attemptCount < quiz.getNombreTentativesMax();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public boolean canUserAttemptQuizFormation(String formationId) {
+        Long userId = utilsService.getUser().getId();
+        Formation formation = formationRepository.findById(UUID.fromString(formationId))
+                .orElseThrow(() -> new RuntimeException("Formation non trouvée"));
+        if(!formation.getWithFinalQuiz())
+            throw new RuntimeException("Formation sans quiz final");
+        Quiz quiz = formation.getQuizFinal();
+        if(quiz == null)
+            return false;
+        if (quiz.getNombreTentativesMax() == null) {
+            return true; // Tentatives illimitées
+        }
+
+        Long attemptCount = attemptRepository.countAttemptsByUserIdAndQuizId(userId, quiz.getId());
+        return attemptCount == null || attemptCount < quiz.getNombreTentativesMax();
+    }
+
     private void updateModuleProgressFromQuiz(String enrollmentId, String moduleId,
                                              Double score, Boolean passed) {
         UserProgress progress = progressRepository.findByEnrollmentIdAndModuleId(UUID.fromString(enrollmentId), UUID.fromString(moduleId))
@@ -393,11 +425,12 @@ public class QuizServiceImpl implements QuizService {
         dto.setNombreTentativesMax(quiz.getNombreTentativesMax());
         dto.setDateCreation(quiz.getDateCreation());
         dto.setDateModification(quiz.getDateModification());
-        
+        dto.setActive(quiz.isActive());
+
         if (quiz.getModule() != null) {
             dto.setModuleId(quiz.getModule().getId());
         }
-        
+
         if (quiz.getFormation() != null) {
             dto.setFormationId(quiz.getFormation().getId());
         }
@@ -414,6 +447,34 @@ public class QuizServiceImpl implements QuizService {
         dto.setQuestions(questionDTOS);
         return dto;
     }
+    private QuizUSerDTO toQuizUserDTO(Quiz quiz) {
+        if(!quiz.isActive())
+            throw new RuntimeException("quiz non actif");
+        QuizUSerDTO dto = new QuizUSerDTO();
+        dto.setId(quiz.getId());
+        dto.setTitre(quiz.getTitre());
+        dto.setDescription(quiz.getDescription());
+        dto.setType(quiz.getType().name());
+        dto.setDureeLimite(quiz.getDureeLimite());
+        dto.setNombreTentativesMax(quiz.getNombreTentativesMax());
+
+        List<QuestionUserDTO> questionDTOS = new ArrayList<>();
+        List<Question> questions = questionRepository.findActiveByQuizIdOrderByOrdre(quiz.getId(), true);
+        if(questions.isEmpty())
+            throw new RuntimeException("quiz sans question");
+        for(Question question : questions){
+            if(question.isActive()){
+                questionDTOS.add(toQuestionUserDTO(question));
+            }
+        };
+
+
+        if(questionDTOS.isEmpty())
+            throw new RuntimeException("Ce quizz n'a pas de question");
+
+        dto.setQuestions(questionDTOS);
+        return dto;
+    }
 
     private QuestionDTO toQuestionDTO(Question question) {
         QuestionDTO dto = new QuestionDTO();
@@ -426,9 +487,27 @@ public class QuizServiceImpl implements QuizService {
         dto.setQuizId(question.getQuiz().getId());
         dto.setDateCreation(question.getDateCreation());
         dto.setDateModification(question.getDateModification());
+        dto.setActive(question.isActive());
 
         List<QuestionOption> options = optionRepository.findByQuestionIdOrderByOrdre(question.getId());
         dto.setOptions(options.stream().map(this::toOptionDTO).collect(Collectors.toList()));
+
+        return dto;
+    }
+
+    private QuestionUserDTO toQuestionUserDTO(Question question) {
+        QuestionUserDTO dto = new QuestionUserDTO();
+        dto.setId(question.getId());
+        dto.setIntitule(question.getIntitule());
+        dto.setExplication(question.getExplication());
+        dto.setPoints(question.getPoints());
+        dto.setOrdre(question.getOrdre());
+        dto.setImageUrl(question.getImageUrl());
+
+        List<QuestionOption> options = optionRepository.findActiveByQuestionIdOrderByOrdre(question.getId(), true);
+        if(options.isEmpty())
+            throw new RuntimeException("quizz invalide");
+        dto.setOptions(options.stream().map(this::toOptionUserDTO).collect(Collectors.toList()));
 
         return dto;
     }
@@ -440,6 +519,15 @@ public class QuizServiceImpl implements QuizService {
         dto.setIsCorrect(option.getIsCorrect());
         dto.setOrdre(option.getOrdre());
         dto.setQuestionId(option.getQuestion().getId());
+        dto.setActive(option.isActive());
+        return dto;
+    }
+
+    private QuestionOptionUserDTO toOptionUserDTO(QuestionOption option) {
+        QuestionOptionUserDTO dto = new QuestionOptionUserDTO();
+        dto.setId(option.getId());
+        dto.setTexte(option.getTexte());
+        dto.setOrdre(option.getOrdre());
         return dto;
     }
 
