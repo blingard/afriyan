@@ -79,4 +79,10 @@ public interface MinioService {
      * @return the public direct URL to access the file
      */
     String uploadBytes(byte[] data, String objectName, String contentType) throws Exception;
+
+    byte[] getFileTest(String fileId) throws Exception;
+
+    void saveFileTest(String fileId, byte[] content) throws Exception;
+
+    long getFileSizeTest(String fileId) throws Exception;
 }

@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -284,5 +285,33 @@ public class MinioServiceImpl implements MinioService {
      */
     private boolean isAllowedExtension(String extension) {
         return ALLOWED_EXTENSIONS.contains(extension.toLowerCase());
+    }
+
+    @Override
+    public byte[] getFileTest(String fileId) throws Exception {
+        InputStream stream = minioClient.getObject(
+                GetObjectArgs.builder()
+                        .bucket(minioProperties.getBucketName())
+                        .object(fileId)
+                        .build());
+        return stream.readAllBytes();
+    }
+
+    @Override
+    public void saveFileTest(String fileId, byte[] content) throws Exception {
+        minioClient.putObject(
+                PutObjectArgs.builder()
+                        .bucket(minioProperties.getBucketName())
+                        .object(fileId)
+                        .stream(new ByteArrayInputStream(content), content.length, -1)
+                        .contentType("application/octet-stream")
+                        .build());
+    }
+
+    @Override
+    public long getFileSizeTest(String fileId) throws Exception {
+        StatObjectResponse stat = minioClient.statObject(
+                StatObjectArgs.builder().bucket(minioProperties.getBucketName()).object(fileId).build());
+        return stat.size();
     }
 }

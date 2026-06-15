@@ -43,6 +43,33 @@ public class SecurityConfig {
         this.permissionService = permissionService;
     }
 
+    /**
+     * Chaîne de sécurité WOPI - priorité maximale (@Order(0)).
+     *
+     * Collabora appelle /public/wopi/** avec ?access_token=... dans l'URL.
+     * Spring Security oauth2ResourceServer verrait aussi un header Authorization
+     * (s'il existe) → "Found multiple bearer tokens" → 400.
+     *
+     * Cette chaîne intercepte /public/wopi/** AVANT la chaîne principale et
+     * n'applique AUCUN oauth2ResourceServer : la validation du token est faite
+     * manuellement dans WopiController via WopiTokenService.
+     */
+    @Bean
+    @Order(0)
+    public SecurityFilterChain wopiSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher("/public/wopi/**")   // s'applique uniquement aux routes WOPI
+                .cors(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth ->
+                        auth.anyRequest().permitAll()  // la validation est faite dans le controller
+                );
+        // PAS de oauth2ResourceServer ici → Spring ne touchera pas au header Authorization
+        return http.build();
+    }
+
     @Bean
     @Order(1)
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
